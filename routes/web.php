@@ -7,3 +7,10 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/struktur-pengurus', function () {
+    return view('struktur-pengurus');
+});
+
+Route::get('/kegiatan', function () {
+    return view('kegiatan');
+});
