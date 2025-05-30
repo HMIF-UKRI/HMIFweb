@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Members extends Model
+{
+    use HasFactory;
+
+    protected $table = 'members';
+
+    protected $fillable = [
+        'name',
+        'student_id_number',
+        'image',
+        'position',
+        'organization_periods_id',
+        'departments_id',
+    ];
+
+    public function organizationPeriod()
+    {
+        return $this->belongsTo(OrganizationPeriods::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Departemen::class);
+    }
+}

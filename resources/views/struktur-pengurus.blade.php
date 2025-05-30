@@ -37,39 +37,91 @@
 
             {{-- PENGURUS --}}
             <div class="flex flex-col items-center justify-center px-6">
+                {{-- Implementasi Frontend --}}
+                {{--
+                    @foreach ($members as $index => $member)
+                    <div
+                    class="{{ $index % 2 == 0 ? "md:flex-row" : "md:flex-row-reverse" }} relative mb-8 flex w-full flex-1 flex-col md:gap-12 lg:gap-28 lg:px-12"
+                    >
+                    <img
+                    src="{{ asset($member->image) }}"
+                    alt=""
+                    width="20"
+                    height="20"
+                    class="z-50 h-auto w-full bg-cover bg-center object-cover md:w-1/2 lg:w-full"
+                    draggable="false"
+                    />
+                    <div class="text-secondary text-justify">
+                    <p>
+                    Lorem ipsum dolor, sit amet consectetur
+                    adipisicing elit. Velit, nihil illo? Fugiat
+                    dolorum omnis accusantium quisquam itaque beatae
+                    ea voluptate porro molestias minima obcaecati
+                    veritatis pariatur corrupti excepturi suscipit
+                    doloribus facere similique, cupiditate nobis
+                    explicabo sequi accusamus facilis voluptatem!
+                    Cum sequi hic nulla, est dignissimos rem quo
+                    commodi atque ratione?
+                    </p>
+                    </div>
+                    
+                    @if ($index % 2 == 0)
+                    <img
+                    src="{{ asset("images/garis-1.png") }}"
+                    alt=""
+                    width="20"
+                    height="20"
+                    class="absolute right-40 -bottom-8 hidden w-[56%] md:block lg:right-64"
+                    draggable="false"
+                    />
+                    @else
+                    <img
+                    src="{{ asset("images/garis-1.png") }}"
+                    alt=""
+                    width="20"
+                    height="20"
+                    class="absolute -bottom-8 left-40 hidden w-[56%] scale-x-[-1] md:block lg:left-64"
+                    draggable="false"
+                    />
+                    @endif
+                    </div>
+                    @endforeach
+                --}}
+
                 <div
                     class="relative mb-8 flex w-full flex-1 flex-col md:flex-row md:gap-12 lg:gap-28 lg:px-12"
                 >
-                    {{-- ACONG --}}
+                    {{-- Acong --}}
                     <img
                         src="{{ asset("images/pengurus/acong.png") }}"
                         alt=""
                         width="20"
                         height="20"
-                        class="z-50 h-auto w-full bg-cover bg-center object-cover md:w-1/2 lg:w-full"
+                        class="z-50 h-auto w-full bg-cover bg-center object-contain md:w-1/2 lg:w-full"
                         draggable="false"
                     />
                     <div class="text-secondary text-justify">
                         <p>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing
-                            elit. Velit, nihil illo? Fugiat dolorum omnis
-                            accusantium quisquam itaque beatae ea voluptate
-                            porro molestias minima obcaecati veritatis pariatur
-                            corrupti excepturi suscipit doloribus facere
-                            similique, cupiditate nobis explicabo sequi
-                            accusamus facilis voluptatem! Cum sequi hic nulla,
-                            est dignissimos rem quo commodi atque ratione?
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Illum perferendis rerum mollitia inventore, ad
+                            quasi perspiciatis ipsam. Similique facilis
+                            architecto neque. Voluptatibus, in ipsa laudantium,
+                            provident distinctio neque voluptatem repellendus
+                            cupiditate magnam similique, assumenda aut ut sed
+                            nam obcaecati itaque tempora. Nulla quod repellendus
+                            debitis totam molestias temporibus alias eveniet.
                         </p>
-                        <img
-                            src="{{ asset("images/garis-1.png") }}"
-                            alt=""
-                            width="20"
-                            height="20"
-                            class="absolute right-40 -bottom-8 hidden w-[56%] md:block lg:right-64"
-                            draggable="false"
-                        />
                     </div>
+                    <img
+                        src="{{ asset("images/garis-1.png") }}"
+                        alt=""
+                        width="20"
+                        height="20"
+                        class="absolute right-40 -bottom-8 hidden w-[56%] md:block lg:right-64"
+                        draggable="false"
+                    />
                 </div>
+
                 <div
                     class="relative mb-8 flex w-full flex-1 flex-col-reverse md:flex-row md:gap-12 lg:gap-28 lg:px-12"
                 >
