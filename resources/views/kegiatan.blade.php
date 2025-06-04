@@ -172,6 +172,44 @@
                         <div
                             class="grid grid-cols-2 place-content-center gap-3"
                         >
+                            {{--
+                                @foreach ($events as $event)
+                                <a
+                                href="#"
+                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
+                                >
+                                <img
+                                alt=""
+                                src="{{ asset($event->thumbnail_path) }}"
+                                class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
+                                />
+                                
+                                <div class="relative p-4 sm:p-6 lg:p-8">
+                                <p
+                                class="text-sm font-medium tracking-widest text-amber-500/50 uppercase"
+                                >
+                                {{ $event->eventCategory->name }}
+                                </p>
+                                
+                                <p
+                                class="text-xl font-bold text-white sm:text-2xl"
+                                >
+                                {{ $event->title }}
+                                </p>
+                                
+                                <div class="mt-32 sm:mt-48 lg:mt-64">
+                                <div
+                                class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
+                                >
+                                <p class="text-sm text-white">
+                                {{ $event->description }}
+                                </p>
+                                </div>
+                                </div>
+                                </div>
+                                </a>
+                                @endforeach
+                            --}}
                             <a
                                 href="#"
                                 class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"

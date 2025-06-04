@@ -11,34 +11,18 @@ use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Event::with('EventCategories')->latest();
+        $events = Event::with("eventCategory")->latest()->get();
 
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%')
-                ->orWhere('description', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('category')) {
-            $query->where('event_category_id', $request->category);
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $events = $query->paginate(10)->withQueryString();
-        $categories = EventCategories::orderBy('name')->get();
-
-        return view('kegiatan', compact('events', 'categories'));
+        return view('kegiatan', compact('events'));
     }
 
     public function create()
     {
         $categories = EventCategories::orderBy('name')->get();
         $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('admin.events.create', compact('categories', 'statuses'));
+        return view('events.create', compact('categories', 'statuses'));
     }
 
     public function store(Request $request)
@@ -48,9 +32,9 @@ class EventController extends Controller
             'slug' => 'string|max:255|unique:events,slug',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:250',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'thumbnail_path' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'event_date' => 'required|date',
-            'location' => 'nullable|string|max:255',
+            'location' => 'required|string|max:255',
             'status' => 'required|in:upcoming,ongoing,completed,cancelled',
             'event_category_id' => 'required|exists:event_categories,id',
         ]);
@@ -60,13 +44,14 @@ class EventController extends Controller
         $event->slug = $validatedData['slug'] ?: Str::slug($validatedData['title'] . '-' . time());
         $event->description = $validatedData['description'];
         $event->short_description = $validatedData['short_description'];
+        $event->thumbnail_path = $validatedData['thumbnail_path'];
         $event->event_date = $validatedData['event_date'];
         $event->location = $validatedData['location'];
         $event->status = $validatedData['status'];
-        $event->event_category_id = $validatedData['event_category_id'];
+        $event->event_categories_id = $validatedData['event_categories_id'];
 
-        if ($request->hasFile('thumbnail')) {
-            $file = $request->file('thumbnail');
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
             $fileName = 'event_thumbnail_' . time() . '_' . Str::slug($validatedData['title']) . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('events/thumbnails', $fileName, 'public');
             $event->thumbnail_path = $path;
@@ -74,19 +59,19 @@ class EventController extends Controller
 
         $event->save();
 
-        return redirect()->route('admin.events.index')->with('success', 'Kegiatan berhasil ditambahkan.');
+        return redirect()->route('events.index')->with('success', 'Kegiatan berhasil ditambahkan.');
     }
 
     public function show(Event $event)
     {
-        return redirect()->route('admin.events.edit', $event->id);
+        return redirect()->route('events.edit', $event->id);
     }
 
     public function edit(Event $event)
     {
         $categories = EventCategories::orderBy('name')->get();
         $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('admin.events.edit', compact('event', 'categories', 'statuses'));
+        return view('events.edit', compact('event', 'categories', 'statuses'));
     }
 
     public function update(Request $request, Event $event)
@@ -96,9 +81,9 @@ class EventController extends Controller
             'slug' => 'string|max:255|unique:events,slug',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:250',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'thumbnail_path' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'event_date' => 'required|date',
-            'location' => 'nullable|string|max:255',
+            'location' => 'required|string|max:255',
             'status' => 'required|in:upcoming,ongoing,completed,cancelled',
             'event_category_id' => 'required|exists:event_categories,id',
         ]);
@@ -114,17 +99,18 @@ class EventController extends Controller
         }
         $event->description = $validatedData['description'];
         $event->short_description = $validatedData['short_description'];
+        $event->thumbnail_path = $validatedData['thumbnail_path'];
         $event->event_date = $validatedData['event_date'];
         $event->location = $validatedData['location'];
         $event->status = $validatedData['status'];
-        $event->event_category_id = $validatedData['event_category_id'];
+        $event->event_categories_id = $validatedData['event_categories_id'];
 
-        if ($request->hasFile('thumbnail')) {
+        if ($request->hasFile('image')) {
             if ($event->thumbnail_path) {
                 Storage::disk('public')->delete($event->thumbnail_path);
             }
 
-            $file = $request->file('thumbnail');
+            $file = $request->file('image');
             $fileName = 'event_thumbnail_' . time() . '_' . Str::slug($validatedData['title']) . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('events/thumbnails', $fileName, 'public');
             $event->thumbnail_path = $path;
@@ -132,7 +118,7 @@ class EventController extends Controller
 
         $event->save();
 
-        return redirect()->route('admin.events.index')->with('success', 'Kegiatan berhasil diperbarui.');
+        return redirect()->route('events.index')->with('success', 'Kegiatan berhasil diperbarui.');
     }
 
     public function destroy(Event $event)
@@ -144,6 +130,6 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('admin.events.index')->with('success', 'Kegiatan berhasil dihapus.');
+        return redirect()->route('events.index')->with('success', 'Kegiatan berhasil dihapus.');
     }
 }

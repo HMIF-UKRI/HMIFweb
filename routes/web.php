@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\EventnController;
@@ -18,15 +19,6 @@ Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name
 Route::get('/kegiatan', [EventController::class, 'index'])->name('events.index');
 Route::get('/kegiatan/{slug}', [EventController::class, 'show'])->name('events.show');
 
-Route::prefix('admin')->group(function () {
-    // Admin Dashboard
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
 
-    // Kegiatan (Admin)
-    Route::resource('events', EventController::class);
-
-    // Anggota (Admin)
-    Route::resource('members', MemberController::class);
-});
+Route::resource('events', EventController::class);
+Route::resource('members', MemberController::class);

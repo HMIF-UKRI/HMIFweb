@@ -21,11 +21,6 @@ class Event extends Model
 
     public function eventCategory()
     {
-        return $this->belongsTo(EventCategories::class);
-    }
-
-    public function galleries()
-    {
-        return $this->hasMany(Gallery::class);
+        return $this->belongsTo(EventCategories::class, 'event_categories_id');
     }
 }
