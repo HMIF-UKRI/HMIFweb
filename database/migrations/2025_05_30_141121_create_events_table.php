@@ -21,7 +21,7 @@ return new class extends Migration
             $table->dateTime('event_date');
             $table->string('location')->nullable();
             $table->enum('status', ['upcoming', 'routine', 'completed', 'cancelled'])->default('upcoming');
-            $table->foreignId('event_categories_id')->nullable()->constrained('event_categories')->nullOnDelete();
+            $table->foreignId('event_category_id')->nullable()->constrained('event_categories')->nullOnDelete();
             $table->timestamps();
         });
     }

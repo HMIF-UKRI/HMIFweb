@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Members;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,28 +12,28 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = Members::all();
-        return view('struktur-pengurus', compact('members'));
+        $member = Member::all();
+        return view('struktur-pengurus', compact('member'));
     }
 
     public function create()
     {
-        $members = Members::all();
-        return view('page.member.create', compact('members'));
+        $member = Member::all();
+        return view('page.member.create', compact('member'));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:50',
-            'student_id_number' => 'required|string|max:20|unique:members,student_id_number',
+            'student_id_number' => 'required|string|max:20|unique:member,student_id_number',
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'position' => 'required|string|max:50',
             'organization_periods_id' => 'required',
             'departments_id' => 'required',
         ]);
 
-        $member = new Members();
+        $member = new Member();
         $member->name = $validatedData['name'];
         $member->student_id_number = $validatedData['student_id_number'];
         $member->position = $validatedData['position'];
@@ -43,7 +43,7 @@ class MemberController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = Str::slug($validatedData['student_id_number']) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('photos/members', $fileName, 'public');
+            $path = $file->storeAs('photos/member', $fileName, 'public');
             $member->image = $path;
         } else {
             $member->image = null;
@@ -52,7 +52,7 @@ class MemberController extends Controller
         try {
             $member->save();
 
-            return redirect()->route('members.index')->with('success', 'Data pengurus berhasil ditambahkan!');
+            return redirect()->route('member.index')->with('success', 'Data pengurus berhasil ditambahkan!');
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -61,16 +61,16 @@ class MemberController extends Controller
         }
     }
 
-    public function edit(Members $member)
+    public function edit(Member $member)
     {
-        return view('members.edit', compact('member'));
+        return view('member.edit', compact('member'));
     }
 
-    public function update(Request $request, Members $member)
+    public function update(Request $request, Member $member)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:50',
-            'student_id_number' => 'required|string|max:20|unique:members,student_id_number,' . $member->id,
+            'student_id_number' => 'required|string|max:20|unique:member,student_id_number,' . $member->id,
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -84,7 +84,7 @@ class MemberController extends Controller
 
             $file = $request->file('image');
             $fileName = Str::slug($validatedData['student_id_number']) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('photos/members', $fileName, 'public');
+            $path = $file->storeAs('photos/member', $fileName, 'public');
             $member->image = $path;
         }
 
@@ -97,7 +97,7 @@ class MemberController extends Controller
         ]);
     }
 
-    public function destroy(Members $member)
+    public function destroy(Member $member)
     {
         if ($member->image) {
             Storage::disk('public')->delete($member->image);

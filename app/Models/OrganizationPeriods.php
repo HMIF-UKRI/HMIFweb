@@ -17,6 +17,6 @@ class OrganizationPeriods extends Model
 
     public function members()
     {
-        return $this->hasMany(Members::class);
+        return $this->hasMany(Member::class, 'organization_period_id');
     }
 }

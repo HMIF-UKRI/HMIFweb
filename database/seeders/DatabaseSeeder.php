@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             OrganizationSeeder::class,
             DepartemenSeeder::class,
             MemberSeeder::class,
-            EventCategoriesSeeder::class,
+            EventCategorySeeder::class,
             EventSeeder::class,
         ]);
     }

@@ -16,9 +16,9 @@ Route::get('/', function () {
 Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name('organization.index');
 
 // Kegiatan
-Route::get('/kegiatan', [EventController::class, 'index'])->name('events.index');
-Route::get('/kegiatan/{slug}', [EventController::class, 'show'])->name('events.show');
+Route::get('/kegiatan', [EventController::class, 'index'])->name('event.index');
+Route::get('/kegiatan/{slug}', [EventController::class, 'show'])->name('event.show');
 
 
-Route::resource('events', EventController::class);
-Route::resource('members', MemberController::class);
+Route::resource('event', EventController::class);
+Route::resource('member', MemberController::class);

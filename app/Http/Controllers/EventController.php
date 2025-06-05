@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
-use App\Models\EventCategories;
+use App\Models\EventCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,23 +13,23 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with("eventCategory")->latest()->get();
+        $event = Event::with("eventCategory")->latest()->get();
 
-        return view('kegiatan', compact('events'));
+        return view('kegiatan', compact('event'));
     }
 
     public function create()
     {
-        $categories = EventCategories::orderBy('name')->get();
+        $categories = EventCategory::orderBy('name')->get();
         $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('events.create', compact('categories', 'statuses'));
+        return view('event.create', compact('categories', 'statuses'));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'string|max:255|unique:events,slug',
+            'slug' => 'string|max:255|unique:event,slug',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:250',
             'thumbnail_path' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -53,32 +53,32 @@ class EventController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = 'event_thumbnail_' . time() . '_' . Str::slug($validatedData['title']) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('events/thumbnails', $fileName, 'public');
+            $path = $file->storeAs('event/thumbnails', $fileName, 'public');
             $event->thumbnail_path = $path;
         }
 
         $event->save();
 
-        return redirect()->route('events.index')->with('success', 'Kegiatan berhasil ditambahkan.');
+        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil ditambahkan.');
     }
 
     public function show(Event $event)
     {
-        return redirect()->route('events.edit', $event->id);
+        return redirect()->route('event.edit', $event->id);
     }
 
     public function edit(Event $event)
     {
-        $categories = EventCategories::orderBy('name')->get();
+        $categories = EventCategory::orderBy('name')->get();
         $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('events.edit', compact('event', 'categories', 'statuses'));
+        return view('event.edit', compact('event', 'categories', 'statuses'));
     }
 
     public function update(Request $request, Event $event)
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'string|max:255|unique:events,slug',
+            'slug' => 'string|max:255|unique:event,slug',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:250',
             'thumbnail_path' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -112,13 +112,13 @@ class EventController extends Controller
 
             $file = $request->file('image');
             $fileName = 'event_thumbnail_' . time() . '_' . Str::slug($validatedData['title']) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('events/thumbnails', $fileName, 'public');
+            $path = $file->storeAs('event/thumbnails', $fileName, 'public');
             $event->thumbnail_path = $path;
         }
 
         $event->save();
 
-        return redirect()->route('events.index')->with('success', 'Kegiatan berhasil diperbarui.');
+        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil diperbarui.');
     }
 
     public function destroy(Event $event)
@@ -130,6 +130,6 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('events.index')->with('success', 'Kegiatan berhasil dihapus.');
+        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil dihapus.');
     }
 }

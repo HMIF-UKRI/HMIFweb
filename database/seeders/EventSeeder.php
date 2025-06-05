@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Event;
-use App\Models\EventCategories;
+use App\Models\EventCategory;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,7 +18,7 @@ class EventSeeder extends Seeder
     public function run(): void
     {
 
-        $categoryIds = EventCategories::pluck('id')->all();
+        $categoryIds = EventCategory::pluck('id')->all();
 
         if (empty($categoryIds)) {
             $this->command->error('No event categories found. Please run the EventCategorySeeder first or ensure categories exist.');
@@ -35,7 +35,7 @@ class EventSeeder extends Seeder
                 'event_date' => Date::create('2023-05-15 10:00:00'),
                 'location' => 'SMA 16 Bandung',
                 'status' => 'upcoming',
-                'event_categories_id' => 1,
+                'event_category_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -47,7 +47,7 @@ class EventSeeder extends Seeder
                 'event_date' => Date::create('2023-05-15 10:00:00'),
                 'location' => 'Bandung City',
                 'status' => 'upcoming',
-                'event_categories_id' => 1,
+                'event_category_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -59,7 +59,7 @@ class EventSeeder extends Seeder
                 'event_date' => Date::create('2023-05-15 10:00:00'),
                 'location' => 'Garasi Cempor',
                 'status' => 'upcoming',
-                'event_categories_id' => 1,
+                'event_category_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -74,7 +74,7 @@ class EventSeeder extends Seeder
                 'event_date' => Carbon::parse($data['event_date']),
                 'location' => $data['location'],
                 'status' => $data['status'],
-                'event_categories_id' => $categoryIds[array_rand($categoryIds)],
+                'event_category_id' => $categoryIds[array_rand($categoryIds)],
                 'created_at' => $data['created_at'],
                 'updated_at' => $data['updated_at'],
             ]);

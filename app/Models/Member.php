@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Members extends Model
+class Member extends Model
 {
     use HasFactory;
 
-    protected $table = 'members';
+    protected $table = 'member';
 
     protected $fillable = [
         'name',
         'student_id_number',
         'image',
         'position',
-        'organization_periods_id',
-        'departments_id',
+        'organization_period_id',
+        'department_id',
     ];
 
     public function organizationPeriod()

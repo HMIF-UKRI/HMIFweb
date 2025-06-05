@@ -16,11 +16,11 @@ class Event extends Model
         'end_date',
         'location',
         'image',
-        'event_categories_id',
+        'event_category_id',
     ];
 
     public function eventCategory()
     {
-        return $this->belongsTo(EventCategories::class, 'event_categories_id');
+        return $this->belongsTo(EventCategory::class, 'event_category_id');
     }
 }

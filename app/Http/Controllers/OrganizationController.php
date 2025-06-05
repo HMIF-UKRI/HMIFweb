@@ -12,23 +12,23 @@ class OrganizationController extends Controller
     public function index()
     {
         $currentPeriod = OrganizationPeriods::where('is_current', true)->first();
-        $members = collect();
+        $member = collect();
 
         if ($currentPeriod) {
-            $activeDepartments = Departemen::whereHas('members', function ($query) use ($currentPeriod) {
+            $activeDepartments = Departemen::whereHas('member', function ($query) use ($currentPeriod) {
                 $query->where('organization_periods_id', $currentPeriod->id);
             })->get();
 
             foreach ($activeDepartments as $department) {
-                $departmentMembers = $department->members()
+                $departmentMember = $department->member()
                     ->where('organization_periods_id', $currentPeriod->id)
                     ->orderBy('name')
                     ->get();
 
-                $members = $members->merge($departmentMembers);
+                $member = $member->merge($departmentMember);
             }
         }
 
-        return view('struktur-pengurus', compact('currentPeriod', 'members'));
+        return view('struktur-pengurus', compact('currentPeriod', 'member'));
     }
 }

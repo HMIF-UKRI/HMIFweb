@@ -9,13 +9,13 @@ class Gallery extends Model
     protected $table = 'galleries';
 
     protected $fillable = [
-        'events_id',
+        'event_id',
         'image_path',
         'caption',
     ];
 
-    public function event()
+    public function events()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'event_id');
     }
 }

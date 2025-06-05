@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\EventCategories;
+use App\Models\EventCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class EventCategoriesSeeder extends Seeder
+class EventCategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,7 +24,7 @@ class EventCategoriesSeeder extends Seeder
         ];
 
         foreach ($categories as $categoryName) {
-            EventCategories::firstOrCreate(
+            EventCategory::firstOrCreate(
                 ['slug' => Str::slug($categoryName)],
                 ['name' => $categoryName]
             );
