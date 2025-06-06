@@ -269,85 +269,27 @@
                     class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
                 >
                     <!-- Ketua -->
-                    <div
-                        class="transform overflow-hidden rounded-xl bg-white text-black shadow-lg transition hover:-translate-y-2"
-                    >
-                        <img
-                            src="/images/ketua.jpg"
-                            alt="Ketua"
-                            class="h-64 w-full object-contain"
-                        />
-                        <div class="p-4">
-                            <h3 class="mb-1 text-xl font-bold">Acong</h3>
-                            <p class="mb-2 font-semibold text-red-900">
-                                Ketua Himpunan
-                            </p>
-                            <p class="text-sm">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Duis sed dapibus leo.
-                            </p>
+                    @forelse ($members as $member)
+                        <div
+                            class="transform overflow-hidden rounded-xl bg-white text-black shadow-lg transition hover:-translate-y-2"
+                        >
+                            <img
+                                src="{{ asset("storage/" . $member->image) }}"
+                                alt="Ketua"
+                                class="h-64 w-full rounded-t-xl bg-cover object-cover"
+                            />
+                            <div class="p-4">
+                                <h3 class="mb-1 text-xl font-bold">
+                                    {{ $member->name }}
+                                </h3>
+                                <p class="mb-2 font-semibold text-red-900">
+                                    {{ $member->position }}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Wakil Ketua -->
-                    <div
-                        class="transform overflow-hidden rounded-xl bg-white text-black shadow-lg transition hover:-translate-y-2"
-                    >
-                        <img
-                            src="/images/wakil.jpg"
-                            alt="Wakil Ketua"
-                            class="h-64 w-full object-contain"
-                        />
-                        <div class="p-4">
-                            <h3 class="mb-1 text-xl font-bold">Ikhsan</h3>
-                            <p class="mb-2 font-semibold text-red-900">
-                                Wakil Ketua
-                            </p>
-                            <p class="text-sm">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Duis sed dapibus leo.
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Sekretaris -->
-                    <div
-                        class="transform overflow-hidden rounded-xl bg-white text-black shadow-lg transition hover:-translate-y-2"
-                    >
-                        <img
-                            src="/images/sekertaris.jpg"
-                            alt="Sekretaris"
-                            class="h-64 w-full object-contain"
-                        />
-                        <div class="p-4">
-                            <h3 class="mb-1 text-xl font-bold">Tania</h3>
-                            <p class="mb-2 font-semibold text-red-900">
-                                Sekretaris
-                            </p>
-                            <p class="text-sm">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Duis sed dapibus leo.
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Bendahara -->
-                    <div
-                        class="transform overflow-hidden rounded-xl bg-white text-black shadow-lg transition hover:-translate-y-2"
-                    >
-                        <img
-                            src="/images/bendahara.jpg"
-                            alt="Bendahara"
-                            class="h-64 w-full object-contain"
-                        />
-                        <div class="p-4">
-                            <h3 class="mb-1 text-xl font-bold">Simai</h3>
-                            <p class="mb-2 font-semibold text-red-900">
-                                Bendahara
-                            </p>
-                            <p class="text-sm">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Duis sed dapibus leo.
-                            </p>
-                        </div>
-                    </div>
+                    @empty
+                        
+                    @endforelse
                 </div>
                 <div class="mt-8 text-center">
                     <a
@@ -398,105 +340,38 @@
                 <div
                     class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
                 >
-                    <!-- Activity 1 -->
-                    <div
-                        class="border-opacity-10 overflow-hidden rounded-lg border border-black bg-white shadow-lg"
-                    >
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Activity 1"
-                            class="h-48 w-full object-cover"
-                        />
-                        <div class="p-6">
-                            <h3 class="mb-2 text-xl font-bold text-black">
-                                Seminar Nasional
-                            </h3>
-                            <p class="mb-4 text-black opacity-75">
-                                Seminar tahunan dengan menghadirkan pembicara
-                                dari berbagai bidang untuk memberikan wawasan
-                                dan inspirasi kepada mahasiswa.
-                            </p>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="rounded-full bg-red-900 px-3 py-1 text-sm text-white"
-                                >
-                                    Tahunan
-                                </span>
-                                <a
-                                    href="#"
-                                    class="font-semibold text-red-900 hover:underline"
-                                >
-                                    Detail →
-                                </a>
+                    @foreach ($events as $event)
+                        <div
+                            class="border-opacity-10 overflow-hidden rounded-lg border border-black bg-white shadow-lg"
+                        >
+                            <img
+                                src="{{ asset("storage/" . $event->thumbnail_path) }}"
+                                alt="{{ $event->title }}"
+                                class="h-48 w-full object-cover"
+                            />
+                            <div class="p-6">
+                                <h3 class="mb-2 text-xl font-bold text-black">
+                                    {{ $event->title }}
+                                </h3>
+                                <p class="mb-4 text-black opacity-75">
+                                    {{ $event->short_description }}
+                                </p>
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="rounded-full bg-red-900 px-3 py-1 text-sm text-white"
+                                    >
+                                        {{ $event->eventCategory->name }}
+                                    </span>
+                                    <a
+                                        href="{{ route("event.show", $event->id) }}"
+                                        class="font-semibold text-red-900 hover:underline"
+                                    >
+                                        Detail →
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Activity 2 -->
-                    <div
-                        class="border-opacity-10 overflow-hidden rounded-lg border border-black bg-white shadow-lg"
-                    >
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Activity 2"
-                            class="h-48 w-full object-cover"
-                        />
-                        <div class="p-6">
-                            <h3 class="mb-2 text-xl font-bold text-black">
-                                Workshop Keterampilan
-                            </h3>
-                            <p class="mb-4 text-black opacity-75">
-                                Seri workshop untuk meningkatkan keterampilan
-                                praktis dan soft skill mahasiswa sesuai
-                                kebutuhan dunia kerja.
-                            </p>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="rounded-full bg-red-900 px-3 py-1 text-sm text-white"
-                                >
-                                    Bulanan
-                                </span>
-                                <a
-                                    href="#"
-                                    class="font-semibold text-red-900 hover:underline"
-                                >
-                                    Detail →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Activity 3 -->
-                    <div
-                        class="border-opacity-10 overflow-hidden rounded-lg border border-black bg-white shadow-lg"
-                    >
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Activity 3"
-                            class="h-48 w-full object-cover"
-                        />
-                        <div class="p-6">
-                            <h3 class="mb-2 text-xl font-bold text-black">
-                                Bakti Sosial
-                            </h3>
-                            <p class="mb-4 text-black opacity-75">
-                                Kegiatan pengabdian kepada masyarakat dalam
-                                bentuk donasi, edukasi, dan bantuan sosial untuk
-                                komunitas sekitar.
-                            </p>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="rounded-full bg-red-900 px-3 py-1 text-sm text-white"
-                                >
-                                    Semester
-                                </span>
-                                <a
-                                    href="#"
-                                    class="font-semibold text-red-900 hover:underline"
-                                >
-                                    Detail →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
                 <div class="mt-8 text-center">
                     <a

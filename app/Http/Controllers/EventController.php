@@ -15,22 +15,22 @@ class EventController extends Controller
     {
         $events = Event::with("eventCategory")->latest()->get();
 
-        return view('kegiatan', compact('events'));
+        return view('page.event.index', compact('events'));
     }
 
     public function create()
     {
         $events = Event::with("eventCategory")->latest()->get();
-        $categories = EventCategory::orderBy('name')->get();
+        $eventCategories = EventCategory::orderBy('name')->get();
         $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('event.create', compact('events', 'categories', 'statuses'));
+        return view('page.event.create', compact('events', 'eventCategories', 'statuses'));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'string|max:255|unique:events,slug',
+            // 'slug' => 'string|max:255|unique:events,slug',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:250',
             'thumbnail_path' => 'required|file|mimes:jpeg,png,jpg|max:2048',
@@ -42,7 +42,7 @@ class EventController extends Controller
 
         $event = new Event();
         $event->title = $validatedData['title'];
-        $event->slug = $validatedData['slug'] ?: Str::slug($validatedData['title'] . '-' . time());
+        $event->slug = Str::slug($validatedData['title'] . '-' . time());
         $event->description = $validatedData['description'];
         $event->short_description = $validatedData['short_description'];
         $event->thumbnail_path = $validatedData['thumbnail_path'];
@@ -60,12 +60,7 @@ class EventController extends Controller
 
         $event->save();
 
-        return redirect()->route('event.create')->with('success', 'Kegiatan berhasil ditambahkan.');
-    }
-
-    public function show(Event $event)
-    {
-        return redirect()->route('event.edit', $event->id);
+        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil ditambahkan.');
     }
 
     public function edit(Event $event)
@@ -73,9 +68,9 @@ class EventController extends Controller
         if (!$event) {
             return redirect()->route('event.index')->with('error', 'Kegiatan tidak ditemukan.');
         }
-        $categories = EventCategory::orderBy('name')->get();
+        $eventCategories = EventCategory::orderBy('name')->get();
         $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('event.edit', compact('event', 'categories', 'statuses'));
+        return view('page.event.edit', compact('event', 'eventCategories', 'statuses'));
     }
 
     public function update(Request $request, Event $event)
@@ -87,7 +82,7 @@ class EventController extends Controller
                 'description' => 'required|string',
                 'short_description' => 'nullable|string|max:250',
                 'thumbnail_path' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
-                'event_date' => 'nullable|date',
+                'event_date' => 'required|date',
                 'location' => 'required|string|max:255',
                 'status' => 'required|in:berlangsung,rutin,selesai,dibatalkan',
                 'event_category_id' => 'required',
@@ -135,7 +130,7 @@ class EventController extends Controller
 
         $event->save();
 
-        return redirect()->route('event.create')->with('success', 'Kegiatan berhasil diperbarui.');
+        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil diperbarui.');
     }
 
     public function destroy(Event $event)

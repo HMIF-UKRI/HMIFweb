@@ -11,8 +11,8 @@ use App\Models\Event;
 use App\Models\Member;
 
 Route::get('/', function () {
-    $events = Event::latest()->take(3)->get();
-    $members = Member::latest()->take(3)->get();
+    $events = Event::latest()->take(4)->get();
+    $members = Member::latest()->take(4)->get();
     return view('home', compact('members', 'events'));
 });
 

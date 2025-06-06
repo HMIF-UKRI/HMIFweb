@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Departemen;
 use App\Models\Member;
+use App\Models\OrganizationPeriods;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -11,29 +13,42 @@ use Illuminate\Support\Str;
 class MemberController extends Controller
 {
 
+    public function index()
+    {
+        $members = Member::with(['organizationPeriod', 'department'])->get();
+        return view('page.member.index', compact('members'));
+    }
+
     public function create()
     {
         $member = Member::all();
-        return view('page.member.create', compact('member'));
+        $organizationPeriods = OrganizationPeriods::all();
+        $departments = Departemen::all();
+        return view('page.member.create', compact([
+            'member',
+            'organizationPeriods',
+            'departments'
+        ]));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:50',
-            'student_id_number' => 'required|string|max:20|unique:member,student_id_number',
+            'student_id_number' => 'required|string|max:20|unique:members',
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'position' => 'required|string|max:50',
-            'organization_periods_id' => 'required',
-            'departments_id' => 'required',
+            'organization_period_id' => 'required',
+            'department_id' => 'required',
         ]);
+
 
         $member = new Member();
         $member->name = $validatedData['name'];
         $member->student_id_number = $validatedData['student_id_number'];
         $member->position = $validatedData['position'];
-        $member->organization_periods_id = $validatedData['organization_periods_id'];
-        $member->departments_id = $validatedData['departments_id'];
+        $member->organization_period_id = $validatedData['organization_period_id'];
+        $member->department_id = $validatedData['department_id'];
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -47,7 +62,7 @@ class MemberController extends Controller
         try {
             $member->save();
 
-            return redirect()->route('member.index')->with('success', 'Data pengurus berhasil ditambahkan!');
+            return redirect()->route('organization.index')->with('success', 'Data pengurus berhasil ditambahkan!');
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -58,14 +73,20 @@ class MemberController extends Controller
 
     public function edit(Member $member)
     {
-        return view('member.edit', compact('member'));
+        $organizationPeriods = OrganizationPeriods::all();
+        $departments = Departemen::all();
+        return view('page.member.edit', compact([
+            'member',
+            'organizationPeriods',
+            'departments'
+        ]));
     }
 
     public function update(Request $request, Member $member)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:50',
-            'student_id_number' => 'required|string|max:20|unique:member,student_id_number,' . $member->id,
+            'student_id_number' => 'required|string|max:20|unique:members,student_id_number,' . $member->id,
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -85,11 +106,7 @@ class MemberController extends Controller
 
         $member->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data pengurus berhasil diperbarui!',
-            'data' => $member,
-        ]);
+        return redirect()->route('member.index')->with('success', 'Data pengurus berhasil diperbarui!');
     }
 
     public function destroy(Member $member)
@@ -100,9 +117,6 @@ class MemberController extends Controller
 
         $member->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data pengurus berhasil dihapus!',
-        ]);
+        return redirect()->route('member.index')->with('success', 'Data pengurus berhasil dihapus!');
     }
 }
