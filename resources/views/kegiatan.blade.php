@@ -172,236 +172,42 @@
                         <div
                             class="grid grid-cols-2 place-content-center gap-3"
                         >
-                            {{--
-                                @foreach ($events as $event)
+                            @foreach ($events as $event)
                                 <a
-                                href="#"
-                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
+                                    href="#"
+                                    class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
                                 >
-                                <img
-                                alt=""
-                                src="{{ asset($event->thumbnail_path) }}"
-                                class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
-                                />
-                                
-                                <div class="relative p-4 sm:p-6 lg:p-8">
-                                <p
-                                class="text-sm font-medium tracking-widest text-amber-500/50 uppercase"
-                                >
-                                {{ $event->eventCategory->name }}
-                                </p>
-                                
-                                <p
-                                class="text-xl font-bold text-white sm:text-2xl"
-                                >
-                                {{ $event->title }}
-                                </p>
-                                
-                                <div class="mt-32 sm:mt-48 lg:mt-64">
-                                <div
-                                class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
-                                >
-                                <p class="text-sm text-white">
-                                {{ $event->description }}
-                                </p>
-                                </div>
-                                </div>
-                                </div>
+                                    <img
+                                        alt=""
+                                        src="{{ asset("storage/" . $event->thumbnail_path) }}"
+                                        class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
+                                    />
+
+                                    <div class="relative p-4 sm:p-6 lg:p-8">
+                                        <p
+                                            class="text-sm font-medium tracking-widest text-amber-500/50 uppercase"
+                                        >
+                                            {{ $event->eventCategory->name }}
+                                        </p>
+
+                                        <p
+                                            class="text-xl font-bold text-white sm:text-2xl"
+                                        >
+                                            {{ $event->title }}
+                                        </p>
+
+                                        <div class="mt-32 sm:mt-48 lg:mt-64">
+                                            <div
+                                                class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
+                                            >
+                                                <p class="text-sm text-white">
+                                                    {{ \Illuminate\Support\Str::words($event->description, 30, "...") }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </a>
-                                @endforeach
-                            --}}
-                            <a
-                                href="#"
-                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
-                            >
-                                <img
-                                    alt=""
-                                    src="{{ asset("images/kegiatan/coc.JPG") }}"
-                                    class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
-                                />
-
-                                <div class="relative p-4 sm:p-6 lg:p-8">
-                                    <p
-                                        class="text-sm font-medium tracking-widest text-pink-500 uppercase"
-                                    >
-                                        Sosial
-                                    </p>
-
-                                    <p
-                                        class="text-xl font-bold text-white sm:text-2xl"
-                                    >
-                                        Click On Code
-                                    </p>
-
-                                    <div class="mt-32 sm:mt-48 lg:mt-64">
-                                        <div
-                                            class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
-                                        >
-                                            <p class="text-sm text-white">
-                                                Click On Code adalah Lorem ipsum
-                                                dolor sit amet consectetur
-                                                adipisicing elit. Ratione facere
-                                                aspernatur quo, eveniet deleniti
-                                                incidunt!
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a
-                                href="#"
-                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
-                            >
-                                <img
-                                    alt=""
-                                    src="{{ asset("images/kegiatan/diskusi publik.jpg") }}"
-                                    class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
-                                />
-
-                                <div class="relative p-4 sm:p-6 lg:p-8">
-                                    <p
-                                        class="text-sm font-medium tracking-widest text-pink-500 uppercase"
-                                    >
-                                        Sosial
-                                    </p>
-
-                                    <p
-                                        class="text-xl font-bold text-white sm:text-2xl"
-                                    >
-                                        Diskusi Publik
-                                    </p>
-
-                                    <div class="mt-32 sm:mt-48 lg:mt-64">
-                                        <div
-                                            class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
-                                        >
-                                            <p class="text-sm text-white">
-                                                Diskusi Publik adalah Lorem
-                                                ipsum dolor sit amet consectetur
-                                                adipisicing elit. Sequi
-                                                consectetur quae officiis nobis,
-                                                aut similique?
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a
-                                href="#"
-                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
-                            >
-                                <img
-                                    alt=""
-                                    src="{{ asset("images/kegiatan/sotr.JPG") }}"
-                                    class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
-                                />
-
-                                <div class="relative p-4 sm:p-6 lg:p-8">
-                                    <p
-                                        class="text-sm font-medium tracking-widest text-pink-500 uppercase"
-                                    >
-                                        Sosial
-                                    </p>
-
-                                    <p
-                                        class="text-xl font-bold text-white sm:text-2xl"
-                                    >
-                                        SOTR (Sahur On The Road)
-                                    </p>
-
-                                    <div class="mt-32 sm:mt-48 lg:mt-64">
-                                        <div
-                                            class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
-                                        >
-                                            <p class="text-sm text-white">
-                                                SOTR (Sahur On The Road) adalah
-                                                Lorem ipsum dolor sit amet
-                                                consectetur adipisicing elit.
-                                                Sequi consectetur quae officiis
-                                                nobis, aut similique?
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a
-                                href="#"
-                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
-                            >
-                                <img
-                                    alt=""
-                                    src="https://images.unsplash.com/photo-1603871165848-0aa92c869fa1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=772&q=80"
-                                    class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
-                                />
-
-                                <div class="relative p-4 sm:p-6 lg:p-8">
-                                    <p
-                                        class="text-sm font-medium tracking-widest text-pink-500 uppercase"
-                                    >
-                                        kategori
-                                    </p>
-
-                                    <p
-                                        class="text-xl font-bold text-white sm:text-2xl"
-                                    >
-                                        Nama Kegiatan
-                                    </p>
-
-                                    <div class="mt-32 sm:mt-48 lg:mt-64">
-                                        <div
-                                            class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
-                                        >
-                                            <p class="text-sm text-white">
-                                                Lorem ipsum dolor, sit amet
-                                                consectetur adipisicing elit.
-                                                Omnis perferendis hic asperiores
-                                                quibusdam quidem voluptates
-                                                doloremque reiciendis nostrum
-                                                harum. Repudiandae?
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <a
-                                href="#"
-                                class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
-                            >
-                                <img
-                                    alt=""
-                                    src="https://images.unsplash.com/photo-1603871165848-0aa92c869fa1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=772&q=80"
-                                    class="absolute inset-0 h-full w-full rounded-tr-4xl rounded-bl-4xl object-cover opacity-75 transition-opacity group-hover:opacity-50"
-                                />
-
-                                <div class="relative p-4 sm:p-6 lg:p-8">
-                                    <p
-                                        class="text-sm font-medium tracking-widest text-pink-500 uppercase"
-                                    >
-                                        kategori
-                                    </p>
-
-                                    <p
-                                        class="text-xl font-bold text-white sm:text-2xl"
-                                    >
-                                        Nama Kegiatan
-                                    </p>
-
-                                    <div class="mt-32 sm:mt-48 lg:mt-64">
-                                        <div
-                                            class="translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100"
-                                        >
-                                            <p class="text-sm text-white">
-                                                Lorem ipsum dolor, sit amet
-                                                consectetur adipisicing elit.
-                                                Omnis perferendis hic asperiores
-                                                quibusdam quidem voluptates
-                                                doloremque reiciendis nostrum
-                                                harum. Repudiandae?
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
+                            @endforeach
                         </div>
                         <div class="mt-8 text-center">
                             <button
@@ -441,7 +247,5 @@
             </div>
         </section>
         <!-- ====== Blog Section End -->
-
-        {{--  --}}
     </div>
 @endsection

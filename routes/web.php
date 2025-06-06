@@ -20,9 +20,10 @@ Route::get('/', function () {
 Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name('organization.index');
 
 // Kegiatan
-Route::get('/kegiatan', [EventController::class, 'index'])->name('event.index');
-Route::get('/kegiatan/{slug}', [EventController::class, 'show'])->name('event.show');
-
+Route::get('/kegiatan', function () {
+    $events = Event::latest()->get();
+    return view("kegiatan", compact(['events']));
+});
 
 Route::resource('event', EventController::class);
 Route::resource('member', MemberController::class);
