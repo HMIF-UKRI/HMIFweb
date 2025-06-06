@@ -10,11 +10,6 @@ use Illuminate\Support\Str;
 
 class MemberController extends Controller
 {
-    public function index()
-    {
-        $member = Member::all();
-        return view('struktur-pengurus', compact('member'));
-    }
 
     public function create()
     {

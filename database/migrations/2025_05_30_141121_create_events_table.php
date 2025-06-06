@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('thumbnail_path')->nullable();
             $table->dateTime('event_date');
             $table->string('location')->nullable();
-            $table->enum('status', ['upcoming', 'routine', 'completed', 'cancelled'])->default('upcoming');
+            $table->enum('status', ['berlangsung', 'rutin', 'selesai', 'dibatalkan'])->default('berlangsung');
             $table->foreignId('event_category_id')->nullable()->constrained('event_categories')->nullOnDelete();
             $table->timestamps();
         });

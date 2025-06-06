@@ -9,13 +9,14 @@ class Event extends Model
     protected $table = 'events';
 
     protected $fillable = [
-        'name',
+        'title',
         'slug',
         'description',
-        'start_date',
-        'end_date',
+        'short_description',
+        'thumbnail_path',
+        'event_date',
         'location',
-        'image',
+        'status',
         'event_category_id',
     ];
 

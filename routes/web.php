@@ -7,9 +7,13 @@ use App\Http\Controllers\EventnController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayersController;
+use App\Models\Event;
+use App\Models\Member;
 
 Route::get('/', function () {
-    return view('home');
+    $events = Event::latest()->take(3)->get();
+    $members = Member::latest()->take(3)->get();
+    return view('home', compact('members', 'events'));
 });
 
 // Struktur Pengurus

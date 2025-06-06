@@ -13,7 +13,7 @@ class DepartemenSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('departemens')->insert([
+        DB::table('departments')->insert([
             ['name' => 'Ring 1'],
             ['name' => 'Riset dan Teknologi'],
             ['name' => 'Pengembangan Sumber Daya Manusia'],
