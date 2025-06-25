@@ -1,39 +1,20 @@
-<footer class="bg-white lg:grid lg:grid-cols-5">
-    <div class="relative hidden h-32 lg:col-span-2 lg:block lg:h-full">
-        <img
-            src="{{ asset("images/banner2.png") }}"
-            alt=""
-            class="absolute inset-0 h-full w-full object-cover"
-        />
-    </div>
+<footer class="bg-white">
+    <div class="container mx-auto flex">
+        <div
+            class="hidden h-fit w-[40%] lg:block lg:overflow-hidden lg:rounded-lg"
+        >
+            <img
+                src="{{ asset("images/banner2.png") }}"
+                alt=""
+                class="-mt-32 h-full w-full object-cover lg:rounded-lg lg:shadow-lg"
+            />
+        </div>
 
-    <div class="px-4 py-16 sm:px-6 lg:col-span-3 lg:px-8">
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
-            <div>
+        <div class="w-[60%] px-4 py-16 sm:px-6 lg:px-8">
+            <div class="flex flex-col">
                 <h1 class="text-secondary text-3xl font-bold">Kontak Kami</h1>
 
-                <ul class="mt-8 space-y-1 text-sm text-gray-700">
-                    <li class="flex gap-2">
-                        <span
-                            class="flex h-6 w-6 items-center justify-center rounded-full"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#020202"
-                            >
-                                <path
-                                    d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"
-                                />
-                            </svg>
-                        </span>
-                        <p>
-                            Jl. Terusan Halimun No.37, Lkr. Sel., Kec. Lengkong,
-                            Kota Bandung.
-                        </p>
-                    </li>
+                <ul class="mt-8 space-y-3 text-sm text-gray-700">
                     <li class="flex gap-2">
                         <span
                             class="flex h-6 w-6 items-center justify-center rounded-full"
@@ -95,96 +76,38 @@
                         </span>
                         <p>Teguh (Humas) | +62 812-2470-6965</p>
                     </li>
+                    <li class="flex gap-2">
+                        <span
+                            class="flex h-6 w-6 items-center justify-center rounded-full"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24px"
+                                viewBox="0 -960 960 960"
+                                width="24px"
+                                fill="#020202"
+                            >
+                                <path
+                                    d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"
+                                />
+                            </svg>
+                        </span>
+                        <p>
+                            Jl. Terusan Halimun No.37, Lkr. Sel., Kec. Lengkong,
+                            Kota Bandung.
+                        </p>
+                    </li>
                 </ul>
-            </div>
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                    <p class="font-medium text-gray-900">Services</p>
-
-                    <ul class="mt-6 space-y-4 text-sm">
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                1on1 Coaching
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                Company Review
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                Accounts Review
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                HR Consulting
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                SEO Optimisation
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <p class="font-medium text-gray-900">Company</p>
-
-                    <ul class="mt-6 space-y-4 text-sm">
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                About
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                Meet the Team
-                            </a>
-                        </li>
-
-                        <li>
-                            <a
-                                href="#"
-                                class="text-gray-700 transition hover:opacity-75"
-                            >
-                                Accounts Review
-                            </a>
-                        </li>
-                    </ul>
+                <div class="h-64 w-full pt-4">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.6937903450957!2d107.62378407441996!3d-6.927157667803136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e7d5e53848db%3A0x255016168039280a!2sUniversitas%20Kebangsaan%20Republik%20Indonesia!5e0!3m2!1sid!2sid!4v1750674671119!5m2!1sid!2sid"
+                        class="h-full w-full rounded-lg border-0"
+                        loading="lazy"
+                    />
                 </div>
             </div>
         </div>
-
         <div class="mt-12 border-t border-gray-100 pt-12">
             <div class="sm:flex sm:items-center sm:justify-between">
                 <ul class="flex flex-wrap gap-4 text-xs">

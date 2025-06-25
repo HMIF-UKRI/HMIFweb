@@ -1,5 +1,18 @@
 @extends("layouts.app")
 
+@section("meta")
+    @include(
+        "components._meta",
+        [
+            "title" => "HMIF UKRI - Home",
+            "description" =>
+                "Selamat datang di website resmi Himpunan Mahasiswa Teknik Informatika UKRI. Temukan informasi terbaru tentang kegiatan, pengurus, dan visi misi kami.",
+            "keywords" => "hmif,ukri,himatif,hima,informatika,teknik informatika",
+            "url" => url()->current(),
+        ]
+    )
+@endsection
+
 @section("content")
     <div class="bg-white">
         <!-- Hero Section -->
@@ -271,12 +284,12 @@
                     <!-- Ketua -->
                     @forelse ($members as $member)
                         <div
-                            class="transform overflow-hidden rounded-xl bg-white text-black shadow-lg transition hover:-translate-y-2"
+                            class="transform overflow-hidden rounded-xl bg-white text-black shadow-xl shadow-red-600 transition hover:-translate-y-2"
                         >
                             <img
                                 src="{{ asset("storage/" . $member->image) }}"
                                 alt="Ketua"
-                                class="h-64 w-full rounded-t-xl bg-cover object-cover"
+                                class="h-64 w-full rounded-t-xl bg-cover bg-center object-cover"
                             />
                             <div class="p-4">
                                 <h3 class="mb-1 text-xl font-bold">
@@ -347,7 +360,7 @@
                             <img
                                 src="{{ asset("storage/" . $event->thumbnail_path) }}"
                                 alt="{{ $event->title }}"
-                                class="h-48 w-full object-cover"
+                                class="h-48 w-full bg-cover bg-center object-cover"
                             />
                             <div class="p-6">
                                 <h3 class="mb-2 text-xl font-bold text-black">
@@ -363,7 +376,7 @@
                                         {{ $event->eventCategory->name }}
                                     </span>
                                     <a
-                                        href="{{ route("event.show", $event->id) }}"
+                                        href="{{ route("event.show", $event->slug) }}"
                                         class="font-semibold text-red-900 hover:underline"
                                     >
                                         Detail →
@@ -410,221 +423,110 @@
             </div>
         </section>
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="bg-black py-16 text-white">
+        <!-- Gallery Section (COOMING SOON) -->
+        {{--
+            <section id="gallery" class="bg-black py-16 text-white">
             <div class="container mx-auto px-4">
-                <div class="mb-12 text-center">
-                    <h2 class="mb-2 text-3xl font-bold">Galeri Kegiatan</h2>
-                    <div class="mx-auto h-1 w-24 bg-red-900"></div>
-                </div>
-                <div
-                    class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
-                >
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 1"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 2"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 3"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 4"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 5"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 6"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 7"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                    <div class="overflow-hidden rounded-lg">
-                        <img
-                            src="/api/placeholder/400/320"
-                            alt="Gallery 8"
-                            class="h-48 w-full transform object-cover transition hover:scale-110"
-                        />
-                    </div>
-                </div>
-                <div class="mt-8 text-center">
-                    <a
-                        class="group relative inline-flex items-center overflow-hidden rounded-lg border-2 border-current px-8 py-3 text-red-500 transition-colors duration-300 hover:text-white focus:ring-3 focus:outline-none"
-                        href="/struktur-pengurus"
-                    >
-                        <span
-                            class="absolute top-0 left-0 z-0 h-full w-0 bg-red-900 transition-all duration-300 group-hover:w-full"
-                        ></span>
-                        <span
-                            class="absolute -end-full transition-all group-hover:end-4"
-                        >
-                            <svg
-                                class="size-5 shadow-sm rtl:rotate-180"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                />
-                            </svg>
-                        </span>
-
-                        <span
-                            class="z-10 text-sm font-medium transition-all group-hover:me-4"
-                        >
-                            Lihat Semua Galeri
-                        </span>
-                    </a>
-                </div>
+            <div class="mb-12 text-center">
+            <h2 class="mb-2 text-3xl font-bold">Galeri Kegiatan</h2>
+            <div class="mx-auto h-1 w-24 bg-red-900"></div>
             </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="bg-white py-16">
-            <div class="container mx-auto px-4">
-                <div class="mb-12 text-center">
-                    <h2 class="mb-2 text-3xl font-bold text-black">
-                        Hubungi Kami
-                    </h2>
-                    <div class="mx-auto h-1 w-24 bg-red-900"></div>
-                </div>
-                <div class="flex flex-col gap-8 md:flex-row">
-                    <div class="rounded-lg bg-white p-6 shadow-lg md:w-1/2">
-                        <h3 class="mb-4 text-2xl font-bold text-black">
-                            Kirim Pesan
-                        </h3>
-                        <form>
-                            <div class="mb-4">
-                                <label
-                                    for="name"
-                                    class="mb-2 block font-medium text-black"
-                                >
-                                    Nama Lengkap
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-900 focus:outline-none"
-                                />
-                            </div>
-                            <div class="mb-4">
-                                <label
-                                    for="email"
-                                    class="mb-2 block font-medium text-black"
-                                >
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-900 focus:outline-none"
-                                />
-                            </div>
-                            <div class="mb-4">
-                                <label
-                                    for="subject"
-                                    class="mb-2 block font-medium text-black"
-                                >
-                                    Subjek
-                                </label>
-                                <input
-                                    type="text"
-                                    id="subject"
-                                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-900 focus:outline-none"
-                                />
-                            </div>
-                            <div class="mb-4">
-                                <label
-                                    for="message"
-                                    class="mb-2 block font-medium text-black"
-                                >
-                                    Pesan
-                                </label>
-                                <textarea
-                                    id="message"
-                                    rows="5"
-                                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-900 focus:outline-none"
-                                ></textarea>
-                            </div>
-                            <button
-                                type="submit"
-                                class="hover:bg-opacity-90 w-full rounded-lg bg-red-900 px-6 py-3 font-bold text-white transition"
-                            >
-                                Kirim Pesan
-                            </button>
-                        </form>
-                    </div>
-                    <div class="rounded-lg bg-white p-6 shadow-lg md:w-1/2">
-                        <h3 class="mb-4 text-2xl font-bold text-black">
-                            Informasi Kontak
-                        </h3>
-                        <div class="mb-4">
-                            <h4 class="mb-1 font-bold text-black">Alamat</h4>
-                            <p class="text-black opacity-75">
-                                Jl. Contoh No. 123, Kota, Provinsi, Indonesia
-                            </p>
-                        </div>
-                        <div class="mb-4">
-                            <h4 class="mb-1 font-bold text-black">Email</h4>
-                            <p class="text-black opacity-75">
-                                info@himpunanmahasiswa.ac.id
-                            </p>
-                        </div>
-                        <div class="mb-4">
-                            <h4 class="mb-1 font-bold text-black">Telepon</h4>
-                            <p class="text-black opacity-75">
-                                +62 123 4567 890
-                            </p>
-                        </div>
-                        <div class="mt-6">
-                            <h4 class="mb-2 font-bold text-black">Lokasi</h4>
-                            <div class="h-64 w-full rounded-lg bg-gray-200">
-                                <!-- Map placeholder -->
-                                <div
-                                    class="flex h-full w-full items-center justify-center bg-gray-300 text-gray-500"
-                                >
-                                    Map Placeholder
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div
+            class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
+            >
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 1"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
             </div>
-        </section>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 2"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 3"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 4"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 5"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 6"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 7"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            <div class="overflow-hidden rounded-lg">
+            <img
+            src="/api/placeholder/400/320"
+            alt="Gallery 8"
+            class="h-48 w-full transform object-cover transition hover:scale-110"
+            />
+            </div>
+            </div>
+            <div class="mt-8 text-center">
+            <a
+            class="group relative inline-flex items-center overflow-hidden rounded-lg border-2 border-current px-8 py-3 text-red-500 transition-colors duration-300 hover:text-white focus:ring-3 focus:outline-none"
+            href="/struktur-pengurus"
+            >
+            <span
+            class="absolute top-0 left-0 z-0 h-full w-0 bg-red-900 transition-all duration-300 group-hover:w-full"
+            ></span>
+            <span
+            class="absolute -end-full transition-all group-hover:end-4"
+            >
+            <svg
+            class="size-5 shadow-sm rtl:rotate-180"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            >
+            <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+            />
+            </svg>
+            </span>
+            
+            <span
+            class="z-10 text-sm font-medium transition-all group-hover:me-4"
+            >
+            Lihat Semua Galeri
+            </span>
+            </a>
+            </div>
+            </div>
+            </section>
+        --}}
     </div>
 @endsection

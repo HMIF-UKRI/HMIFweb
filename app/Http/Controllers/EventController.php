@@ -18,6 +18,17 @@ class EventController extends Controller
         return view('page.event.index', compact('events'));
     }
 
+    public function show($slug)
+    {
+        $event = Event::with('eventCategory')->where('slug', $slug)->first();
+
+        if (!$event) {
+            return redirect()->route('event.index')->with('error', 'Kegiatan tidak ditemukan.');
+        }
+
+        return view('page.event.show', compact('event'));
+    }
+
     public function create()
     {
         $events = Event::with("eventCategory")->latest()->get();

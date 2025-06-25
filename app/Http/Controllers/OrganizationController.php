@@ -29,7 +29,7 @@ class OrganizationController extends Controller
             }
         }
 
-        return view('struktur-pengurus', [
+        return view('page.struktur-pengurus', [
             'members' => $members,
             'currentPeriod' => $currentPeriod,
             'departments' => $activeDepartments ?? collect(),

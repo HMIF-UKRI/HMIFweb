@@ -13,7 +13,7 @@ use App\Models\Member;
 Route::get('/', function () {
     $events = Event::latest()->take(4)->get();
     $members = Member::latest()->take(4)->get();
-    return view('home', compact('members', 'events'));
+    return view('page.home', compact('members', 'events'));
 });
 
 // Struktur Pengurus
@@ -22,7 +22,7 @@ Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name
 // Kegiatan
 Route::get('/kegiatan', function () {
     $events = Event::latest()->get();
-    return view("kegiatan", compact(['events']));
+    return view("page.kegiatan", compact(['events']));
 });
 
 Route::resource('event', EventController::class);

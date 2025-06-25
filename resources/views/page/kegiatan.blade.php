@@ -174,7 +174,7 @@
                         >
                             @foreach ($events as $event)
                                 <a
-                                    href="#"
+                                    href="{{ route("event.show", $event->slug) }}"
                                     class="group relative block rounded-tr-4xl rounded-bl-4xl bg-black"
                                 >
                                     <img
