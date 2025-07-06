@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            {{-- Right Column: Event Details Card & Call to Action --}}
+            {{-- Right Column: Event Details Card & Related Events --}}
             <div class="flex flex-col gap-8 lg:col-span-1">
                 <!-- Event Details Card -->
                 <div
@@ -211,7 +211,7 @@
                     </div>
                 </div>
 
-                {{-- Related Events Section (New) --}}
+                {{-- Related Events Section --}}
                 <div
                     class="shadow-custom-lg rounded-xl border border-gray-100 bg-white p-6 drop-shadow-xl drop-shadow-red-600"
                 >
@@ -221,24 +221,16 @@
                         Kegiatan Terkait
                     </h2>
                     <div class="space-y-4">
-                        {{-- Contoh data dummy untuk kegiatan terkait. Ganti dengan looping data asli --}}
-                        @php
-                            $relatedEvents = [
-                                (object) ["title" => "Webinar Desain UI/UX", "slug" => "webinar-desain-ui-ux", "thumbnail" => "https://placehold.co/300x150/ff0000/ffffff?text=UI/UX", "date" => "10 November 2025"],
-                                (object) ["title" => "Kompetisi Pemrograman", "slug" => "kompetisi-pemrograman", "thumbnail" => "https://placehold.co/300x150/000000/ffffff?text=Coding", "date" => "5 Desember 2025"],
-                                (object) ["title" => "HMIF Gathering", "slug" => "hmif-gathering", "thumbnail" => "https://placehold.co/300x150/dc2626/ffffff?text=Gathering", "date" => "20 Januari 2026"],
-                            ];
-                        @endphp
-
-                        @foreach ($relatedEvents as $relatedEvent)
+                        @forelse ($relatedEvents as $relatedEvent)
                             <a
-                                href="{{ url("/events/" . $relatedEvent->slug) }}"
+                                href="{{ route("event.show", $relatedEvent->slug) }}"
                                 class="group flex items-center space-x-4 rounded-lg p-3 transition duration-200 hover:bg-gray-50"
                             >
                                 <img
-                                    src="{{ $relatedEvent->thumbnail }}"
+                                    src="{{ asset("storage/" . $relatedEvent->thumbnail_path) }}"
                                     alt="{{ $relatedEvent->title }}"
                                     class="h-16 w-16 flex-shrink-0 rounded-md object-cover group-hover:shadow-md"
+                                    onerror="this.onerror=null; this.src='https://placehold.co/120x80/cccccc/333333?text=No+Image';"
                                 />
                                 <div>
                                     <h3
@@ -247,11 +239,15 @@
                                         {{ $relatedEvent->title }}
                                     </h3>
                                     <p class="text-sm text-gray-500">
-                                        {{ $relatedEvent->date }}
+                                        {{ \Carbon\Carbon::parse($relatedEvent->event_date)->translatedFormat("d F Y") }}
                                     </p>
                                 </div>
                             </a>
-                        @endforeach
+                        @empty
+                            <p class="text-center text-sm text-gray-500">
+                                Tidak ada kegiatan terkait lainnya.
+                            </p>
+                        @endforelse
                     </div>
                 </div>
             </div>
