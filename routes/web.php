@@ -1,17 +1,15 @@
 <?php
 
-use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\EventnController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PlayersController;
 use App\Models\Event;
+use App\Models\EventCategory;
 use App\Models\Member;
 
 Route::get('/', function () {
-    $events = Event::latest()->take(4)->get();
+    $events = Event::latest()->take(3)->get();
     $members = Member::latest()->take(4)->get();
     return view('page.home', compact('members', 'events'));
 });
@@ -21,8 +19,12 @@ Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name
 
 // Kegiatan
 Route::get('/kegiatan', function () {
-    $events = Event::latest()->get();
-    return view("page.kegiatan", compact(['events']));
+    $events = Event::with('eventCategory')->get();
+    $statusEvent = Event::where('status')->get();
+
+    $eventCategories = EventCategory::all();
+
+    return view('page.kegiatan', compact('events', 'eventCategories', 'statusEvent'));
 });
 
 Route::resource('event', EventController::class);

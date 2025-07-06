@@ -20,13 +20,15 @@ class EventController extends Controller
 
     public function show($slug)
     {
-        $event = Event::with('eventCategory')->where('slug', $slug)->first();
+        $event = Event::where('slug', $slug)->firstOrFail();
 
-        if (!$event) {
-            return redirect()->route('event.index')->with('error', 'Kegiatan tidak ditemukan.');
-        }
+        $relatedEvents = Event::where('id', '!=', $event->id)
+            ->inRandomOrder()
+            ->limit(3)
+            ->with('eventCategory')
+            ->get();
 
-        return view('page.event.show', compact('event'));
+        return view('page.event.show', compact('event', 'relatedEvents'));
     }
 
     public function create()
