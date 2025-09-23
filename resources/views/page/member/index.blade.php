@@ -1,7 +1,7 @@
 @extends("layouts.app")
 
 @section("content")
-    <section class="text-secondary bg-white pt-20">
+    <section class="text-dark bg-white pt-20">
         <div class="container mx-auto p-4">
             <div class="overflow-x-auto">
                 <div class="mb-6 flex items-center justify-between">

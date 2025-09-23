@@ -1,3 +1,9 @@
+/*
+|--------------------------------------------------------------------------
+| Konfigurasi Tailwind CSS
+|--------------------------------------------------------------------------
+*/
+
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -5,13 +11,19 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@plugin "flyonui";
+@import "flyonui/variants.css";
+@source "../../node_modules/flyonui/flyonui.js";
+
 @theme {
     --font-sans:
         "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
+    --font-jkt-sans: "Plus Jakarta Sans", sans-serif;
+    --font-poppins: "Poppins", sans-serif;
     --color-primary: #f6f1f1;
-    --color-secondary: #020202;
+    --color-dark: #020202;
 }
 
 @keyframes loop-scroll {
@@ -22,6 +34,109 @@
         transform: translateX(-50%);
     }
 }
+
+/* --- Poppins --- */
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Thin.ttf") format("truetype");
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-ThinItalic.ttf") format("truetype");
+    font-weight: 100;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-ExtraLight.ttf") format("truetype");
+    font-weight: 200;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-ExtraLightItalic.ttf") format("truetype");
+    font-weight: 200;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-LightItalic.ttf") format("truetype");
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Regular.ttf") format("truetype");
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Bold.ttf") format("truetype");
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-BoldItalic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("/public/fonts/Poppins-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-style: normal;
+}
+
+/* --- Plus Jakarta Sans (Variable Font) --- */
+@font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/public/fonts/PlusJakartaSans-VariableFont_wght.ttf")
+        format("truetype-variations");
+    font-weight: 200 800; /* Rentang weight dari 200 hingga 800 */
+    font-style: normal;
+}
+@font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/public/fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf")
+        format("truetype-variations");
+    font-weight: 200 800;
+    font-style: italic;
+}
+
 .animate-loop-scroll {
     animation: loop-scroll 20s linear infinite;
 }

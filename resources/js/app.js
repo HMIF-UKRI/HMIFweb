@@ -1,6 +1,11 @@
 import "./bootstrap";
+import "flyonui/flyonui";
+import Alpine from "alpinejs";
 
-document.addEventListener("DOMContentLoaded", function () {
+window.Alpine = Alpine;
+Alpine.start();
+
+document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("menu-toggle");
     const menu = document.getElementById("mobile-menu");
 

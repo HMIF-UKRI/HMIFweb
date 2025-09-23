@@ -22,14 +22,16 @@
         >
             <div class="container mx-auto px-4">
                 <div class="flex flex-col items-center md:flex-row">
-                    <div class="mb-8 md:mb-0 md:w-1/2">
-                        <h1 class="mb-4 text-4xl font-bold md:text-6xl">
+                    <div class="font-jkt-sans mb-8 md:mb-0 md:w-1/2">
+                        <h1
+                            class="mb-4 text-4xl font-bold tracking-wider lg:text-5xl xl:text-6xl"
+                        >
                             Himpunan Mahasiswa Teknik Informatika
                         </h1>
-                        <p class="mb-8 text-lg md:text-xl">
-                            Mewujudkan mahasiswa yang aktif, kreatif, dan
-                            inovatif dalam mengembangkan potensi diri dan
-                            memberikan kontribusi untuk masyarakat.
+                        <p class="mb-8 text-lg font-light">
+                            Membangun ilmu keorganisasian yaitu, membangun jiwa
+                            korsa, mentalitas, dan mengembangkan keahlian
+                            lainnya dalam ruang lingkup Teknik Informatika.
                         </p>
                     </div>
                     <div class="flex justify-center md:w-1/2">
@@ -72,7 +74,7 @@
                     <h2 class="mb-2 text-3xl font-bold text-white">
                         Tentang Kita
                     </h2>
-                    <div class="mx-auto h-1 w-24 bg-red-900"></div>
+                    <div class="mx-auto h-1 w-24 rounded-full bg-red-900"></div>
                 </div>
                 <div
                     class="flex flex-col items-center md:flex-row md:items-start"
@@ -92,7 +94,7 @@
                                     class="hidden sm:block sm:h-px sm:w-8 sm:bg-yellow-500"
                                 ></span>
                                 <p class="mt-0.5 opacity-50 sm:mt-0">
-                                    Kabinet DIGISWARA
+                                    Kabinet METAFORSA
                                 </p>
                             </div>
                         </a>
@@ -103,7 +105,7 @@
                                 Sejarah Kami
                             </h3>
                             <p class="leading-relaxed text-gray-300">
-                                Himpunan Mahasiswa didirikan pada tahun 20XX
+                                Himpunan Mahasiswa didirikan pada tahun 1986
                                 dengan tujuan menjadi wadah bagi mahasiswa untuk
                                 mengembangkan potensi, minat, dan bakat dalam
                                 berbagai bidang.
@@ -114,9 +116,10 @@
                                 Visi
                             </h3>
                             <p class="leading-relaxed text-gray-300">
-                                Menjadi organisasi kemahasiswaan yang unggul,
-                                profesional, dan berkontribusi nyata bagi
-                                kemajuan mahasiswa dan masyarakat.
+                                Mewujudkan HMIF sebagai ruang kolaborasi yang
+                                mengintegrasikan ke informatikaan dengan
+                                dinamika keorganisasian guna membangun ekosistem
+                                intelektual yang transformatif dan inovatif.
                             </p>
                         </div>
                         <div>
@@ -156,8 +159,10 @@
                                             </defs>
                                         </svg>
                                     </span>
-                                    Mengembangkan potensi akademik dan
-                                    non-akademik mahasiswa
+                                    Membangun Kerja sama diberbagai Lembaga
+                                    terkhususnya diranah informatika untuk
+                                    memperkuat peran HMIF sebagai wadah
+                                    pengembangan akademik dan softskill.
                                 </li>
                                 <li class="flex text-base">
                                     <span class="mt-0.5 mr-2.5 text-red-500">
@@ -191,8 +196,10 @@
                                             </defs>
                                         </svg>
                                     </span>
-                                    Membangun karakter kepemimpinan dan
-                                    profesionalisme
+                                    Mengembangkan budaya organisasi HMIF yang
+                                    kritis dan kreatif dilandaskan dengan
+                                    nilai-nilai yang afektif, empatik dan
+                                    profesional.
                                 </li>
                                 <li class="flex text-base">
                                     <span class="mt-0.5 mr-2.5 text-red-500">
@@ -226,43 +233,9 @@
                                             </defs>
                                         </svg>
                                     </span>
-                                    Meningkatkan solidaritas dan kerjasama antar
-                                    mahasiswa
-                                </li>
-                                <li class="flex text-base">
-                                    <span class="mt-0.5 mr-2.5 text-red-500">
-                                        <svg
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 20 20"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <g
-                                                clip-path="url(#clip0_980_24852)"
-                                            >
-                                                <path
-                                                    d="M10 0.5625C4.78125 0.5625 0.5625 4.78125 0.5625 10C0.5625 15.2188 4.78125 19.4688 10 19.4688C15.2188 19.4688 19.4688 15.2188 19.4688 10C19.4688 4.78125 15.2188 0.5625 10 0.5625ZM10 18.0625C5.5625 18.0625 1.96875 14.4375 1.96875 10C1.96875 5.5625 5.5625 1.96875 10 1.96875C14.4375 1.96875 18.0625 5.59375 18.0625 10.0312C18.0625 14.4375 14.4375 18.0625 10 18.0625Z"
-                                                    fill="currentColor"
-                                                />
-                                                <path
-                                                    d="M12.6875 7.09375L8.96875 10.7188L7.28125 9.0625C7 8.78125 6.5625 8.8125 6.28125 9.0625C6 9.34375 6.03125 9.78125 6.28125 10.0625L8.28125 12C8.46875 12.1875 8.71875 12.2813 8.96875 12.2813C9.21875 12.2813 9.46875 12.1875 9.65625 12L13.6875 8.125C13.9688 7.84375 13.9688 7.40625 13.6875 7.125C13.4063 6.84375 12.9688 6.84375 12.6875 7.09375Z"
-                                                    fill="currentColor"
-                                                />
-                                            </g>
-                                            <defs>
-                                                <clipPath id="clip0_980_24852">
-                                                    <rect
-                                                        width="20"
-                                                        height="20"
-                                                        fill="white"
-                                                    />
-                                                </clipPath>
-                                            </defs>
-                                        </svg>
-                                    </span>
-                                    Berperan aktif dalam kegiatan kemahasiswaan
-                                    dan pengabdian masyarakat
+                                    Menjadikan HMIF sebagai ruang aspirasi
+                                    sekaligus etalase prestasi bagi seluruh
+                                    elemen di prodi teknik informatika.
                                 </li>
                             </ul>
                         </div>
@@ -276,7 +249,7 @@
             <div class="container mx-auto px-4">
                 <div class="mb-12 text-center">
                     <h2 class="mb-2 text-3xl font-bold">Struktur Pengurus</h2>
-                    <div class="mx-auto h-1 w-24 bg-red-900"></div>
+                    <div class="mx-auto h-1 w-24 rounded-full bg-red-900"></div>
                 </div>
                 <div
                     class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
@@ -348,7 +321,7 @@
                     <h2 class="mb-2 text-3xl font-bold text-black">
                         Program Kegiatan
                     </h2>
-                    <div class="mx-auto h-1 w-24 bg-red-900"></div>
+                    <div class="mx-auto h-1 w-24 rounded-full bg-red-900"></div>
                 </div>
                 <div
                     class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
@@ -429,7 +402,7 @@
             <div class="container mx-auto px-4">
             <div class="mb-12 text-center">
             <h2 class="mb-2 text-3xl font-bold">Galeri Kegiatan</h2>
-            <div class="mx-auto h-1 w-24 bg-red-900"></div>
+            <div class="mx-auto h-1 w-24 rounded-full bg-red-900"></div>
             </div>
             <div
             class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
