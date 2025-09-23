@@ -72,22 +72,9 @@
                             alt=""
                             width="20"
                             height="20"
-                            class="z-50 h-auto w-full bg-cover bg-center object-cover md:w-1/2 lg:w-full"
+                            class="z-50 w-full bg-cover bg-center object-cover md:w-2/6"
                             draggable="false"
                         />
-                        <div class="text-secondary text-justify">
-                            <p>
-                                Lorem ipsum dolor, sit amet consectetur
-                                adipisicing elit. Velit, nihil illo? Fugiat
-                                dolorum omnis accusantium quisquam itaque beatae
-                                ea voluptate porro molestias minima obcaecati
-                                veritatis pariatur corrupti excepturi suscipit
-                                doloribus facere similique, cupiditate nobis
-                                explicabo sequi accusamus facilis voluptatem!
-                                Cum sequi hic nulla, est dignissimos rem quo
-                                commodi atque ratione?
-                            </p>
-                        </div>
 
                         @if ($index % 2 == 0)
                             <img
@@ -122,8 +109,6 @@
                     </div>
                 @endforeach
             </div>
-
-            {{-- @dd($member) --}}
 
             {{-- DEPARTEMEN --}}
             <div class="text-center md:hidden">

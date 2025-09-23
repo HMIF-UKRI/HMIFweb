@@ -56,12 +56,12 @@
                             class="mx-auto mb-[60px] max-w-[510px] text-center lg:mb-20"
                         >
                             <h2
-                                class="text-secondary mb-4 text-3xl font-bold sm:text-4xl md:text-[40px]"
+                                class="text-dark mb-4 text-3xl font-bold sm:text-4xl md:text-[40px]"
                             >
                                 Agenda & Dokumentasi Kegiatan HMIF
                             </h2>
                             <p
-                                class="text-secondary text-xs leading-relaxed sm:text-sm md:text-base"
+                                class="text-dark text-xs leading-relaxed sm:text-sm md:text-base"
                             >
                                 serangkaian acara yang diselenggarakan oleh
                                 Himpunan Mahasiswa Informatika untuk
@@ -116,7 +116,7 @@
                             <div class="relative">
                                 <select
                                     id="sortByStatus"
-                                    class="text-secondary flex w-full cursor-pointer appearance-none items-center justify-between rounded border border-gray-300 p-4 text-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
+                                    class="text-dark flex w-full cursor-pointer appearance-none items-center justify-between rounded border border-gray-300 p-4 text-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
                                 >
                                     <option value="all" selected>
                                         Semua Status
@@ -159,7 +159,7 @@
                             <div class="relative">
                                 <select
                                     id="filterByCategory"
-                                    class="text-secondary flex w-full cursor-pointer appearance-none items-center justify-between rounded border border-gray-300 p-4 text-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
+                                    class="text-dark flex w-full cursor-pointer appearance-none items-center justify-between rounded border border-gray-300 p-4 text-sm focus:ring-2 focus:ring-red-200 focus:outline-none"
                                 >
                                     <option value="all" selected>
                                         Semua Kategori

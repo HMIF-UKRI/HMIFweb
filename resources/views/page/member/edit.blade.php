@@ -5,7 +5,7 @@
         class="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 pt-20"
     >
         <div
-            class="text-secondary container mx-auto rounded-xl bg-white p-8 shadow-lg"
+            class="text-dark container mx-auto rounded-xl bg-white p-8 shadow-lg"
         >
             <h1 class="mb-6 text-center text-3xl font-bold text-indigo-700">
                 Edit Member
