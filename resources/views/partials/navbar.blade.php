@@ -1,67 +1,84 @@
 <nav
-    x-data="{ mobileMenuOpen: false }"
-    class="fixed z-[9999] w-full bg-gradient-to-r from-red-800 to-red-900 text-white shadow-lg"
+    x-data="{ mobileMenuOpen: false, scrolled: false }"
+    @scroll.window="scrolled = (window.pageYOffset > 20)"
+    :class="scrolled ? 'bg-black/80 backdrop-blur-md shadow-lg shadow-red-900/10' : 'bg-transparent backdrop-blur-sm'"
+    class="fixed top-0 z-[9999] w-full border-b border-white/5 transition-all duration-300"
 >
-    <div class="container mx-auto">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <a href="/" class="flex items-center text-2xl">
-                    <img
-                        src="{{ asset("images/logo.png") }}"
-                        alt="HMIF logo"
-                        width="20"
-                        height="20"
-                        class="h-20 w-20 bg-cover object-contain lg:h-24 lg:w-24"
-                    />
-                    <div
-                        class="font-jkt-sans hidden flex-col tracking-wide lg:flex"
-                    >
-                        <span class="-ml-2 text-xs font-bold lg:text-base">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="flex h-20 items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/" class="group flex items-center gap-3">
+                    <div class="relative">
+                        <div
+                            class="absolute -inset-2 rounded-full bg-red-600/20 opacity-0 blur-lg transition duration-500 group-hover:opacity-100"
+                        ></div>
+                        <img
+                            src="{{ asset("images/logo.png") }}"
+                            alt="HMIF logo"
+                            width="40"
+                            height="40"
+                            class="relative h-12 w-12 object-contain"
+                        />
+                    </div>
+
+                    <div class="hidden flex-col font-sans lg:flex">
+                        <h3 class="text-xs font-bold tracking-wider text-white">
                             Himpunan Mahasiswa
                             <span
-                                class="bg-linear-to-r from-red-400 to-red-400 bg-clip-text font-extrabold text-transparent"
+                                class="bg-gradient-to-r from-red-500 to-red-400 bg-clip-text font-extrabold text-transparent"
                             >
                                 Teknik Informatika
                             </span>
-                        </span>
-                        <span class="-ml-2 text-xs lg:text-base">
+                        </h3>
+                        <h3
+                            class="text-[10px] font-medium tracking-wide text-gray-400"
+                        >
                             Universitas Kebangsaan Republik Indonesia
-                        </span>
+                        </h3>
                     </div>
                     <div class="lg:hidden">
-                        <span class="-ml-2 font-bold">HMIF UKRI</span>
+                        <span
+                            class="text-lg font-bold tracking-wide text-white"
+                        >
+                            HMIF
+                            <span class="text-red-500">UKRI</span>
+                        </span>
                     </div>
                 </a>
             </div>
 
-            <!-- Menu Desktop -->
-            <div
-                class="hidden space-x-2 md:flex md:items-center md:justify-center"
-            >
+            <div class="hidden md:flex md:items-center md:space-x-8">
                 <a
                     href="/"
-                    class="relative block rounded-md px-3 py-2 text-sm transition-colors duration-200 after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-0.5 after:origin-left after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                    class="group relative text-sm font-medium text-gray-300 transition hover:text-white"
                 >
                     Beranda
-                </a>
-                <a
-                    href="#about"
-                    class="relative block rounded-md px-3 py-2 text-sm transition-colors duration-200 after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-0.5 after:origin-left after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100"
-                >
-                    Tentang Kami
+                    <span
+                        class="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-red-600 opacity-0 transition-all duration-300 group-hover:opacity-100"
+                    ></span>
                 </a>
 
-                <!-- Dropdown Desktop -->
+                <a
+                    href="#about"
+                    class="group relative text-sm font-medium text-gray-300 transition hover:text-white"
+                >
+                    Tentang Kami
+                    <span
+                        class="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-red-600 opacity-0 transition-all duration-300 group-hover:opacity-100"
+                    ></span>
+                </a>
+
                 <div x-data="{ dropdownOpen: false }" class="relative">
                     <button
-                        @mouseover="dropdownOpen = true"
+                        @mouseenter="dropdownOpen = true"
                         @mouseleave="dropdownOpen = false"
-                        class="flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-all duration-300 focus:outline-none"
+                        class="flex items-center gap-1 text-sm font-medium text-gray-300 transition hover:text-white focus:outline-none"
+                        :class="{ 'text-white': dropdownOpen }"
                     >
                         <span>Profil</span>
                         <svg
-                            class="ml-1 h-5 w-5 transform transition-transform duration-300"
-                            :class="{'rotate-180': dropdownOpen}"
+                            class="h-4 w-4 transition-transform duration-300"
+                            :class="{'rotate-180 text-red-500': dropdownOpen}"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                             fill="currentColor"
@@ -76,101 +93,124 @@
 
                     <div
                         x-show="dropdownOpen"
-                        @mouseover="dropdownOpen = true"
+                        @mouseenter="dropdownOpen = true"
                         @mouseleave="dropdownOpen = false"
                         x-transition:enter="transition duration-200 ease-out"
-                        x-transition:enter-start="scale-95 transform opacity-0"
-                        x-transition:enter-end="scale-100 transform opacity-100"
+                        x-transition:enter-start="translate-y-2 opacity-0"
+                        x-transition:enter-end="translate-y-0 opacity-100"
                         x-transition:leave="transition duration-150 ease-in"
-                        x-transition:leave-start="scale-100 transform opacity-100"
-                        x-transition:leave-end="scale-95 transform opacity-0"
-                        class="ring-opacity-5 absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white text-gray-800 shadow-xl ring-1 ring-black"
+                        x-transition:leave-start="translate-y-0 opacity-100"
+                        x-transition:leave-end="translate-y-2 opacity-0"
+                        class="ring-opacity-5 absolute top-full right-0 mt-2 w-56 origin-top-right rounded-xl border border-white/10 bg-gray-900/95 p-2 shadow-xl ring-1 ring-black backdrop-blur-xl"
                         style="display: none"
                     >
-                        <div class="space-y-1 p-2">
+                        <div class="space-y-1">
                             <a
                                 href="/kegiatan"
-                                class="relative block rounded-md px-3 py-2 text-sm transition-colors duration-200 after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-0.5 after:origin-left after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400"
                             >
+                                <i
+                                    class="fa-solid fa-calendar-day w-5 text-center text-xs opacity-70"
+                                ></i>
                                 Kegiatan
                             </a>
                             <a
                                 href="/struktur-pengurus"
-                                class="relative block rounded-md px-3 py-2 text-sm transition-colors duration-200 after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-0.5 after:origin-left after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400"
                             >
+                                <i
+                                    class="fa-solid fa-users w-5 text-center text-xs opacity-70"
+                                ></i>
                                 Struktur Pengurus
                             </a>
                             <a
                                 href="/blog"
-                                class="relative block rounded-md px-3 py-2 text-sm transition-colors duration-200 after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-0.5 after:origin-left after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400"
                             >
+                                <i
+                                    class="fa-solid fa-newspaper w-5 text-center text-xs opacity-70"
+                                ></i>
                                 Blog
                             </a>
                             <a
                                 href="/galeri"
-                                class="relative block rounded-md px-3 py-2 text-sm transition-colors duration-200 after:absolute after:right-3 after:bottom-1.5 after:left-3 after:h-0.5 after:origin-left after:scale-x-0 after:bg-red-500 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400"
                             >
+                                <i
+                                    class="fa-solid fa-images w-5 text-center text-xs opacity-70"
+                                ></i>
                                 Galeri
                             </a>
                         </div>
                     </div>
                 </div>
-                <!-- Akhir Dropdown Desktop -->
             </div>
 
-            <!-- Tombol Menu Mobile -->
             <div class="md:hidden">
                 <button
                     @click="mobileMenuOpen = !mobileMenuOpen"
-                    class="rounded-md p-2 transition duration-300 hover:bg-red-700 focus:outline-none"
+                    class="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg text-gray-300 transition hover:bg-white/10 hover:text-white focus:outline-none"
                 >
-                    <svg class="h-8 w-8" viewBox="0 0 24 24">
-                        <path
-                            class="fill-current text-white"
-                            d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"
-                        ></path>
-                    </svg>
+                    <span class="sr-only">Toggle menu</span>
+
+                    <div class="relative flex h-5 w-6 flex-col justify-between">
+                        <span
+                            class="h-0.5 w-full transform rounded-full bg-current transition-all duration-300 ease-in-out"
+                            :class="mobileMenuOpen ? 'translate-y-[9px] rotate-45' : 'origin-center'"
+                        ></span>
+
+                        <span
+                            class="h-0.5 w-full transform rounded-full bg-current transition-all duration-300 ease-in-out"
+                            :class="mobileMenuOpen ? 'opacity-0' : 'opacity-100'"
+                        ></span>
+
+                        <span
+                            class="h-0.5 w-full transform rounded-full bg-current transition-all duration-300 ease-in-out"
+                            :class="mobileMenuOpen ? '-translate-y-[9px] -rotate-45' : 'origin-center'"
+                        ></span>
+                    </div>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Menu Mobile -->
     <div
         x-show="mobileMenuOpen"
-        x-transition:enter="transition-opacity transition-transform duration-300 ease-out"
-        x-transition:enter-start="-translate-y-4 transform opacity-0"
-        x-transition:enter-end="translate-y-0 transform opacity-100"
-        x-transition:leave="transition-opacity transition-transform duration-200 ease-in"
-        x-transition:leave-start="translate-y-0 transform opacity-100"
-        x-transition:leave-end="-translate-y-4 transform opacity-0"
-        class="origin-top bg-red-900 md:hidden"
+        x-transition:enter="transition duration-300 ease-out"
+        x-transition:enter-start="-translate-y-full opacity-0"
+        x-transition:enter-end="translate-y-0 opacity-100"
+        x-transition:leave="transition duration-200 ease-in"
+        x-transition:leave-start="translate-y-0 opacity-100"
+        x-transition:leave-end="-translate-y-full opacity-0"
+        class="fixed inset-0 z-40 flex flex-col bg-gray-950/95 backdrop-blur-xl md:hidden"
         style="display: none"
     >
-        <div class="container mx-auto space-y-1 px-4 py-2">
+        <div class="flex flex-col space-y-2 bg-black/80 px-6 pt-24 pb-6">
             <a
                 href="/"
-                class="flex items-center rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                class="flex items-center rounded-xl border border-white/5 bg-white/5 px-4 py-4 text-base font-medium text-white transition hover:border-red-500/30 hover:bg-red-900/20 hover:text-red-400"
             >
                 Beranda
             </a>
             <a
                 href="#about"
-                class="flex items-center rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                class="flex items-center rounded-xl border border-white/5 bg-white/5 px-4 py-4 text-base font-medium text-white transition hover:border-red-500/30 hover:bg-red-900/20 hover:text-red-400"
             >
                 Tentang Kami
             </a>
 
-            <!-- Dropdown Mobile -->
-            <div x-data="{ dropdownOpen: false }" class="w-full">
+            <div
+                x-data="{ dropdownOpen: false }"
+                class="overflow-hidden rounded-xl border border-white/5 bg-white/5"
+            >
                 <button
                     @click="dropdownOpen = !dropdownOpen"
-                    class="flex w-full items-center justify-between rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                    class="flex w-full items-center justify-between px-4 py-4 text-base font-medium text-white transition hover:bg-white/5 focus:outline-none"
                 >
                     <span>Profil</span>
                     <svg
-                        class="ml-1 h-5 w-5 transform transition-transform duration-300"
-                        :class="{'rotate-180': dropdownOpen}"
+                        class="h-5 w-5 transform transition-transform duration-300"
+                        :class="{'rotate-180 text-red-500': dropdownOpen}"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -182,34 +222,44 @@
                         />
                     </svg>
                 </button>
-                <div x-show="dropdownOpen" x-collapse class="pl-6">
+
+                <div
+                    x-show="dropdownOpen"
+                    x-collapse
+                    class="border-t border-white/5 bg-black/20"
+                >
                     <a
                         href="/kegiatan"
-                        class="flex items-center rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                        class="block border-l-2 border-transparent px-8 py-3 text-sm text-gray-300 transition hover:border-red-500 hover:bg-white/5 hover:text-red-400"
                     >
                         Kegiatan
                     </a>
                     <a
                         href="/struktur-pengurus"
-                        class="flex items-center rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                        class="block border-l-2 border-transparent px-8 py-3 text-sm text-gray-300 transition hover:border-red-500 hover:bg-white/5 hover:text-red-400"
                     >
                         Struktur Pengurus
                     </a>
                     <a
                         href="/blog"
-                        class="flex items-center rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                        class="block border-l-2 border-transparent px-8 py-3 text-sm text-gray-300 transition hover:border-red-500 hover:bg-white/5 hover:text-red-400"
                     >
                         Blog
                     </a>
                     <a
                         href="/galeri"
-                        class="flex items-center rounded-md px-3 py-2 text-base font-medium transition hover:bg-red-800"
+                        class="block border-l-2 border-transparent px-8 py-3 text-sm text-gray-300 transition hover:border-red-500 hover:bg-white/5 hover:text-red-400"
                     >
                         Galeri
                     </a>
                 </div>
             </div>
-            <!-- Akhir Dropdown Mobile -->
+        </div>
+
+        <div class="mt-auto p-6">
+            <p class="text-center text-xs text-gray-600">
+                &copy; 2025 HMIF UKRI. All rights reserved.
+            </p>
         </div>
     </div>
 </nav>

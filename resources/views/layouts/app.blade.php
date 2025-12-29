@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-p scroll-pt-20">
     <head>
         @yield("meta")
 
@@ -21,5 +21,9 @@
         <script src="{{ asset("js/app.js") }}"></script>
 
         @stack("script")
+        <script
+            src="https://kit.fontawesome.com/a9ea8e1647.js"
+            crossorigin="anonymous"
+        ></script>
     </body>
 </html>
