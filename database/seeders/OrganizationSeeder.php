@@ -15,10 +15,18 @@ class OrganizationSeeder extends Seeder
     {
         DB::table('organization_periods')->insert([
             [
+                'name' => 'MetaForsa',
+                'start_date' => '2025-09-01',
+                'end_date' => '2026-09-30',
+                'is_current' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'Digiswara',
                 'start_date' => '2023-01-01',
                 'end_date' => '2024-12-31',
-                'is_current' => true,
+                'is_current' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

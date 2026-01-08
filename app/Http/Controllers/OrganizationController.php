@@ -9,19 +9,29 @@ use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $currentPeriod = OrganizationPeriods::where('is_current', true)->first();
-        $members = collect();
+        $allPeriods = OrganizationPeriods::orderBy('start_date', 'desc')->get();
 
-        if ($currentPeriod) {
-            $activeDepartments = Departemen::whereHas('members', function ($query) use ($currentPeriod) {
-                $query->where('organization_period_id', $currentPeriod->id);
+        $periodId = $request->get('period');
+
+        if ($periodId) {
+            $activePeriod = OrganizationPeriods::find($periodId);
+        } else {
+            $activePeriod = OrganizationPeriods::where('is_current', true)->first();
+        }
+
+        $members = collect();
+        $activeDepartments = collect();
+
+        if ($activePeriod instanceof OrganizationPeriods) {
+            $activeDepartments = Departemen::whereHas('members', function ($query) use ($activePeriod) {
+                $query->where('organization_period_id', $activePeriod->id);
             })->get();
 
             foreach ($activeDepartments as $department) {
                 $departmentMembers = $department->members()
-                    ->where('organization_period_id', $currentPeriod->id)
+                    ->where('organization_period_id', $activePeriod->id)
                     ->orderBy('name')
                     ->get();
 
@@ -31,8 +41,9 @@ class OrganizationController extends Controller
 
         return view('page.struktur-pengurus', [
             'members' => $members,
-            'currentPeriod' => $currentPeriod,
-            'departments' => $activeDepartments ?? collect(),
+            'currentPeriod' => $allPeriods,
+            'activePeriod' => $activePeriod,
+            'departments' => $activeDepartments,
         ]);
     }
 }
