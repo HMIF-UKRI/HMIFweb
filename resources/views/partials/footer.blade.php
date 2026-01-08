@@ -1,147 +1,99 @@
-<footer class="bg-white">
-    <div class="container mx-auto flex">
-        <div
-            class="hidden h-fit w-[40%] lg:block lg:overflow-hidden lg:rounded-lg"
-        >
-            <img
-                src="{{ asset("images/banner2.png") }}"
-                alt=""
-                class="-mt-32 h-full w-full object-cover lg:rounded-lg lg:shadow-lg"
-            />
-        </div>
+<footer class="relative overflow-hidden bg-gray-900 bg-linear-to-r via-black to-red-950 text-white">
+    <div class="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-teal-500 via-cyan-400 to-teal-500"></div>
+    <div class="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-teal-600/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute right-0 bottom-0 h-64 w-64 rounded-full bg-cyan-600/10 blur-3xl"></div>
 
-        <div class="w-[60%] px-4 py-16 sm:px-6 lg:px-8">
-            <div class="flex flex-col">
-                <h1 class="text-secondary text-3xl font-bold">Kontak Kami</h1>
+    <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-8">
+            <div class="space-y-6">
+                <div
+                    class="inline-flex items-center gap-6 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+                    <img src="/images/logo.png" alt="HMIF Logo"
+                        class="h-16 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                        loading="lazy" />
+                    <div class="h-10 w-px bg-white/20"></div>
+                    <img src="/images/LOGO_UKRI.png" alt="UKRI Logo" class="h-12 w-auto object-contain"
+                        loading="lazy" />
+                </div>
 
-                <ul class="mt-8 space-y-3 text-sm text-gray-700">
-                    <li class="flex gap-2">
-                        <span
-                            class="flex h-6 w-6 items-center justify-center rounded-full"
-                        >
-                            <svg
-                                width="24px"
-                                height="24px"
-                                viewBox="0 0 192 192"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                            >
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g
-                                    id="SVGRepo_tracerCarrier"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                ></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        stroke="#020202"
-                                        stroke-linejoin="round"
-                                        stroke-width="12"
-                                        d="M22 57.265V142c0 5.523 4.477 10 10 10h24V95.056l40 30.278 40-30.278V152h24c5.523 0 10-4.477 10-10V57.265c0-13.233-15.15-20.746-25.684-12.736L96 81.265 47.684 44.53C37.15 36.519 22 44.032 22 57.265Z"
-                                    ></path>
-                                </g>
-                            </svg>
-                        </span>
-                        <p>HMIF.UKRI@gmail.com</p>
-                    </li>
-                    <li class="flex gap-2">
-                        <span
-                            class="flex h-6 w-6 items-center justify-center rounded-full"
-                        >
-                            <svg
-                                fill="#020202"
-                                version="1.1"
-                                id="Capa_1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                                width="24px"
-                                height="24px"
-                                viewBox="0 0 30.667 30.667"
-                                xml:space="preserve"
-                            >
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g
-                                    id="SVGRepo_tracerCarrier"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                ></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <g>
-                                        <path
-                                            d="M30.667,14.939c0,8.25-6.74,14.938-15.056,14.938c-2.639,0-5.118-0.675-7.276-1.857L0,30.667l2.717-8.017 c-1.37-2.25-2.159-4.892-2.159-7.712C0.559,6.688,7.297,0,15.613,0C23.928,0.002,30.667,6.689,30.667,14.939z M15.61,2.382 c-6.979,0-12.656,5.634-12.656,12.56c0,2.748,0.896,5.292,2.411,7.362l-1.58,4.663l4.862-1.545c2,1.312,4.393,2.076,6.963,2.076 c6.979,0,12.658-5.633,12.658-12.559C28.27,8.016,22.59,2.382,15.61,2.382z M23.214,18.38c-0.094-0.151-0.34-0.243-0.708-0.427 c-0.367-0.184-2.184-1.069-2.521-1.189c-0.34-0.123-0.586-0.185-0.832,0.182c-0.243,0.367-0.951,1.191-1.168,1.437 c-0.215,0.245-0.43,0.276-0.799,0.095c-0.369-0.186-1.559-0.57-2.969-1.817c-1.097-0.972-1.838-2.169-2.052-2.536 c-0.217-0.366-0.022-0.564,0.161-0.746c0.165-0.165,0.369-0.428,0.554-0.643c0.185-0.213,0.246-0.364,0.369-0.609 c0.121-0.245,0.06-0.458-0.031-0.643c-0.092-0.184-0.829-1.984-1.138-2.717c-0.307-0.732-0.614-0.611-0.83-0.611 c-0.215,0-0.461-0.03-0.707-0.03S9.897,8.215,9.56,8.582s-1.291,1.252-1.291,3.054c0,1.804,1.321,3.543,1.506,3.787 c0.186,0.243,2.554,4.062,6.305,5.528c3.753,1.465,3.753,0.976,4.429,0.914c0.678-0.062,2.184-0.885,2.49-1.739 C23.307,19.268,23.307,18.533,23.214,18.38z"
-                                        ></path>
-                                    </g>
-                                </g>
-                            </svg>
-                        </span>
-                        <p>Teguh (Humas) | +62 812-2470-6965</p>
-                    </li>
-                    <li class="flex gap-2">
-                        <span
-                            class="flex h-6 w-6 items-center justify-center rounded-full"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#020202"
-                            >
-                                <path
-                                    d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"
-                                />
-                            </svg>
-                        </span>
-                        <p>
-                            Jl. Terusan Halimun No.37, Lkr. Sel., Kec. Lengkong,
-                            Kota Bandung.
-                        </p>
-                    </li>
-                </ul>
-
-                <div class="h-64 w-full pt-4">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.6937903450957!2d107.62378407441996!3d-6.927157667803136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e7d5e53848db%3A0x255016168039280a!2sUniversitas%20Kebangsaan%20Republik%20Indonesia!5e0!3m2!1sid!2sid!4v1750674671119!5m2!1sid!2sid"
-                        class="h-full w-full rounded-lg border-0"
-                        loading="lazy"
-                    />
+                <div class="max-w-md">
+                    <h3
+                        class="bg-gradient-to-r from-teal-300 to-cyan-100 bg-clip-text text-2xl font-bold text-transparent">
+                        HMIF UKRI
+                    </h3>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-400">
+                        Mewujudkan mahasiswa Teknik Informatika yang unggul,
+                        inovatif, dan berintegritas dalam perkembangan teknologi
+                        masa depan.
+                    </p>
                 </div>
             </div>
+
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:gap-6">
+                <a href="https://www.instagram.com/hmif_ukri?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                    class="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:border-teal-500/50 hover:bg-teal-500/10 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)]">
+                    <div
+                        class="flex size-10 items-center justify-center rounded-lg bg-teal-500/20 text-teal-300 transition group-hover:bg-teal-500 group-hover:text-white">
+                        <i class="fa-brands fa-instagram text-xl"></i>
+                    </div>
+                    <span class="font-medium text-slate-300 group-hover:text-white">
+                        Instagram
+                    </span>
+                </a>
+
+                <a href="mailto:hmifukri86@gmail.com"
+                    class="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:border-teal-500/50 hover:bg-teal-500/10 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)]">
+                    <div
+                        class="flex size-10 items-center justify-center rounded-lg bg-teal-500/20 text-teal-300 transition group-hover:bg-teal-500 group-hover:text-white">
+                        <i class="fa-brands fa-google text-xl"></i>
+                    </div>
+                    <span class="font-medium text-slate-300 group-hover:text-white">
+                        Gmail
+                    </span>
+                </a>
+
+                <a href="https://www.linkedin.com/company/himpunan-mahasiswa-teknik-informatika-hmif-ukri/"
+                    class="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:border-teal-500/50 hover:bg-teal-500/10 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)]">
+                    <div
+                        class="flex size-10 items-center justify-center rounded-lg bg-teal-500/20 text-teal-300 transition group-hover:bg-teal-500 group-hover:text-white">
+                        <i class="fa-brands fa-linkedin text-xl"></i>
+                    </div>
+                    <span class="font-medium text-slate-300 group-hover:text-white">
+                        LinkedIn
+                    </span>
+                </a>
+
+                <a href="https://www.tiktok.com/@hmif.ukri?_r=1&_t=ZS-92tN1nfkHGk"
+                    class="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:border-teal-500/50 hover:bg-teal-500/10 hover:shadow-[0_0_20px_rgba(20,184,166,0.3)]">
+                    <div
+                        class="flex size-10 items-center justify-center rounded-lg bg-teal-500/20 text-teal-300 transition group-hover:bg-teal-500 group-hover:text-white">
+                        <i class="fa-brands fa-tiktok text-xl"></i>
+                    </div>
+                    <span class="font-medium text-slate-300 group-hover:text-white">
+                        TikTok
+                    </span>
+                </a>
+            </div>
         </div>
-        <div class="mt-12 border-t border-gray-100 pt-12">
-            <div class="sm:flex sm:items-center sm:justify-between">
-                <ul class="flex flex-wrap gap-4 text-xs">
-                    <li>
-                        <a
-                            href="#"
-                            class="text-gray-500 transition hover:opacity-75"
-                        >
-                            Terms & Conditions
-                        </a>
-                    </li>
 
-                    <li>
-                        <a
-                            href="#"
-                            class="text-gray-500 transition hover:opacity-75"
-                        >
-                            Privacy Policy
-                        </a>
-                    </li>
-
-                    <li>
-                        <a
-                            href="#"
-                            class="text-gray-500 transition hover:opacity-75"
-                        >
-                            Cookies
-                        </a>
-                    </li>
-                </ul>
-
-                <p class="mt-8 text-xs text-gray-500 sm:mt-0">
-                    &copy; 2025. HMIF UKRI. Hanif Ganteng (Dev)
+        <div class="mt-16 border-t border-white/10 pt-8">
+            <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+                <p class="text-sm text-slate-500">
+                    &copy; 2025
+                    <span class="text-teal-400">HMIF UKRI</span>
+                    . All rights reserved.
                 </p>
+
+                <a href="#home"
+                    class="group flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-5 py-2 text-sm text-teal-300 transition hover:bg-teal-500 hover:text-white">
+                    Back to Top
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-4 transition group-hover:-translate-y-1"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </a>
             </div>
         </div>
     </div>

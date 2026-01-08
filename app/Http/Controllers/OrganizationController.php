@@ -12,41 +12,39 @@ class OrganizationController extends Controller
 {
     public function index(Request $request)
     {
-        $organizationPeriods = OrganizationPeriods::orderBy('start_date', 'desc')->get();
+        $allPeriods = OrganizationPeriods::orderBy('start_date', 'desc')->get();
 
-        if ($request->has('period')) {
-            $activePeriod = $organizationPeriods->find($request->period);
+        $periodId = $request->get('period');
+
+        if ($periodId) {
+            $activePeriod = OrganizationPeriods::find($periodId);
         } else {
-            $activePeriod = $organizationPeriods->where('is_current', true)->first()
-                ?? $organizationPeriods->first();
+            $activePeriod = OrganizationPeriods::where('is_current', true)->first();
         }
 
         $members = collect();
         $activeDepartments = collect();
 
-        if ($activePeriod) {
-            $members = Member::where('organization_period_id', $activePeriod->id)
-                ->with('departemen')
-                ->get()
-                ->sortBy(function ($member) {
-                    $position = strtolower($member->position);
-                    if (str_contains($position, 'ketua')) return 1;
-                    if (str_contains($position, 'wakil')) return 2;
-                    if (str_contains($position, 'sekretaris')) return 3;
-                    if (str_contains($position, 'bendahara')) return 4;
-                    return 99;
-                });
-
+        if ($activePeriod instanceof OrganizationPeriods) {
             $activeDepartments = Departemen::whereHas('members', function ($query) use ($activePeriod) {
                 $query->where('organization_period_id', $activePeriod->id);
             })->get();
+
+            foreach ($activeDepartments as $department) {
+                $departmentMembers = $department->members()
+                    ->where('organization_period_id', $activePeriod->id)
+                    ->orderBy('name')
+                    ->get();
+
+                $members = $members->merge($departmentMembers);
+            }
         }
 
         return view('page.struktur-pengurus', [
             'members' => $members,
+            'currentPeriod' => $allPeriods,
             'activePeriod' => $activePeriod,
             'departments' => $activeDepartments,
-            'organizationPeriods' => $organizationPeriods,
         ]);
     }
 }
