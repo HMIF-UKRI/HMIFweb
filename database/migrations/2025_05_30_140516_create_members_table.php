@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('student_id_number', 20)->unique();
             $table->string('image');
-            $table->string('position', 30);
+            $table->string('position');
             $table->foreignId('organization_period_id')->constrained('organization_periods', 'id')->onDelete('cascade');
             $table->foreignId('department_id')->constrained('departments', 'id')->onDelete('cascade');
             $table->timestamps();
