@@ -6,13 +6,8 @@ use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Event;
 use App\Models\EventCategory;
-use App\Models\Member;
 
-Route::get('/', function () {
-    $events = Event::latest()->take(3)->get();
-    $members = Member::latest()->take(4)->get();
-    return view('page.home', compact('members', 'events'));
-});
+Route::get('/', [OrganizationController::class, 'home'])->name('home');
 
 // Struktur Pengurus
 Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name('organization.index');
