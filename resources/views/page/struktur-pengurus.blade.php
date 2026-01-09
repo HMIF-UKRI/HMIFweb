@@ -133,7 +133,7 @@
                                 draggable="false" />
                         @endif
 
-                        @if ($member->position == 'Sekretaris')
+                        @if ($loop->last)
                             <img src="{{ asset('images/garis-2.png') }}" alt="connector" width="20" height="20"
                                 class="absolute right-12 -bottom-30 hidden w-[82%] md:block lg:right-12 lg:-bottom-37 xl:right-24 xl:-bottom-37 xl:w-[83%] 2xl:right-11 2xl:-bottom-41 2xl:w-[89%]"
                                 draggable="false"
@@ -153,15 +153,6 @@
         </div>
 
         <div class="relative z-10 container mx-auto mt-20 px-4">
-            <div class="mb-12 flex w-full items-center justify-center">
-                <div class="h-px w-16 bg-gradient-to-r from-transparent to-red-600"></div>
-                <span
-                    class="rounded-full border border-red-900/30 bg-gray-900 px-6 py-2 text-sm font-bold tracking-widest text-red-500 uppercase shadow-lg shadow-red-900/10">
-                    Departemen & Divisi
-                </span>
-                <div class="h-px w-16 bg-gradient-to-l from-transparent to-red-600"></div>
-            </div>
-
             <div class="grid grid-cols-1 gap-8 px-4 md:grid-cols-3 lg:px-12">
                 <div
                     class="group relative rounded-2xl border border-white/10 bg-gray-900 p-2 transition hover:-translate-y-2 hover:border-red-600/50">
