@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\BlogCategory;
 use App\Models\Post;
 use App\Models\Tag;
-use App\Models\User; // Import model User
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
