@@ -90,40 +90,65 @@
             </div>
 
             <div class="flex flex-col items-center justify-center px-4 md:px-0">
-                @forelse ($members as $index => $member)
+                @forelse ($members->whereIn('position', ['Ketua Himpunan', 'Wakil Ketua Himpunan', 'Sekretaris', 'Kesekretariatan', 'Bendahara', 'Bendahara 2']) as $index => $member)
                     <div
                         class="{{ $index % 2 == 0 ? 'md:flex-row' : 'md:flex-row-reverse' }} relative mb-16 flex w-full max-w-5xl flex-col items-center md:mb-12 md:items-start md:gap-12 lg:gap-20">
-                        <div class="group perspective-1000 relative z-10 w-full md:w-[40%]">
+                        <div class="group perspective-1000 relative z-10 w-full md:w-[36%]">
                             <div
-                                class="absolute -inset-1 rounded-2xl bg-gradient-to-br from-red-600 to-black opacity-20 blur transition duration-500 group-hover:opacity-40">
-                            </div>
+                                class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
-                            <div
-                                class="relative overflow-hidden rounded-xl border border-white/10 bg-gray-900 shadow-2xl transition-transform duration-500 group-hover:rotate-y-2 group-hover:transform">
-                                <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
-                                    class="h-auto w-full transform object-cover transition duration-700 group-hover:scale-105"
-                                    draggable="false"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/400x500/1a1a1a/cccccc?text=No+Photo';" />
+                                <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
+                                    <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
+                                        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
-                                <div
-                                    class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent p-4 pt-12 text-center md:text-left">
-                                    <h3 class="text-lg font-bold text-white">
+                                    <div
+                                        class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                        <div class="flex gap-3">
+                                            <a href="#"
+                                                class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
+                                                <i class="fa-brands fa-instagram text-sm"></i>
+                                            </a>
+                                            <a href="#"
+                                                class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-blue-600">
+                                                <i class="fa-brands fa-linkedin-in text-sm"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 px-2 pb-2">
+                                    <h3
+                                        class="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-red-400">
                                         {{ $member->name }}
                                     </h3>
-                                    <p class="text-sm font-medium tracking-wide text-red-400 uppercase">
-                                        {{ $member->position }}
-                                    </p>
+
+                                    <div class="mt-2 flex items-center justify-between">
+                                        <span
+                                            class="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-red-500/20 text-red-500">
+                                            {{ $member->position }}
+                                        </span>
+
+                                        <i
+                                            class="fa-solid fa-id-card text-gray-600 opacity-0 transition-opacity group-hover:opacity-100"></i>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
                                 </div>
                             </div>
                         </div>
 
                         @if ($index % 2 == 0)
-                            <img src="{{ asset('images/garis-1.png') }}" alt="connector"
-                                class="absolute right-[10%] -bottom-12 hidden w-[50%] opacity-50 invert md:block lg:right-[15%]"
-                                style="
+                            @if (!$loop->last)
+                                <img src="{{ asset('images/garis-1.png') }}" alt="connector"
+                                    class="absolute right-[10%] -bottom-12 hidden w-[50%] opacity-50 invert md:block lg:right-[15%]"
+                                    style="
                                     filter: invert(1) drop-shadow(0 0 5px red);
                                 "
-                                draggable="false" />
+                                    draggable="false" />
+                            @endif
                         @else
                             <img src="{{ asset('images/garis-1.png') }}" alt="connector"
                                 class="absolute -bottom-10 left-[23.6%] hidden w-[50%] scale-x-[-1] opacity-50 invert md:block lg:left-[25.4%] xl:left-[20%] xl:-bottom-9"
@@ -152,82 +177,152 @@
             </div>
         </div>
 
-        <div class="relative z-10 container mx-auto mt-20 px-4">
-            <div class="grid grid-cols-1 gap-8 px-4 md:grid-cols-3 lg:px-12">
-                <div
-                    class="group relative rounded-2xl border border-white/10 bg-gray-900 p-2 transition hover:-translate-y-2 hover:border-red-600/50">
-                    <div class="relative overflow-hidden rounded-xl bg-black">
-                        <img src="{{ asset('images/pengurus/ristek.png') }}" alt="Ristek"
-                            class="h-64 w-full object-contain object-center transition duration-500 group-hover:scale-110"
-                            draggable="false" />
+        <div class="relative z-10 container mx-auto mt-28 px-4 lg:px-8">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:gap-8">
+                @foreach ($members->filter(function ($member) {
+            return str_starts_with(strtolower($member->position), 'kepala');
+        }) as $member)
+                    <div class="group relative flex flex-col items-center">
                         <div
-                            class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60">
-                        </div>
-                        <div class="absolute bottom-4 left-4">
-                            <h3 class="text-xl font-bold text-white transition group-hover:text-red-500">
-                                RISTEK
-                            </h3>
-                            <p class="text-xs text-gray-400">
-                                Riset & Teknologi
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                            class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
-                <div
-                    class="group relative rounded-2xl border border-white/10 bg-gray-900 p-2 transition hover:-translate-y-2 hover:border-red-600/50">
-                    <div class="relative overflow-hidden rounded-xl bg-black">
-                        <img src="{{ asset('images/pengurus/psdm.png') }}" alt="PSDM"
-                            class="h-64 w-full object-contain object-center transition duration-500 group-hover:scale-110"
-                            draggable="false" />
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60">
-                        </div>
-                        <div class="absolute bottom-4 left-4">
-                            <h3 class="text-xl font-bold text-white transition group-hover:text-red-500">
-                                PSDM
-                            </h3>
-                            <p class="text-xs text-gray-400">
-                                Pengembangan Sumber Daya Mahasiswa
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
+                                <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
-                <div
-                    class="group relative rounded-2xl border border-white/10 bg-gray-900 p-2 transition hover:-translate-y-2 hover:border-red-600/50">
-                    <div class="relative overflow-hidden rounded-xl bg-black">
-                        <img src="{{ asset('images/pengurus/kominfo.png') }}" alt="Kominfo"
-                            class="h-64 w-full object-contain object-center transition duration-500 group-hover:scale-110"
-                            draggable="false" />
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60">
-                        </div>
-                        <div class="absolute bottom-4 left-4">
-                            <h3 class="text-xl font-bold text-white transition group-hover:text-red-500">
-                                KOMINFO
-                            </h3>
-                            <p class="text-xs text-gray-400">
-                                Komunikasi & Informasi
-                            </p>
+                                <div
+                                    class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                    <div class="flex gap-3">
+                                        <a href="#"
+                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
+                                            <i class="fa-brands fa-instagram text-sm"></i>
+                                        </a>
+                                        <a href="#"
+                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-blue-600">
+                                            <i class="fa-brands fa-linkedin-in text-sm"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 px-2 pb-2">
+                                <h3
+                                    class="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-red-400">
+                                    {{ $member->name }}
+                                </h3>
+
+                                <div class="mt-2 flex items-center justify-between">
+                                    <span @class([
+                                        'rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase',
+                                        'bg-red-500/20 text-red-500' =>
+                                            str_contains(strtolower($member->position), 'kepala') ||
+                                            str_contains(strtolower($member->position), 'kabid'),
+                                        'bg-gray-500/10 text-gray-400' =>
+                                            !str_contains(strtolower($member->position), 'kepala') &&
+                                            !str_contains(strtolower($member->position), 'kabid'),
+                                    ])>
+                                        {{ $member->position }}
+                                    </span>
+
+                                    <i
+                                        class="fa-solid fa-id-card text-gray-600 opacity-0 transition-opacity group-hover:opacity-100"></i>
+                                </div>
+                            </div>
+
+                            <div
+                                class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
             </div>
         </div>
+
+        <div class="mt-32 mb-12 flex w-full items-center justify-center">
+            <div class="h-px w-16 bg-gradient-to-r from-transparent to-red-600"></div>
+            <span
+                class="rounded-full border border-red-900/30 bg-gray-900 px-6 py-2 text-sm font-bold tracking-widest text-red-500 uppercase shadow-lg shadow-red-900/10">
+                Bidang
+            </span>
+            <div class="h-px w-16 bg-gradient-to-l from-transparent to-red-600"></div>
+        </div>
+
+        <div class="relative z-10 container mx-auto mt-28 px-4 lg:px-8">
+            @php
+                $nonDepartmentHeads = $members->filter(function ($member) {
+                    return !str_starts_with(strtolower($member->position), 'kepala') &&
+                        !in_array($member->position, [
+                            'Ketua Himpunan',
+                            'Wakil Ketua Himpunan',
+                            'Sekretaris',
+                            'Kesekretariatan',
+                            'Bendahara',
+                            'Bendahara 2',
+                        ]);
+                });
+            @endphp
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-8">
+                @foreach ($nonDepartmentHeads as $member)
+                    <div class="group relative flex flex-col items-center">
+                        <div
+                            class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
+
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
+                                <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
+
+                                <div
+                                    class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                    <div class="flex gap-3">
+                                        <a href="#"
+                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
+                                            <i class="fa-brands fa-instagram text-sm"></i>
+                                        </a>
+                                        <a href="#"
+                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-blue-600">
+                                            <i class="fa-brands fa-linkedin-in text-sm"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 px-2 pb-2">
+                                <h3
+                                    class="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-red-400">
+                                    {{ $member->name }}
+                                </h3>
+
+                                <div class="mt-2 flex items-center justify-between">
+                                    <span
+                                        class="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-red-500/20 text-red-500">
+                                        {{ $member->position }}
+                                    </span>
+
+                                    <i
+                                        class="fa-solid fa-id-card text-gray-600 opacity-0 transition-opacity group-hover:opacity-100"></i>
+                                </div>
+                            </div>
+
+                            <div
+                                class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        @if ($members->whereNotIn('position', ['Ketua Himpunan', 'Wakil Ketua Himpunan', 'Sekretaris', 'Bendahara'])->isEmpty())
+            <div
+                class="mt-8 flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/5 py-12 text-center">
+                <div class="mb-4 text-4xl text-gray-600">
+                    <i class="fa-solid fa-users-slash"></i>
+                </div>
+                <p class="text-gray-500">Belum ada data pengurus departemen untuk ditampilkan.</p>
+            </div>
+        @endif
     </div>
-
-    <style>
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-
-        .rotate-y-2 {
-            transform: rotateY(5deg);
-        }
-    </style>
-
-    <script>
-        // Opsional: Jika ingin animasi atau logic tambahan saat ganti periode
-    </script>
 @endsection
