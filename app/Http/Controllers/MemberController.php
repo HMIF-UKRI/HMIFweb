@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Departemen;
 use App\Models\Member;
+use App\Models\Departemen;
 use App\Models\OrganizationPeriods;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,101 +11,72 @@ use Illuminate\Support\Str;
 
 class MemberController extends Controller
 {
-
     public function index()
     {
-        $members = Member::with(['organizationPeriod', 'department'])->get();
+        $members = Member::with(['organizationPeriod', 'department'])
+            ->latest()
+            ->paginate(10);
+
         return view('page.member.index', compact('members'));
     }
 
     public function create()
     {
-        $member = Member::all();
-        $organizationPeriods = OrganizationPeriods::all();
-        $departments = Departemen::all();
-        return view('page.member.create', compact([
-            'member',
-            'organizationPeriods',
-            'departments'
-        ]));
+        $organizationPeriods = OrganizationPeriods::orderBy('name')->get();
+        $departments = Departemen::orderBy('name')->get();
+
+        return view('page.member.create', compact('organizationPeriods', 'departments'));
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:50',
-            'student_id_number' => 'required|string|max:20|unique:members',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
-            'position' => 'required|string|max:50',
-            'organization_period_id' => 'required',
-            'department_id' => 'required',
+        $validated = $request->validate([
+            'name'                   => 'required|string|max:255',
+            'student_id_number'      => 'required|string|max:20|unique:members,student_id_number',
+            'image'                  => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'position'               => 'required|string|max:255',
+            'organization_period_id' => 'required|exists:organization_periods,id',
+            'department_id'          => 'required|exists:departemens,id',
         ]);
 
-
-        $member = new Member();
-        $member->name = $validatedData['name'];
-        $member->student_id_number = $validatedData['student_id_number'];
-        $member->position = $validatedData['position'];
-        $member->organization_period_id = $validatedData['organization_period_id'];
-        $member->department_id = $validatedData['department_id'];
-
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = Str::slug($validatedData['student_id_number']) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('photos/member', $fileName, 'public');
-            $member->image = $path;
-        } else {
-            $member->image = null;
+            $validated['image'] = $this->uploadImage($request->file('image'), $validated['student_id_number']);
         }
 
-        try {
-            $member->save();
+        Member::create($validated);
 
-            return redirect()->route('organization.index')->with('success', 'Data pengurus berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menambahkan data pengurus: ' . $e->getMessage(),
-            ], 500);
-        }
+        return redirect()->route('member.index')->with('success', 'Anggota berhasil ditambahkan!');
     }
 
     public function edit(Member $member)
     {
         $organizationPeriods = OrganizationPeriods::all();
         $departments = Departemen::all();
-        return view('page.member.edit', compact([
-            'member',
-            'organizationPeriods',
-            'departments'
-        ]));
+
+        return view('page.member.edit', compact('member', 'organizationPeriods', 'departments'));
     }
 
     public function update(Request $request, Member $member)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:50',
-            'student_id_number' => 'required|string|max:20|unique:members,student_id_number,' . $member->id,
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+        $validated = $request->validate([
+            'name'                   => 'required|string|max:255',
+            'student_id_number'      => 'required|string|max:20|unique:members,student_id_number,' . $member->id,
+            'image'                  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'position'               => 'required|string|max:255',
+            'organization_period_id' => 'required|exists:organization_periods,id',
+            'department_id'          => 'required|exists:departemens,id',
         ]);
-
-        $member->name = $validatedData['name'];
-        $member->student_id_number = $validatedData['student_id_number'];
 
         if ($request->hasFile('image')) {
             if ($member->image) {
                 Storage::disk('public')->delete($member->image);
             }
-
-            $file = $request->file('image');
-            $fileName = Str::slug($validatedData['student_id_number']) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('photos/member', $fileName, 'public');
-            $member->image = $path;
+            $validated['image'] = $this->uploadImage($request->file('image'), $validated['student_id_number']);
         }
 
-        $member->save();
+        $member->update($validated);
 
-        return redirect()->route('member.index')->with('success', 'Data pengurus berhasil diperbarui!');
+        return redirect()->route('member.index')->with('success', 'Data anggota berhasil diperbarui!');
     }
 
     public function destroy(Member $member)
@@ -117,6 +87,12 @@ class MemberController extends Controller
 
         $member->delete();
 
-        return redirect()->route('member.index')->with('success', 'Data pengurus berhasil dihapus!');
+        return redirect()->route('member.index')->with('success', 'Anggota berhasil dihapus!');
+    }
+
+    private function uploadImage($file, $identifier)
+    {
+        $fileName = Str::slug($identifier) . '_' . time() . '.' . $file->getClientOriginalExtension();
+        return $file->storeAs('photos/member', $fileName, 'public');
     }
 }
