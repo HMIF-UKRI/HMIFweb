@@ -1,22 +1,19 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'HMIF UKRI - Home',
+            'description' =>
+                'Selamat datang di website resmi Himpunan Mahasiswa Teknik Informatika UKRI. Temukan informasi terbaru tentang kegiatan, pengurus, dan visi misi kami.',
+            'keywords' => 'hmif,ukri,himatif,hima,informatika,teknik informatika',
+            'url' => url()->current(),
+        ])
+    </x-slot>
 
-@section('meta')
-    @include('components._meta', [
-        'title' => 'HMIF UKRI - Home',
-        'description' =>
-            'Selamat datang di website resmi Himpunan Mahasiswa Teknik Informatika UKRI. Temukan informasi terbaru tentang kegiatan, pengurus, dan visi misi kami.',
-        'keywords' => 'hmif,ukri,himatif,hima,informatika,teknik informatika',
-        'url' => url()->current(),
-    ])
-@endsection
-
-@section('content')
     <div class="bg-white">
-        <!-- Hero Section -->
         @include('components.hero')
 
         <!-- Enhanced Divider Marquee -->
-        <div class="relative overflow-hidden bg-gradient-to-r from-red-950 via-red-900 to-red-950 py-6">
+        <div class="relative overflow-hidden bg-linear-to-r from-red-950 via-red-900 to-red-950 py-6">
             <!-- Animated Background Lines -->
             <div class="absolute inset-0 opacity-20">
                 <div class="animate-slide absolute h-full w-1 bg-white" style="left: 20%; animation-delay: 0s"></div>
@@ -26,7 +23,7 @@
             </div>
 
             <!-- Top Border -->
-            <div class="absolute top-0 right-0 left-0 h-px bg-gradient-to-r from-transparent via-red-400 to-transparent">
+            <div class="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-red-400 to-transparent">
             </div>
 
             <!-- Marquee Content -->
@@ -45,7 +42,8 @@
                                 <div class="h-2 w-2 animate-pulse rounded-full bg-red-400"></div>
                                 <div class="h-2 w-2 animate-pulse rounded-full bg-white" style="animation-delay: 0.2s">
                                 </div>
-                                <div class="h-2 w-2 animate-pulse rounded-full bg-red-400" style="animation-delay: 0.4s">
+                                <div class="h-2 w-2 animate-pulse rounded-full bg-red-400"
+                                    style="animation-delay: 0.4s">
                                 </div>
                             </div>
                             ONE FAMILY • ONE GOAL
@@ -80,7 +78,8 @@
                                 <div class="h-2 w-2 animate-pulse rounded-full bg-red-400"></div>
                                 <div class="h-2 w-2 animate-pulse rounded-full bg-white" style="animation-delay: 0.2s">
                                 </div>
-                                <div class="h-2 w-2 animate-pulse rounded-full bg-red-400" style="animation-delay: 0.4s">
+                                <div class="h-2 w-2 animate-pulse rounded-full bg-red-400"
+                                    style="animation-delay: 0.4s">
                                 </div>
                             </div>
                             ONE FAMILY • ONE GOAL
@@ -104,21 +103,19 @@
                 </div>
             </div>
 
-            <!-- Bottom Border -->
-            <div class="absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-red-400 to-transparent">
+            <div
+                class="absolute right-0 bottom-0 left-0 h-px bg-linear-to-r from-transparent via-red-400 to-transparent">
             </div>
         </div>
 
-        <!-- About Section -->
         @include('components.about')
 
-        <!-- BP Section -->
-        @include('components.pengurus')
+        {{-- Mengirim variabel $members ke component pengurus jika diperlukan --}}
+        @include('components.pengurus', ['members' => $members ?? []])
 
-        <!-- Activities Section -->
-        @include('components.activities')
+        {{-- Mengirim variabel $events ke component activities jika diperlukan --}}
+        @include('components.activities', ['events' => $events ?? []])
 
-        <!-- Gallery Section (COOMING SOON) -->
-        {{-- @include("components.galery") --}}
+        {{-- @include('components.galery') --}}
     </div>
-@endsection
+    </x-guest->

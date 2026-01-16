@@ -5,97 +5,69 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Departemen;
 use App\Models\Event;
-use App\Models\Member;
-use App\Models\OrganizationPeriods;
+use App\Models\Pengurus;
+use App\Models\PeriodeKepengurusan;
 use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
 {
-    public function home(Request $request)
+    public function home()
     {
-        $events = Event::latest()->take(3)->get();
+        $events = Event::with('category', 'media')
+            ->where('status', '!=', 'cancelled')
+            ->latest()
+            ->take(3)
+            ->get();
 
-        $positionOrder = [
-            'Ketua Himpunan',
-            'Wakil Ketua Himpunan',
-            'Sekretaris',
-            'Bendahara',
-        ];
+        $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
 
-        $members = Member::whereHas('organizationPeriod', function ($query) {
-            $query->where('is_current', true);
-        })
-            ->get()
-            ->sort(function ($a, $b) use ($positionOrder) {
-                $posA = array_search($a->position, $positionOrder);
-                $posB = array_search($b->position, $positionOrder);
+        $coreManagements = [];
+        if ($activePeriod) {
+            $coreManagements = Pengurus::with(['member.media', 'department'])
+                ->where('period_id', $activePeriod->id)
+                ->where('hierarchy_level', 1)
+                ->orderBy('id', 'asc')
+                ->get();
+        }
 
-                $posA = ($posA === false) ? 999 : $posA;
-                $posB = ($posB === false) ? 999 : $posB;
-
-                if ($posA === $posB) {
-                    return strnatcasecmp($a->name, $b->name);
-                }
-
-                return $posA <=> $posB;
-            })
-            ->take(4)
-            ->values();
-
-        return view('page.home', compact('members', 'events'));
+        return view('page.home', [
+            'events' => $events,
+            'members' => $coreManagements,
+            'activePeriod' => $activePeriod
+        ]);
     }
 
     public function index(Request $request)
     {
-        $allPeriods = OrganizationPeriods::orderBy('start_date', 'desc')->get();
-
+        $allPeriods = PeriodeKepengurusan::orderBy('start_date', 'desc')->get();
         $periodId = $request->get('period');
 
         if ($periodId) {
-            $activePeriod = OrganizationPeriods::find($periodId);
+            $activePeriod = PeriodeKepengurusan::find($periodId);
         } else {
-            $activePeriod = OrganizationPeriods::where('is_current', true)->first();
+            $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
         }
 
-        $members = collect();
+        $pengurus = collect();
         $activeDepartments = collect();
 
-        if ($activePeriod instanceof OrganizationPeriods) {
-            $positionOrder = [
-                'Ketua Himpunan',
-                'Wakil Ketua Himpunan',
-                'Sekretaris',
-                'Kesekretariatan',
-                'Bendahara',
-                'Bendahara 2',
-            ];
-
-            $activeDepartments = Departemen::whereHas('members', function ($query) use ($activePeriod) {
-                $query->where('organization_period_id', $activePeriod->id);
+        if ($activePeriod) {
+            $activeDepartments = Departemen::whereHas('pengurus', function ($query) use ($activePeriod) {
+                $query->where('period_id', $activePeriod->id);
             })->get();
 
-            foreach ($positionOrder as $position) {
-                $positionMembers = Member::where('organization_period_id', $activePeriod->id)
-                    ->where('position', $position)
-                    ->orderBy('name')
-                    ->get();
-
-                $members = $members->merge($positionMembers);
-            }
-
-            $otherMembers = Member::where('organization_period_id', $activePeriod->id)
-                ->whereNotIn('position', $positionOrder)
-                ->orderBy('name')
+            $pengurus = Pengurus::with(['member.media', 'department', 'bidang'])
+                ->where('period_id', $activePeriod->id)
+                ->orderBy('hierarchy_level', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
-
-            $members = $members->merge($otherMembers);
         }
 
         return view('page.struktur-pengurus', [
-            'members' => $members,
+            'pengurus'       => $pengurus,
             'currentPeriod' => $allPeriods,
-            'activePeriod' => $activePeriod,
-            'departments' => $activeDepartments,
+            'activePeriod'  => $activePeriod,
+            'departments'   => $activeDepartments,
         ]);
     }
 }

@@ -1,16 +1,14 @@
-@extends('layouts.app')
+<x-guest-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Struktur Pengurus - HMIF UKRI',
+            'description' => 'Struktur organisasi dan fungsionaris Himpunan Mahasiswa Teknik Informatika UKRI.',
+            'keywords' => 'struktur, pengurus, hmif, ukri, himatif, hima, informatika, organisasi',
+            'image' => asset('images/banner.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
 
-@section('meta')
-    @include('components._meta', [
-        'title' => 'Struktur Pengurus - HMIF UKRI',
-        'description' => 'Struktur organisasi dan fungsionaris Himpunan Mahasiswa Teknik Informatika UKRI.',
-        'keywords' => 'struktur, pengurus, hmif, ukri, himatif, hima, informatika, organisasi',
-        'image' => asset('images/banner.png'),
-        'url' => url()->current(),
-    ])
-@endsection
-
-@section('content')
     <div class="min-h-screen bg-gray-950 pb-20 font-sans text-white selection:bg-red-500 selection:text-white">
         <div class="pointer-events-none fixed inset-0 z-0 opacity-[0.03]"
             style="
@@ -45,11 +43,11 @@
 
                     <form action="{{ url()->current() }}" method="GET" class="w-full">
                         <select name="period" onchange="this.form.submit()"
-                            class="w-full cursor-pointer appearance-none rounded-lg bg-transparent px-4 py-3 text-center font-bold text-white focus:ring-0 focus:outline-none sm:text-left">
+                            class="w-full cursor-pointer appearance-none rounded-lg bg-transparent px-4 py-3 text-center font-bold text-white focus:ring-0 focus:outline-none sm:text-left text-xs">
                             @foreach ($currentPeriod as $period)
                                 <option value="{{ $period->id }}" class="bg-gray-900"
                                     {{ request('period') == $period->id || ($period->is_current && !request('period')) ? 'selected' : '' }}>
-                                    Kabinet {{ $period->name }}
+                                    {{ $period->cabinet_name == null ? $period->period_range : $period->cabinet_name }}
                                 </option>
                             @endforeach
                         </select>
@@ -61,13 +59,14 @@
                 </div>
             </div>
 
-            @if (isset($activePeriod) && $activePeriod->logo)
+            @if ($activePeriod->getFirstMediaUrl('cabinet_logo') != null)
                 <div class="animate-fade-in-up mt-12 mb-8">
-                    <img src="{{ asset('storage/' . $activePeriod->logo) }}" alt="Logo Kabinet {{ $activePeriod->name }}"
+                    <img src="{{ $activePeriod->getFirstMediaUrl('cabinet_logo', 'thumb') }}"
+                        alt="Logo Kabinet {{ $activePeriod->cabinet_name }}"
                         class="mx-auto h-32 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] transition duration-500 hover:scale-105 md:h-40"
                         draggable="false" />
                     <h2 class="mt-4 text-xl font-bold tracking-widest text-red-500 uppercase">
-                        Kabinet {{ $activePeriod->name }}
+                        Kabinet {{ $activePeriod->cabinet_name }}
                     </h2>
                 </div>
             @else
@@ -90,7 +89,7 @@
             </div>
 
             <div class="flex flex-col items-center justify-center px-4 md:px-0">
-                @forelse ($members->whereIn('position', ['Ketua Himpunan', 'Wakil Ketua Himpunan', 'Sekretaris', 'Kesekretariatan', 'Bendahara', 'Bendahara 2']) as $index => $member)
+                @forelse ($pengurus as $index => $pgrs)
                     <div
                         class="{{ $index % 2 == 0 ? 'md:flex-row' : 'md:flex-row-reverse' }} relative mb-16 flex w-full max-w-5xl flex-col items-center md:mb-12 md:items-start md:gap-12 lg:gap-20">
                         <div class="group perspective-1000 relative z-10 w-full md:w-[36%]">
@@ -98,19 +97,28 @@
                                 class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
                                 <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
-                                    <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
+                                    @php
+                                        $photoUrl = $pgrs->getFirstMediaUrl('avatars', 'thumb');
+                                        $defaultPhoto =
+                                            'https://ui-avatars.com/api/?name=' .
+                                            urlencode($pgrs->member->full_name) .
+                                            '&background=0D0D0D&color=fff';
+                                    @endphp
+                                    <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
                                         class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                         onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
                                     <div
                                         class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                         <div class="flex gap-3">
-                                            <a href="#"
+                                            <a href="{{ $pgrs->instagram_url }}"
                                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
                                                 <i class="fa-brands fa-instagram text-sm"></i>
                                             </a>
-                                            <a href="#"
-                                                class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-blue-600">
+                                            <a href="{{ $pgrs->linkedin_url }}"
+                                                class="flex
+                                                h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white
+                                                backdrop-blur hover:bg-blue-600">
                                                 <i class="fa-brands fa-linkedin-in text-sm"></i>
                                             </a>
                                         </div>
@@ -120,13 +128,13 @@
                                 <div class="mt-4 px-2 pb-2">
                                     <h3
                                         class="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-red-400">
-                                        {{ $member->name }}
+                                        {{ $pgrs->member->full_name }}
                                     </h3>
 
                                     <div class="mt-2 flex items-center justify-between">
                                         <span
                                             class="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-red-500/20 text-red-500">
-                                            {{ $member->position }}
+                                            {{ $pgrs->position }}
                                         </span>
 
                                         <i
@@ -179,27 +187,29 @@
 
         <div class="relative z-10 container mx-auto mt-28 px-4 lg:px-8">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:gap-8">
-                @foreach ($members->filter(function ($member) {
-            return str_starts_with(strtolower($member->position), 'kepala');
-        }) as $member)
+                @foreach ($pengurus->filter(function ($member) {
+        return $member->hierarchy_level === 2;
+    }) as $pgrs)
                     <div class="group relative flex flex-col items-center">
                         <div
                             class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
-                                <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
+                                <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
                                 <div
                                     class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                     <div class="flex gap-3">
-                                        <a href="#"
+                                        <a href="{{ $pgrs->instagram_url }}"
                                             class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
                                             <i class="fa-brands fa-instagram text-sm"></i>
                                         </a>
-                                        <a href="#"
-                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-blue-600">
+                                        <a href="{{ $pgrs->linkedin_url }}"
+                                            class="flex
+                                                h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white
+                                                backdrop-blur hover:bg-blue-600">
                                             <i class="fa-brands fa-linkedin-in text-sm"></i>
                                         </a>
                                     </div>
@@ -209,20 +219,20 @@
                             <div class="mt-4 px-2 pb-2">
                                 <h3
                                     class="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-red-400">
-                                    {{ $member->name }}
+                                    {{ $pgrs->member->full_name }}
                                 </h3>
 
                                 <div class="mt-2 flex items-center justify-between">
                                     <span @class([
                                         'rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase',
                                         'bg-red-500/20 text-red-500' =>
-                                            str_contains(strtolower($member->position), 'kepala') ||
-                                            str_contains(strtolower($member->position), 'kabid'),
+                                            str_contains(strtolower($pgrs->position), 'kepala') ||
+                                            str_contains(strtolower($pgrs->position), 'kabid'),
                                         'bg-gray-500/10 text-gray-400' =>
-                                            !str_contains(strtolower($member->position), 'kepala') &&
-                                            !str_contains(strtolower($member->position), 'kabid'),
+                                            !str_contains(strtolower($pgrs->position), 'kepala') &&
+                                            !str_contains(strtolower($pgrs->position), 'kabid'),
                                     ])>
-                                        {{ $member->position }}
+                                        {{ $pgrs->position }}
                                     </span>
 
                                     <i
@@ -250,39 +260,33 @@
 
         <div class="relative z-10 container mx-auto mt-28 px-4 lg:px-8">
             @php
-                $nonDepartmentHeads = $members->filter(function ($member) {
-                    return !str_starts_with(strtolower($member->position), 'kepala') &&
-                        !in_array($member->position, [
-                            'Ketua Himpunan',
-                            'Wakil Ketua Himpunan',
-                            'Sekretaris',
-                            'Kesekretariatan',
-                            'Bendahara',
-                            'Bendahara 2',
-                        ]);
+                $nonDepartmentHeads = $pengurus->filter(function ($member) {
+                    return $member->hierarchy_level === 3;
                 });
             @endphp
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-8">
-                @foreach ($nonDepartmentHeads as $member)
+                @foreach ($nonDepartmentHeads as $pgrs)
                     <div class="group relative flex flex-col items-center">
                         <div
                             class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
-                                <img src="{{ asset('storage/' . $member->image) }}" alt="{{ $member->name }}"
+                                <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
                                 <div
                                     class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                     <div class="flex gap-3">
-                                        <a href="#"
+                                        <a href="{{ $pgrs->member->instagram_url }}"
                                             class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
                                             <i class="fa-brands fa-instagram text-sm"></i>
                                         </a>
-                                        <a href="#"
-                                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-blue-600">
+                                        <a href="{{ $pgrs->member->linkedin_url }}"
+                                            class="flex
+                                                h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white
+                                                backdrop-blur hover:bg-blue-600">
                                             <i class="fa-brands fa-linkedin-in text-sm"></i>
                                         </a>
                                     </div>
@@ -292,7 +296,7 @@
                             <div class="mt-4 px-2 pb-2">
                                 <h3
                                     class="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-red-400">
-                                    {{ $member->name }}
+                                    {{ $pgrs->member->full_name }}
                                 </h3>
 
                                 <div class="mt-2 flex items-center justify-between">
@@ -314,15 +318,5 @@
                 @endforeach
             </div>
         </div>
-
-        @if ($members->whereNotIn('position', ['Ketua Himpunan', 'Wakil Ketua Himpunan', 'Sekretaris', 'Bendahara'])->isEmpty())
-            <div
-                class="mt-8 flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/5 py-12 text-center">
-                <div class="mb-4 text-4xl text-gray-600">
-                    <i class="fa-solid fa-users-slash"></i>
-                </div>
-                <p class="text-gray-500">Belum ada data pengurus departemen untuk ditampilkan.</p>
-            </div>
-        @endif
     </div>
-@endsection
+</x-guest-layout>

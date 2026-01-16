@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Departemen extends Model
 {
@@ -13,8 +14,13 @@ class Departemen extends Model
         'description',
     ];
 
-    public function members()
+    public function members(): HasMany
     {
         return $this->hasMany(Member::class, 'department_id');
+    }
+
+    public function pengurus(): HasMany
+    {
+        return $this->hasMany(Pengurus::class, 'department_id');
     }
 }

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('galleries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('member_id')->constrained('members')->onDelete('cascade');
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->string('image_path');
+            $table->boolean('is_featured')->default(false);
             $table->string('caption')->nullable();
             $table->timestamps();
         });

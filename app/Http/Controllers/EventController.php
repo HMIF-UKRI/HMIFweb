@@ -6,155 +6,129 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
-    public function index()
+    public function kegiatan(Request $request)
     {
-        $events = Event::with("eventCategory")->latest()->get();
+        $events = Event::with('category', 'media')->latest()->get()->map(function ($event) {
+            $event->thumbnail_url = $event->getFirstMediaUrl('thumbnail', 'thumb');
+            return $event;
+        });
 
-        return view('page.event.index', compact('events'));
+        $eventCategories = EventCategory::lazy();
+
+        return view('page.kegiatan', compact('events', 'eventCategories'));
     }
 
     public function show($slug)
     {
-        $event = Event::where('slug', $slug)->firstOrFail();
+        $event = Event::with(['category', 'media'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        $relatedEvents = Event::where('id', '!=', $event->id)
-            ->inRandomOrder()
+        $relatedEvents = Event::with(['category', 'media'])
+            ->where('event_category_id', $event->event_category_id)
+            ->where('id', '!=', $event->id)
+            ->where('status', '!=', 'cancelled')
+            ->latest()
             ->limit(3)
-            ->with('eventCategory')
             ->get();
 
         return view('page.event.show', compact('event', 'relatedEvents'));
     }
 
-    public function create()
+    public function index(Request $request)
     {
-        $events = Event::with("eventCategory")->latest()->get();
-        $eventCategories = EventCategory::orderBy('name')->get();
-        $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('page.event.create', compact('events', 'eventCategories', 'statuses'));
+        $query = Event::with('category', 'media')->latest()->get();
+
+        // Fitur Search & Filter
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('event_category_id', $request->category_id);
+        }
+
+        $events = $query->latest()->paginate(10);
+        $categories = EventCategory::all();
+
+        return view('admin.events.index', compact('events', 'categories'));
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            // 'slug' => 'string|max:255|unique:events,slug',
-            'description' => 'required|string',
-            'short_description' => 'nullable|string|max:250',
-            'thumbnail_path' => 'required|file|mimes:jpeg,png,jpg|max:2048',
-            'event_date' => 'required|date',
-            'location' => 'required|string|max:255',
-            'status' => 'required|in:berlangsung,rutin,selesai,dibatalkan',
-            'event_category_id' => 'required',
+        $validated = $request->validate([
+            'event_category_id' => 'required|exists:event_categories,id',
+            'title'             => 'required|string|max:255',
+            'description'       => 'required|string',
+            'event_date'        => 'required|date',
+            'location'          => 'required|string|max:255',
+            'status'            => 'required|in:upcoming,ongoing,completed,cancelled',
+            'thumbnail'         => 'required|image|max:2048',
         ]);
 
-        $event = new Event();
-        $event->title = $validatedData['title'];
-        $event->slug = Str::slug($validatedData['title'] . '-' . time());
-        $event->description = $validatedData['description'];
-        $event->short_description = $validatedData['short_description'];
-        $event->thumbnail_path = $validatedData['thumbnail_path'];
-        $event->event_date = $validatedData['event_date'];
-        $event->location = $validatedData['location'];
-        $event->status = $validatedData['status'];
-        $event->event_category_id = $validatedData['event_category_id'];
+        return DB::transaction(function () use ($request, $validated) {
+            // Slug otomatis & Unik
+            $slug = Str::slug($validated['title']);
+            $originalSlug = $slug;
+            $count = 1;
+            while (Event::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $count++;
+            }
+            $validated['slug'] = $slug;
 
-        if ($request->hasFile('thumbnail_path')) {
-            $file = $request->file('thumbnail_path');
-            $fileName = 'event_thumbnail_' . time() . '_' . Str::slug($validatedData['title']) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('event/thumbnails', $fileName, 'public');
-            $event->thumbnail_path = $path;
-        }
+            $event = Event::create($validated);
 
-        $event->save();
+            // Spatie Media Library
+            if ($request->hasFile('thumbnail')) {
+                $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
+            }
 
-        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil ditambahkan.');
-    }
-
-    public function edit(Event $event)
-    {
-        if (!$event) {
-            return redirect()->route('event.index')->with('error', 'Kegiatan tidak ditemukan.');
-        }
-        $eventCategories = EventCategory::orderBy('name')->get();
-        $statuses = ['upcoming' => 'Upcoming', 'routine' => 'Routine', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
-        return view('page.event.edit', compact('event', 'eventCategories', 'statuses'));
+            return redirect()->route('admin.events.index')->with('success', 'Event berhasil dibuat.');
+        });
     }
 
     public function update(Request $request, Event $event)
     {
-        try {
-            $validatedData = $request->validate([
-                'title' => 'required|string|max:255',
-                // 'slug' => 'string|max:255|unique:events,slug',
-                'description' => 'required|string',
-                'short_description' => 'nullable|string|max:250',
-                'thumbnail_path' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
-                'event_date' => 'required|date',
-                'location' => 'required|string|max:255',
-                'status' => 'required|in:berlangsung,rutin,selesai,dibatalkan',
-                'event_category_id' => 'required',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->validator)
-                ->withInput();
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', $e->getMessage())
-                ->withInput();
-        }
+        $validated = $request->validate([
+            'event_category_id' => 'required|exists:event_categories,id',
+            'title'             => 'required|string|max:255',
+            'description'       => 'required|string',
+            'event_date'        => 'required|date',
+            'location'          => 'required|string|max:255',
+            'status'            => 'required|in:upcoming,ongoing,completed,cancelled',
+            'thumbnail'         => 'nullable|image|max:2048',
+        ]);
 
-        $event->title = $validatedData['title'];
-        if ($request->title !== $event->getOriginal('title')) {
-            $event->slug = Str::slug($validatedData['title'], '-');
-            // Pastikan slug unik jika diubah
-            $count = 2;
-            $originalSlug = $event->slug;
-            while (Event::where('slug', $event->slug)->where('id', '!=', $event->id)->exists()) {
-                $event->slug = "{$originalSlug}-{$count}";
-                $count++;
+        if ($request->title !== $event->title) {
+            $slug = Str::slug($request->title);
+            $originalSlug = $slug;
+            $count = 1;
+            while (Event::where('slug', $slug)->where('id', '!=', $event->id)->exists()) {
+                $slug = $originalSlug . '-' . $count++;
             }
-        }
-        $event->description = $validatedData['description'];
-        $event->short_description = $validatedData['short_description'];
-        $event->event_date = $validatedData['event_date'];
-        $event->location = $validatedData['location'];
-        $event->status = $validatedData['status'];
-        $event->event_category_id = $validatedData['event_category_id'];
-
-        // Handle file upload untuk thumbnail jika ada file baru
-        if ($request->hasFile('thumbnail_path')) {
-            try {
-                $imageName = 'event_thumbnail_' . time() . '_' . Str::slug($validatedData['title']) . '.' . $request->thumbnail_path->extension();
-                $path = $request->thumbnail_path->storeAs('event/thumbnails', $imageName, 'public');
-                $event->thumbnail_path = $path;
-            } catch (\Exception $e) {
-                return redirect()->back()
-                    ->with('error', 'Gagal mengunggah file: ' . $e->getMessage())
-                    ->withInput();
-            }
+            $event->slug = $slug;
         }
 
-        $event->save();
+        $event->update($validated);
 
-        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil diperbarui.');
+        if ($request->hasFile('thumbnail')) {
+            $event->syncAssets('thumbnail', 'thumbnails'); // Custom helper atau method bawaan Spatie
+            $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
+        }
+
+        return redirect()->route('admin.events.index')->with('success', 'Event diperbarui.');
     }
 
     public function destroy(Event $event)
     {
-        if ($event->thumbnail_path) {
-            Storage::disk('public')->delete($event->thumbnail_path);
-        }
-
-
+        // Media Library otomatis menghapus file fisik
         $event->delete();
-
-        return redirect()->route('event.index')->with('success', 'Kegiatan berhasil dihapus.');
+        return redirect()->back()->with('success', 'Event dihapus.');
     }
 }

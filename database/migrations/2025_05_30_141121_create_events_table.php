@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('event_category_id')->nullable()->constrained('event_categories')->nullOnDelete();
+            $table->foreignId('member_id')->nullable()->constrained('members')->nullOnDelete();
+            $table->foreignId('period_id')->nullable()->constrained('periods')->nullOnDelete();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description');
-            $table->string('short_description')->nullable();
-            $table->string('thumbnail_path')->nullable();
             $table->dateTime('event_date');
             $table->string('location')->nullable();
-            $table->enum('status', ['upcoming', 'routine', 'completed', 'cancelled'])->default('berlangsung');
-            $table->foreignId('event_category_id')->nullable()->constrained('event_categories')->nullOnDelete();
+            $table->enum('status', ['upcoming', 'ongoing', 'completed', 'cancelled'])->default('upcoming');
             $table->timestamps();
         });
     }

@@ -6,16 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-    protected $table = 'galleries';
-
     protected $fillable = [
+        'member_id',
         'event_id',
-        'image_path',
+        'is_featured',
         'caption',
     ];
 
-    public function events()
+    public function event()
     {
         return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'member_id');
     }
 }

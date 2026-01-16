@@ -10,8 +10,10 @@ class BlogCategory extends Model
     /** @use HasFactory<\Database\Factories\BlogCategoryFactory> */
     use HasFactory;
 
-    protected $table = 'blog_categories';
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = [
+        'name',
+        'slug'
+    ];
 
     public function posts()
     {

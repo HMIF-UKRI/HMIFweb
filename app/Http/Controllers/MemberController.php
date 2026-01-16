@@ -4,95 +4,87 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\Departemen;
-use App\Models\OrganizationPeriods;
+use App\Models\PeriodeKepengurusan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class MemberController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $members = Member::with(['organizationPeriod', 'department'])
-            ->latest()
-            ->paginate(10);
+        $query = Member::with(['user', 'department', 'generation', 'media']);
 
-        return view('page.member.index', compact('members'));
-    }
+        // Filter & Search
+        if ($request->filled('search')) {
+            $query->where('full_name', 'like', '%' . $request->search . '%')
+                ->orWhere('npm', 'like', '%' . $request->search . '%');
+        }
 
-    public function create()
-    {
-        $organizationPeriods = OrganizationPeriods::orderBy('name')->get();
-        $departments = Departemen::orderBy('name')->get();
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
 
-        return view('page.member.create', compact('organizationPeriods', 'departments'));
+        $members = $query->latest()->paginate(10);
+        $departments = Departemen::all();
+
+        return view('admin.members.index', compact('members', 'departments'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name'                   => 'required|string|max:255',
-            'student_id_number'      => 'required|string|max:20|unique:members,student_id_number',
-            'image'                  => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'position'               => 'required|string|max:255',
-            'organization_period_id' => 'required|exists:organization_periods,id',
-            'department_id'          => 'required|exists:departemens,id',
+        $request->validate([
+            'email'         => 'required|email|unique:users,email',
+            'password'      => 'required|min:8',
+            'full_name'     => 'required|string|max:100',
+            'npm'           => 'required|unique:members,npm',
+            'department_id' => 'required|exists:departments,id',
+            'generation_id' => 'required|exists:generations,id',
+            'photo'         => 'nullable|image|max:2048',
+            'role'          => 'required|exists:roles,name'
         ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $this->uploadImage($request->file('image'), $validated['student_id_number']);
-        }
+        return DB::transaction(function () use ($request) {
+            // 1. Buat Akun User
+            $user = User::create([
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'no_hp'    => $request->no_hp,
+            ]);
 
-        Member::create($validated);
+            $user->assignRole($request->role);
 
-        return redirect()->route('member.index')->with('success', 'Anggota berhasil ditambahkan!');
-    }
+            // 2. Buat Profil Member
+            $member = Member::create([
+                'user_id'       => $user->id,
+                'department_id' => $request->department_id,
+                'generation_id' => $request->generation_id,
+                'full_name'     => $request->full_name,
+                'npm'           => $request->npm,
+                'is_active'     => true,
+            ]);
 
-    public function edit(Member $member)
-    {
-        $organizationPeriods = OrganizationPeriods::all();
-        $departments = Departemen::all();
-
-        return view('page.member.edit', compact('member', 'organizationPeriods', 'departments'));
-    }
-
-    public function update(Request $request, Member $member)
-    {
-        $validated = $request->validate([
-            'name'                   => 'required|string|max:255',
-            'student_id_number'      => 'required|string|max:20|unique:members,student_id_number,' . $member->id,
-            'image'                  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'position'               => 'required|string|max:255',
-            'organization_period_id' => 'required|exists:organization_periods,id',
-            'department_id'          => 'required|exists:departemens,id',
-        ]);
-
-        if ($request->hasFile('image')) {
-            if ($member->image) {
-                Storage::disk('public')->delete($member->image);
+            // 3. Media Library (Ganti Storage::storeAs manual)
+            if ($request->hasFile('photo')) {
+                $member->addMediaFromRequest('photo')->toMediaCollection('avatars');
             }
-            $validated['image'] = $this->uploadImage($request->file('image'), $validated['student_id_number']);
-        }
 
-        $member->update($validated);
-
-        return redirect()->route('member.index')->with('success', 'Data anggota berhasil diperbarui!');
+            return redirect()->route('members.index')->with('success', 'Member dan Akun berhasil dibuat.');
+        });
     }
 
     public function destroy(Member $member)
     {
-        if ($member->image) {
-            Storage::disk('public')->delete($member->image);
-        }
+        return DB::transaction(function () use ($member) {
+            // Menghapus member akan menghapus user karena onDelete('cascade') di database
+            // Media juga otomatis dihapus oleh Spatie Media Library
+            $member->user->delete();
+            $member->delete();
 
-        $member->delete();
-
-        return redirect()->route('member.index')->with('success', 'Anggota berhasil dihapus!');
-    }
-
-    private function uploadImage($file, $identifier)
-    {
-        $fileName = Str::slug($identifier) . '_' . time() . '.' . $file->getClientOriginalExtension();
-        return $file->storeAs('photos/member', $fileName, 'public');
+            return redirect()->back()->with('success', 'Member berhasil dihapus.');
+        });
     }
 }

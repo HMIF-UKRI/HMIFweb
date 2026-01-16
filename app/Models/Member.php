@@ -4,29 +4,60 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Member extends Model
+class Member extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $table = 'members';
 
     protected $fillable = [
-        'name',
-        'student_id_number',
-        'image',
-        'position',
-        'organization_period_id',
+        'user_id',
         'department_id',
+        'generation_id',
+        'full_name',
+        'npm',
+        'is_active',
+        'instagram_url',
+        'linkedin_url',
     ];
 
-    public function organizationPeriod()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(OrganizationPeriods::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function department()
+    public function department(): BelongsTo
     {
-        return $this->belongsTo(Departemen::class);
+        return $this->belongsTo(Departemen::class, 'department_id');
+    }
+
+    public function generation(): BelongsTo
+    {
+        return $this->belongsTo(Angkatan::class, 'generation_id');
+    }
+
+    public function pengurus(): HasMany
+    {
+        return $this->hasMany(Pengurus::class, 'member_id');
+    }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendances::class, 'member_id');
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(368)
+            ->height(232)
+            ->sharpen(10)
+            ->nonOptimized();
     }
 }

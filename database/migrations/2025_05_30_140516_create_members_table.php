@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->string('student_id_number', 20)->unique();
-            $table->string('image');
-            $table->string('position');
-            $table->foreignId('organization_period_id')->constrained('organization_periods', 'id')->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departments', 'id')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
+            $table->foreignId('generation_id')->constrained('generations');
+            $table->string('full_name', 100);
+            $table->string('npm', 20)->unique();
+            $table->boolean('is_active')->default(true);
+            $table->string('instagram_url')->nullable();
+            $table->string('linkedin_url')->nullable();
             $table->timestamps();
         });
     }
