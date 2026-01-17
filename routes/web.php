@@ -54,7 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:super-admin|pengurus'])->prefix('admin')->name('admin.')->group(function () {
 
         // Master Data (Hanya Super Admin)
-        Route::middleware(['role:super-admin'])->group(function () {
+        Route::middleware(['role:super-admin|pengurus'])->group(function () {
             Route::resource('departments', DepartemenController::class);
             Route::resource('bidangs', BidangController::class);
             Route::resource('periods', PeriodeKepengurusanController::class);

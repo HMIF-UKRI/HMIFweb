@@ -9,8 +9,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class MemberController extends Controller
 {
@@ -18,7 +16,6 @@ class MemberController extends Controller
     {
         $query = Member::with(['user', 'department', 'generation', 'media']);
 
-        // Filter & Search
         if ($request->filled('search')) {
             $query->where('full_name', 'like', '%' . $request->search . '%')
                 ->orWhere('npm', 'like', '%' . $request->search . '%');
@@ -31,7 +28,7 @@ class MemberController extends Controller
         $members = $query->latest()->paginate(10);
         $departments = Departemen::all();
 
-        return view('admin.members.index', compact('members', 'departments'));
+        return view('admin.member.index', compact('members', 'departments'));
     }
 
     public function store(Request $request)
@@ -48,7 +45,6 @@ class MemberController extends Controller
         ]);
 
         return DB::transaction(function () use ($request) {
-            // 1. Buat Akun User
             $user = User::create([
                 'email'    => $request->email,
                 'password' => Hash::make($request->password),
@@ -57,7 +53,6 @@ class MemberController extends Controller
 
             $user->assignRole($request->role);
 
-            // 2. Buat Profil Member
             $member = Member::create([
                 'user_id'       => $user->id,
                 'department_id' => $request->department_id,
@@ -67,7 +62,6 @@ class MemberController extends Controller
                 'is_active'     => true,
             ]);
 
-            // 3. Media Library (Ganti Storage::storeAs manual)
             if ($request->hasFile('photo')) {
                 $member->addMediaFromRequest('photo')->toMediaCollection('avatars');
             }
@@ -79,8 +73,6 @@ class MemberController extends Controller
     public function destroy(Member $member)
     {
         return DB::transaction(function () use ($member) {
-            // Menghapus member akan menghapus user karena onDelete('cascade') di database
-            // Media juga otomatis dihapus oleh Spatie Media Library
             $member->user->delete();
             $member->delete();
 

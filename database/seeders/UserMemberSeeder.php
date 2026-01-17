@@ -7,7 +7,6 @@ use App\Models\Member;
 use App\Models\Pengurus;
 use App\Models\Angkatan;
 use App\Models\Bidang;
-use App\Models\Departemen;
 use App\Models\PeriodeKepengurusan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;

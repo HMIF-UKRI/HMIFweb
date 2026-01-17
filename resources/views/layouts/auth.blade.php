@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-p scroll-pt-20">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -9,21 +9,9 @@
 </head>
 
 <body class="antialiased bg-dark font-poppins text-white">
-    <x-navbar />
-
-    @isset($header)
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header>
-    @endisset
-
     <main>
         {{ $slot }}
     </main>
-
-    <x-footer />
 
     @stack('script')
     <script src="https://kit.fontawesome.com/a9ea8e1647.js" crossorigin="anonymous"></script>
