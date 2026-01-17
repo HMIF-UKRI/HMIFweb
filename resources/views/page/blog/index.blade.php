@@ -5,7 +5,6 @@
             'description' =>
                 'Halaman ini berisi blog HMIF UKRI untuk menambah wawasan mahasiswa teknik informatika dalam bidang informatika dan umum',
             'keywords' => 'blog hmif, hmif, hmif artikel, artikel',
-            'image' => $blog->getFirstMediaUrl('blog_thumbnails'),
             'url' => url()->current(),
         ])
     </x-slot>
