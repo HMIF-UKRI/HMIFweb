@@ -1,10 +1,9 @@
 <section id="activities" class="relative overflow-hidden bg-gray-950 py-20 text-white">
     <div
-        class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]">
+        class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]">
     </div>
 
-    <div
-        class="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-red-900 to-transparent opacity-50">
+    <div class="absolute top-0 left-0 h-px w-full bg-linear-to-r from-transparent via-red-900 to-transparent opacity-50">
     </div>
     <div class="absolute right-0 bottom-0 -mr-20 -mb-20 h-96 w-96 rounded-full bg-red-900/10 blur-3xl"></div>
 
@@ -14,7 +13,7 @@
                 Program
                 <span class="text-red-600">Kerja</span>
             </h2>
-            <div class="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-red-900 to-red-600"></div>
+            <div class="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-red-900 to-red-600"></div>
             <p class="mx-auto mt-4 max-w-2xl text-gray-400">
                 Agenda dan aktivitas terbaru yang dilaksanakan oleh HMIF untuk meningkatkan kualitas mahasiswa.
             </p>
@@ -35,7 +34,7 @@
                             class="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                             loading="lazy" />
 
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent">
+                        <div class="absolute inset-0 bg-linear-to-t from-gray-900 via-gray-900/20 to-transparent">
                         </div>
 
                         <div class="absolute top-4 right-4">

@@ -45,10 +45,11 @@ class Pengurus extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('thumb')
-            ->width(368)
-            ->height(232)
+        $this->addMediaConversion('card')
+            ->width(600)
+            ->height(800)
             ->sharpen(10)
+            ->quality(80)
             ->nonOptimized();
     }
 }

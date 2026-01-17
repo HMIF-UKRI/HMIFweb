@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('period_range', 100);
             $table->text('vision');
             $table->text('mission');
-            $table->string('cabinet_logo');
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('is_current')->default(false);

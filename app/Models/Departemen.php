@@ -23,4 +23,9 @@ class Departemen extends Model
     {
         return $this->hasMany(Pengurus::class, 'department_id');
     }
+
+    public function bidang(): HasMany
+    {
+        return $this->hasMany(Bidang::class, 'department_id');
+    }
 }

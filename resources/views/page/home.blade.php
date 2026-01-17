@@ -12,9 +12,7 @@
     <div class="bg-white">
         @include('components.hero')
 
-        <!-- Enhanced Divider Marquee -->
         <div class="relative overflow-hidden bg-linear-to-r from-red-950 via-red-900 to-red-950 py-6">
-            <!-- Animated Background Lines -->
             <div class="absolute inset-0 opacity-20">
                 <div class="animate-slide absolute h-full w-1 bg-white" style="left: 20%; animation-delay: 0s"></div>
                 <div class="animate-slide absolute h-full w-1 bg-white" style="left: 40%; animation-delay: 0.5s"></div>
@@ -22,11 +20,9 @@
                 <div class="animate-slide absolute h-full w-1 bg-white" style="left: 80%; animation-delay: 1.5s"></div>
             </div>
 
-            <!-- Top Border -->
             <div class="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-red-400 to-transparent">
             </div>
 
-            <!-- Marquee Content -->
             <div class="relative flex overflow-hidden">
                 <div class="animate-marquee flex whitespace-nowrap">
                     <div class="flex items-center gap-8 px-4">
@@ -64,7 +60,6 @@
                             KABINET METAFORSA
                         </span>
                     </div>
-                    <!-- Duplicate for seamless loop -->
                     <div class="flex items-center gap-8 px-4">
                         <span class="flex items-center gap-3 text-lg font-bold text-white">
                             <svg class="h-5 w-5 text-red-300" fill="currentColor" viewBox="0 0 20 20">
@@ -97,7 +92,7 @@
                                 <path
                                     d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z" />
                             </svg>
-                            KABINET METAFORSA 2024
+                            KABINET {{ $activePeriod->cabinet_name }}
                         </span>
                     </div>
                 </div>
@@ -110,11 +105,9 @@
 
         @include('components.about')
 
-        {{-- Mengirim variabel $members ke component pengurus jika diperlukan --}}
-        @include('components.pengurus', ['members' => $members ?? []])
+        @include('components.pengurus')
 
-        {{-- Mengirim variabel $events ke component activities jika diperlukan --}}
-        @include('components.activities', ['events' => $events ?? []])
+        @include('components.activities')
 
         {{-- @include('components.galery') --}}
     </div>

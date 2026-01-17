@@ -1,9 +1,9 @@
 <section id="about" class="relative overflow-hidden bg-gray-950 py-20 lg:py-28">
     <div
-        class="pointer-events-none absolute top-0 right-0 -mt-40 -mr-40 h-[500px] w-[500px] rounded-full bg-red-900/20 opacity-70 blur-3xl filter">
+        class="pointer-events-none absolute top-0 right-0 -mt-40 -mr-40 h-125 w-125 rounded-full bg-red-900/20 opacity-70 blur-3xl filter">
     </div>
     <div
-        class="pointer-events-none absolute bottom-0 left-0 -mb-40 -ml-40 h-[500px] w-[500px] rounded-full bg-black/80 blur-3xl filter">
+        class="pointer-events-none absolute bottom-0 left-0 -mb-40 -ml-40 h-125 w-125 rounded-full bg-black/80 blur-3xl filter">
     </div>
 
     <div class="relative container mx-auto px-6 md:px-12">
@@ -19,12 +19,12 @@
             <div class="w-full lg:sticky lg:top-24 lg:w-1/2">
                 <div class="group relative rounded-2xl">
                     <div
-                        class="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-red-900 to-black opacity-50 blur-lg transition duration-500 group-hover:opacity-100">
+                        class="absolute -inset-1 rounded-3xl bg-linear-to-tr from-red-900 to-black opacity-50 blur-lg transition duration-500 group-hover:opacity-100">
                     </div>
 
                     <div class="relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl ring-1 ring-red-900/50">
                         <img alt="Banner HMIF" src="/images/banner.png"
-                            class="h-40 w-full object-cover object-center transition duration-700 group-hover:scale-105 sm:h-72 lg:aspect-[4/3]" />
+                            class="h-40 w-full object-cover object-center transition duration-700 group-hover:scale-105 sm:h-72 lg:aspect-4/3" />
                     </div>
                 </div>
 

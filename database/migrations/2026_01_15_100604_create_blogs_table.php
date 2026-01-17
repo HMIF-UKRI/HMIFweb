@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug', 100);
             $table->string('summary')->nullable();
+            $table->text('content');
             $table->integer('views_count')->default(0)->nullable();
-            $table->enum('status', ['Draft', 'Published']);
+            $table->enum('status', ['draft', 'published']);
             $table->timestamps();
         });
     }

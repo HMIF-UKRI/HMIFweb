@@ -13,19 +13,19 @@
         </div>
 
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            @forelse ($members as $pengurus)
+            @forelse ($pengurus as $pgrs)
                 <div
                     class="group relative rounded-2xl border border-red-900/30 bg-gray-900/50 backdrop-blur-sm transition duration-500 hover:-translate-y-2 hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)]">
                     <div class="relative h-72 w-full overflow-hidden rounded-t-2xl">
                         @php
-                            $photoUrl = $pengurus->member->getFirstMediaUrl('avatars', 'thumb');
+                            $photoUrl = $pgrs->getFirstMediaUrl('foto_pengurus', 'card');
                             $defaultPhoto =
                                 'https://ui-avatars.com/api/?name=' .
-                                urlencode($pengurus->member->full_name) .
+                                urlencode($pgrs->member->full_name) .
                                 '&background=1f2937&color=fff';
                         @endphp
 
-                        <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pengurus->member->full_name }}"
+                        <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
                             class="h-full w-full object-cover object-center grayscale-30 transition duration-700 group-hover:scale-110 group-hover:grayscale-0"
                             loading="lazy" />
 
@@ -44,12 +44,12 @@
                         </div>
 
                         <h3 class="relative text-lg font-bold text-white transition-colors group-hover:text-red-50">
-                            {{ $pengurus->member->full_name }}
+                            {{ $pgrs->member->full_name }}
                         </h3>
 
                         <p
                             class="relative mt-1 text-sm font-medium tracking-wider text-red-500 uppercase group-hover:text-red-400">
-                            {{ $pengurus->position }}
+                            {{ $pgrs->position }}
                         </p>
                     </div>
                 </div>

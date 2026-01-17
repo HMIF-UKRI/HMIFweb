@@ -22,9 +22,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [OrganizationController::class, 'home'])->name('home');
 Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name('struktur-pengurus');
+
 Route::get('/kegiatan', [EventController::class, 'kegiatan'])->name('kegiatan');
 Route::get('/event', [EventController::class, 'index'])->name('events.index');
 Route::get('/event/{event:slug}', [EventController::class, 'show'])->name('events.show');
+
+Route::resource('blog', BlogController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +65,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Manajemen Organisasi & Konten
         Route::resource('managements', PengurusController::class);
         Route::resource('events', EventController::class)->except(['index', 'show']);
-        Route::resource('blogs', BlogController::class);
 
         // Manajemen Absensi
         Route::get('events/{event}/attendances', [AttendanceController::class, 'index'])->name('attendances.index');

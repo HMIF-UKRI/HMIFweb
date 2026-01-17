@@ -21,25 +21,22 @@ class OrganizationController extends Controller
 
         $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
 
-        $coreManagements = [];
+        $pengurus = [];
         if ($activePeriod) {
-            $coreManagements = Pengurus::with(['member.media', 'department'])
+            $pengurus = Pengurus::with(['member.media', 'department'])
                 ->where('period_id', $activePeriod->id)
                 ->where('hierarchy_level', 1)
                 ->orderBy('id', 'asc')
                 ->get();
         }
 
-        return view('page.home', [
-            'events' => $events,
-            'members' => $coreManagements,
-            'activePeriod' => $activePeriod
-        ]);
+        return view('page.home', compact('events', 'pengurus', 'activePeriod'));
     }
 
     public function index(Request $request)
     {
         $allPeriods = PeriodeKepengurusan::orderBy('start_date', 'desc')->get();
+
         $periodId = $request->get('period');
 
         if ($periodId) {
@@ -56,7 +53,7 @@ class OrganizationController extends Controller
                 $query->where('period_id', $activePeriod->id);
             })->get();
 
-            $pengurus = Pengurus::with(['member.media', 'department', 'bidang'])
+            $pengurus = Pengurus::with(['member', 'media', 'department', 'bidang', 'period'])
                 ->where('period_id', $activePeriod->id)
                 ->orderBy('hierarchy_level', 'asc')
                 ->orderBy('id', 'asc')
@@ -64,7 +61,7 @@ class OrganizationController extends Controller
         }
 
         return view('page.struktur-pengurus', [
-            'pengurus'       => $pengurus,
+            'pengurus'      => $pengurus,
             'currentPeriod' => $allPeriods,
             'activePeriod'  => $activePeriod,
             'departments'   => $activeDepartments,

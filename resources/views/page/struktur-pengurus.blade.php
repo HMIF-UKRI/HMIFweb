@@ -16,13 +16,13 @@
             ">
         </div>
         <div
-            class="pointer-events-none fixed top-0 left-1/2 z-0 h-[500px] w-full max-w-7xl -translate-x-1/2 rounded-full bg-red-900/20 blur-[120px]">
+            class="pointer-events-none fixed top-0 left-1/2 z-0 h-125 w-full max-w-7xl -translate-x-1/2 rounded-full bg-red-900/20 blur-[120px]">
         </div>
 
         <div class="relative z-10 px-4 pt-32 pb-12 text-center sm:px-6 lg:px-8">
             <h1 class="mb-6 text-4xl font-extrabold tracking-tight text-white drop-shadow-2xl md:text-5xl">
                 Struktur
-                <span class="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
+                <span class="bg-linear-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
                     Pengurus
                 </span>
             </h1>
@@ -34,7 +34,7 @@
 
             <div class="group relative mx-auto inline-block w-full max-w-sm">
                 <div
-                    class="absolute -inset-1 rounded-xl bg-gradient-to-r from-red-600 to-red-900 opacity-25 blur transition duration-200 group-hover:opacity-50">
+                    class="absolute -inset-1 rounded-xl bg-linear-to-r from-red-600 to-red-900 opacity-25 blur transition duration-200 group-hover:opacity-50">
                 </div>
                 <div class="relative flex items-center rounded-xl border border-white/10 bg-gray-900 p-1">
                     <div class="pl-4 text-red-500">
@@ -43,7 +43,7 @@
 
                     <form action="{{ url()->current() }}" method="GET" class="w-full">
                         <select name="period" onchange="this.form.submit()"
-                            class="w-full cursor-pointer appearance-none rounded-lg bg-transparent px-4 py-3 text-center font-bold text-white focus:ring-0 focus:outline-none sm:text-left text-xs">
+                            class="w-full cursor-pointer appearance-none rounded-lg bg-transparent px-4 py-3 text-center text-white focus:ring-0 focus:outline-none sm:text-left text-xs uppercase font-bold">
                             @foreach ($currentPeriod as $period)
                                 <option value="{{ $period->id }}" class="bg-gray-900"
                                     {{ request('period') == $period->id || ($period->is_current && !request('period')) ? 'selected' : '' }}>
@@ -80,25 +80,27 @@
 
         <div class="relative z-10 container mx-auto px-4">
             <div class="mb-16 flex w-full items-center justify-center">
-                <div class="h-px w-16 bg-gradient-to-r from-transparent to-red-600"></div>
+                <div class="h-px w-16 bg-linear-to-r from-transparent to-red-600"></div>
                 <span
                     class="rounded-full border border-red-900/30 bg-gray-900 px-6 py-2 text-sm font-bold tracking-widest text-red-500 uppercase shadow-lg shadow-red-900/10">
                     Badan Pengurus
                 </span>
-                <div class="h-px w-16 bg-gradient-to-l from-transparent to-red-600"></div>
+                <div class="h-px w-16 bg-linear-to-l from-transparent to-red-600"></div>
             </div>
 
             <div class="flex flex-col items-center justify-center px-4 md:px-0">
-                @forelse ($pengurus as $index => $pgrs)
+                @forelse ($pengurus->filter(function ($member) {
+        return $member->hierarchy_level === 1;
+    }) as $index => $pgrs)
                     <div
                         class="{{ $index % 2 == 0 ? 'md:flex-row' : 'md:flex-row-reverse' }} relative mb-16 flex w-full max-w-5xl flex-col items-center md:mb-12 md:items-start md:gap-12 lg:gap-20">
                         <div class="group perspective-1000 relative z-10 w-full md:w-[36%]">
                             <div
                                 class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
-                                <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
+                                <div class="relative aspect-3/4 overflow-hidden rounded-xl bg-gray-800">
                                     @php
-                                        $photoUrl = $pgrs->getFirstMediaUrl('avatars', 'thumb');
+                                        $photoUrl = $pgrs->getFirstMediaUrl('foto_pengurus', 'card');
                                         $defaultPhoto =
                                             'https://ui-avatars.com/api/?name=' .
                                             urlencode($pgrs->member->full_name) .
@@ -109,7 +111,7 @@
                                         onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
                                     <div
-                                        class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                        class="absolute inset-0 flex items-end justify-center bg-linear-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                         <div class="flex gap-3">
                                             <a href="{{ $pgrs->instagram_url }}"
                                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
@@ -143,7 +145,7 @@
                                 </div>
 
                                 <div
-                                    class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
+                                    class="absolute bottom-0 left-0 h-1 w-0 bg-linear-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
                                 </div>
                             </div>
                         </div>
@@ -194,13 +196,21 @@
                         <div
                             class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
-                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
-                                <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
+                            <div class="relative aspect-3/4 overflow-hidden rounded-xl bg-gray-800">
+                                @php
+                                    $photoUrlDept = $pgrs->getFirstMediaUrl('foto_pengurus', 'card');
+                                    $defaultPhotoDept =
+                                        'https://ui-avatars.com/api/?name=' .
+                                        urlencode($pgrs->member->full_name) .
+                                        '&background=0D0D0D&color=fff';
+                                @endphp
+                                <img src="{{ $photoUrlDept ?: $defaultPhotoDept }}"
+                                    alt="{{ $pgrs->member->full_name }}"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
                                 <div
-                                    class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                    class="absolute inset-0 flex items-end justify-center bg-linear-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                     <div class="flex gap-3">
                                         <a href="{{ $pgrs->instagram_url }}"
                                             class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
@@ -241,7 +251,7 @@
                             </div>
 
                             <div
-                                class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
+                                class="absolute bottom-0 left-0 h-1 w-0 bg-linear-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
                             </div>
                         </div>
                     </div>
@@ -250,12 +260,12 @@
         </div>
 
         <div class="mt-32 mb-12 flex w-full items-center justify-center">
-            <div class="h-px w-16 bg-gradient-to-r from-transparent to-red-600"></div>
+            <div class="h-px w-16 bg-linear-to-r from-transparent to-red-600"></div>
             <span
                 class="rounded-full border border-red-900/30 bg-gray-900 px-6 py-2 text-sm font-bold tracking-widest text-red-500 uppercase shadow-lg shadow-red-900/10">
                 Bidang
             </span>
-            <div class="h-px w-16 bg-gradient-to-l from-transparent to-red-600"></div>
+            <div class="h-px w-16 bg-linear-to-l from-transparent to-red-600"></div>
         </div>
 
         <div class="relative z-10 container mx-auto mt-28 px-4 lg:px-8">
@@ -271,13 +281,13 @@
                         <div
                             class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
-                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-800">
+                            <div class="relative aspect-3/4 overflow-hidden rounded-xl bg-gray-800">
                                 <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
 
                                 <div
-                                    class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                    class="absolute inset-0 flex items-end justify-center bg-linear-to-t from-black/90 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                     <div class="flex gap-3">
                                         <a href="{{ $pgrs->member->instagram_url }}"
                                             class="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-red-600">
@@ -302,7 +312,7 @@
                                 <div class="mt-2 flex items-center justify-between">
                                     <span
                                         class="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-red-500/20 text-red-500">
-                                        {{ $member->position }}
+                                        {{ $pgrs->position }}
                                     </span>
 
                                     <i
@@ -311,7 +321,7 @@
                             </div>
 
                             <div
-                                class="absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
+                                class="absolute bottom-0 left-0 h-1 w-0 bg-linear-to-r from-red-600 to-red-900 transition-all duration-500 group-hover:w-full">
                             </div>
                         </div>
                     </div>

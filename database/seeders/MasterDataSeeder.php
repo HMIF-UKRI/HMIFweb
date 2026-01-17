@@ -18,24 +18,40 @@ class MasterDataSeeder extends Seeder
      */
     public function run(): void
     {
-        // Angkatan
-        Angkatan::create(['year' => '2023']);
-        Angkatan::create(['year' => '2024']);
+        $years = ['2022', '2023', '2024', '2025'];
+        foreach ($years as $year) {
+            Angkatan::firstOrCreate(['year' => $year]);
+        }
 
-        // Departemen & Bidang
-        $saintek = Departemen::create([
-            'name' => 'Sains dan Teknologi', //
-            'description' => 'Departemen pengembangan riset teknologi' //
-        ]);
+        $departments = [
+            'Ring 1',
+            'Riset dan Teknologi',
+            'Pengembangan Sumber Daya Manusia',
+            'Media dan Komunikasi'
+        ];
 
-        Bidang::create([
-            'department_id' => $saintek->id, //
-            'name' => 'Bidang Pendidikan', //
-            'description' => 'Fokus pada edukasi internal' //
-        ]);
+        foreach ($departments as $name) {
+            Departemen::firstOrCreate([
+                'name' => $name,
+                'description' => 'Departemen ' . $name
+            ]);
+        }
 
-        EventCategory::create(['name' => 'Seminar', 'slug' => 'seminar']); //
-        BlogCategory::create(['name' => 'Opini', 'slug' => 'opini']); //
-        PortofolioCategory::create(['name' => 'Web Development', 'description' => 'Proyek berbasis web']); //
+        $bidangList = [
+            'Bidang Pendidikan',
+            'Bidang Pelatihan dan Pengembangan',
+            'Bidang Pengabdian Masyarakat',
+            'Bidang Minat dan Bakat'
+        ];
+
+        $ristek = Departemen::where('name', 'Riset dan Teknologi')->first();
+
+        foreach ($bidangList as $bName) {
+            Bidang::firstOrCreate([
+                'department_id' => $ristek->id,
+                'name' => $bName,
+                'description' => 'Fokus pada ' . $bName
+            ]);
+        }
     }
 }

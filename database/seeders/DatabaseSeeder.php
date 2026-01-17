@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             MasterDataSeeder::class,     // Dept, Bidang, Angkatan, Categories
             PeriodSeeder::class,         // Periode Kepengurusan
             UserMemberSeeder::class,     // Users, Members, Pengurus
+            EventSeeder::class,          // Event & Event Category
+            BlogSeeder::class            // Blog & Blog Category
         ]);
     }
 }

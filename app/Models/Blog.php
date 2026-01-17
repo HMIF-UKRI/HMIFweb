@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Blog extends Model implements HasMedia
 {
@@ -27,7 +28,7 @@ class Blog extends Model implements HasMedia
 
     public function category()
     {
-        return $this->belongsTo(BlogCategory::class, 'id_blog_category');
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id');
     }
 
     public function registerMediaConversions(Media $media = null): void
