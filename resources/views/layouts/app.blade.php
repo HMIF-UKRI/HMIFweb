@@ -33,36 +33,36 @@
                 $menuGroups = [
                     'Main Core' => [['icon' => 'grid-outline', 'title' => 'Dashboard', 'route' => 'dashboard']],
                     'Master Data' => [
-                        ['icon' => 'school-outline', 'title' => 'Angkatan', 'route' => 'home'],
-                        ['icon' => 'business-outline', 'title' => 'Departement', 'route' => 'home'],
-                        ['icon' => 'git-branch-outline', 'title' => 'Bidang', 'route' => 'home'],
-                        ['icon' => 'time-outline', 'title' => 'Periode', 'route' => 'home'],
-                        ['icon' => 'list-outline', 'title' => 'Categories', 'route' => 'home'],
+                        ['icon' => 'school-outline', 'title' => 'Angkatan', 'route' => 'admin.generations.index'],
+                        ['icon' => 'business-outline', 'title' => 'Departement', 'route' => 'admin.departments.index'],
+                        ['icon' => 'git-branch-outline', 'title' => 'Bidang', 'route' => 'admin.bidangs.index'],
+                        ['icon' => 'time-outline', 'title' => 'Periode', 'route' => 'admin.periods.index'],
+                        ['icon' => 'list-outline', 'title' => 'Categories', 'route' => 'admin.categories.index'],
                     ],
                     'Organization' => [
                         ['icon' => 'people-outline', 'title' => 'Member', 'route' => 'admin.members.index'],
                         [
                             'icon' => 'shield-checkmark-outline',
                             'title' => 'Pengurus',
-                            'route' => 'home',
+                            'route' => 'admin.pengurus.index',
                         ],
                         [
                             'icon' => 'calendar-number-outline',
                             'title' => 'Attendances',
-                            'route' => 'home',
+                            'route' => 'admin.attendances.index',
                         ],
                     ],
                     'Core Content' => [
-                        ['icon' => 'newspaper-outline', 'title' => 'Blog Posts', 'route' => 'home'],
-                        ['icon' => 'calendar-outline', 'title' => 'Events', 'route' => 'home'],
-                        ['icon' => 'briefcase-outline', 'title' => 'Portofolio', 'route' => 'home'],
+                        ['icon' => 'newspaper-outline', 'title' => 'Blog Posts', 'route' => 'admin.blogs.index'],
+                        ['icon' => 'calendar-outline', 'title' => 'Events', 'route' => 'admin.events.index'],
+                        ['icon' => 'briefcase-outline', 'title' => 'Portofolio', 'route' => 'admin.portofolios.index'],
                     ],
                     'Media Assets' => [
-                        ['icon' => 'images-outline', 'title' => 'Gallery', 'route' => 'home'],
+                        ['icon' => 'images-outline', 'title' => 'Gallery', 'route' => 'admin.galleries.index'],
                         [
                             'icon' => 'document-attach-outline',
                             'title' => 'Doc Events',
-                            'route' => 'home',
+                            'route' => 'admin.administrations.index',
                         ],
                     ],
                 ];
