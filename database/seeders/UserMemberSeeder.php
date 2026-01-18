@@ -83,6 +83,14 @@ class UserMemberSeeder extends Seeder
                 }
             }
         }
+
+        $superAdmin = User::create([
+            'email' => 'superadmin@hmif.com',
+            'password' => Hash::make('password'),
+            'no_hp' => '08123123123'
+        ]);
+
+        $superAdmin->assignRole('super-admin');
     }
 
     private function determineLevel($pos)
