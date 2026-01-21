@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('cabinet_name');
             $table->string('period_range', 100);
-            $table->text('vision');
-            $table->text('mission');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->text('vision')->nullable();
+            $table->text('mission')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->boolean('is_current')->default(false);
             $table->timestamps();
         });

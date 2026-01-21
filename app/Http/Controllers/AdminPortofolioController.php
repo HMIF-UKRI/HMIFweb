@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-class PortofolioController extends Controller
+class AdminPortofolioController extends Controller
 {
     public function index(Request $request)
     {
@@ -20,7 +20,7 @@ class PortofolioController extends Controller
         }
 
         $portofolios = $query->latest()->paginate(10);
-        return view('admin.portofolios.index', compact('portofolios'));
+        return view('admin.portofolio.index', compact('portofolios'));
     }
 
     public function store(Request $request)

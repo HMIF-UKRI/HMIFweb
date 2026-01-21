@@ -1,7 +1,6 @@
-@extends('layouts.app')
+<x-app-layout>
 
-@section('content')
-    <section class="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 pt-20">
+    <section class="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 pt-20">
         <div class="text-dark container mx-auto rounded-xl bg-white p-8 shadow-lg">
             <h1 class="mb-6 text-center text-3xl font-bold text-indigo-700">
                 Create New Event
@@ -23,7 +22,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data"
+            <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data"
                 class="grid grid-cols-1 gap-4 space-y-6">
                 @csrf
                 @method('POST')
@@ -33,7 +32,8 @@
                     </label>
                     <input type="text"
                         class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        id="title" name="title" required placeholder="Enter event name" value="{{ old('title') }}" />
+                        id="title" name="title" required placeholder="Enter event name"
+                        value="{{ old('title') }}" />
                 </div>
                 <div>
                     <label for="short_description" class="mb-1 block font-semibold text-gray-700">
@@ -104,7 +104,7 @@
                         <option value="" disabled selected>
                             Select event category
                         </option>
-                        @foreach ($eventCategories as $category)
+                        @foreach ($categories as $category)
                             <option value="{{ $category->id }}"
                                 {{ old('event_category_id') == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
@@ -119,8 +119,8 @@
                     <div class="grid grid-cols-2 gap-4">
                         <label for="image"
                             class="flex cursor-pointer flex-col items-center rounded border border-gray-300 p-4 text-gray-900 shadow-sm sm:p-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                             </svg>
@@ -146,4 +146,4 @@
             </form>
         </div>
     </section>
-@endsection
+</x-app-layout>

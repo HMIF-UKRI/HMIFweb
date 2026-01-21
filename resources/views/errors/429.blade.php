@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Too Many Requests')
+@section('code', '429')
+@section('message', 'Rate Limit Exceeded')
+@section('description', 'Terlalu banyak permintaan dari alamat IP Anda dalam waktu singkat. Silakan coba lagi nanti.')

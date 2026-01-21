@@ -1,6 +1,5 @@
 <x-guest-layout>
     <x-slot name="meta">
-
         @include('components._meta', [
             'title' => $event->title . ' - HMIF UKRI',
             'description' => $event->short_description,
@@ -37,12 +36,12 @@
                                 Beranda
                             </a>
                             <span class="text-gray-600">/</span>
-                            <a href="{{ route('kegiatan') }}" class="transition hover:text-red-500">
+                            <a href="{{ route('event.index') }}" class="transition hover:text-red-500">
                                 Kegiatan
                             </a>
                         </nav>
 
-                        <a href="{{ route('kegiatan') }}"
+                        <a href="{{ route('event.index') }}"
                             class="flex items-center gap-2 text-sm font-medium text-red-500 transition hover:text-white sm:hidden">
                             <i class="fa-solid fa-arrow-left"></i>
                             Kembali
@@ -273,7 +272,7 @@
 
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($relatedEvents as $relatedEvent)
-                            <a href="{{ route('events.show', $relatedEvent->slug) }}"
+                            <a href="{{ route('event.show', $relatedEvent->slug) }}"
                                 class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-gray-900 transition hover:-translate-y-1 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-900/10">
                                 <div class="relative h-48 w-full overflow-hidden">
                                     <img src="{{ $relatedEvent->getFirstMediaUrl('thumbnail', 'thumb') }}"

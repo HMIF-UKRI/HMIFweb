@@ -157,7 +157,7 @@
                                             x-text="event.title"></h3>
                                         <p class="mt-3 text-sm text-gray-400 line-clamp-3" x-text="event.description">
                                         </p>
-                                        <a :href="'/event/' + event.slug"
+                                        <a :href="'/kegiatan/' + event.slug"
                                             class="mt-auto pt-4 text-sm font-medium text-white hover:text-red-400">Lihat
                                             Detail →</a>
                                     </div>

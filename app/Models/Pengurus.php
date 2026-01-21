@@ -52,4 +52,11 @@ class Pengurus extends Model implements HasMedia
             ->quality(80)
             ->nonOptimized();
     }
+
+    protected $appends = ['preview_url'];
+
+    public function getPreviewUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('foto_pengurus', 'card') ?: null;
+    }
 }

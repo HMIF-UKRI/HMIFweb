@@ -2,81 +2,137 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Angkatan;
 use App\Models\Member;
 use App\Models\Departemen;
-use App\Models\PeriodeKepengurusan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class MemberController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Member::with(['user', 'department', 'generation', 'media']);
+        $query = Member::with(['user.roles', 'department', 'generation', 'media']);
 
         if ($request->filled('search')) {
-            $query->where('full_name', 'like', '%' . $request->search . '%')
-                ->orWhere('npm', 'like', '%' . $request->search . '%');
+            $search = strtolower($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(full_name) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(npm) LIKE ?', ["%{$search}%"]);
+            });
         }
 
         if ($request->filled('department_id')) {
             $query->where('department_id', $request->department_id);
         }
 
-        $members = $query->latest()->paginate(10);
-        $departments = Departemen::all();
+        $members = $query->latest()->paginate(12)->withQueryString();
+        $departments = Departemen::lazy();
+        $generations = Angkatan::orderBy('year', 'desc')->get();
+        $roles = Role::lazy();
 
-        return view('admin.member.index', compact('members', 'departments'));
+        return view('admin.member.index', compact('members', 'departments', 'generations', 'roles'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'email'         => 'required|email|unique:users,email',
             'password'      => 'required|min:8',
             'full_name'     => 'required|string|max:100',
             'npm'           => 'required|unique:members,npm',
-            'department_id' => 'required|exists:departments,id',
             'generation_id' => 'required|exists:generations,id',
-            'photo'         => 'nullable|image|max:2048',
-            'role'          => 'required|exists:roles,name'
+            'role'          => 'required|exists:roles,name',
+            'avatar'        => 'nullable|image|max:2048',
+            'instagram_url' => 'nullable|string',
+            'linkedin_url'  => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($request) {
+        return DB::transaction(function () use ($request, $validated) {
             $user = User::create([
-                'email'    => $request->email,
-                'password' => Hash::make($request->password),
-                'no_hp'    => $request->no_hp,
+                'email'    => $validated['email'],
+                'password' => Hash::make($validated['password']),
             ]);
 
-            $user->assignRole($request->role);
+            $user->assignRole($validated['role']);
 
             $member = Member::create([
                 'user_id'       => $user->id,
-                'department_id' => $request->department_id,
-                'generation_id' => $request->generation_id,
-                'full_name'     => $request->full_name,
-                'npm'           => $request->npm,
+                'department_id' => null,
+                'generation_id' => $validated['generation_id'],
+                'full_name'     => $validated['full_name'],
+                'npm'           => $validated['npm'],
+                'instagram_url' => $validated['instagram_url'],
+                'linkedin_url'  => $validated['linkedin_url'],
                 'is_active'     => true,
             ]);
 
-            if ($request->hasFile('photo')) {
-                $member->addMediaFromRequest('photo')->toMediaCollection('avatars');
+            // 2. Upload Spatie Media Library
+            if ($request->hasFile('avatar')) {
+                $member->addMediaFromRequest('avatar')->toMediaCollection('avatars');
             }
 
-            return redirect()->route('members.index')->with('success', 'Member dan Akun berhasil dibuat.');
+            return redirect()->back()->with('success', 'Anggota berhasil didaftarkan.');
+        });
+    }
+
+    public function update(Request $request, $id)
+    {
+        $member = Member::findOrFail($id);
+
+        $validated = $request->validate([
+            'email'         => 'required|email|unique:users,email,' . $member->user_id,
+            'password'      => 'nullable|min:8',
+            'full_name'     => 'required|string|max:100',
+            'npm'           => 'required|unique:members,npm,' . $member->id,
+            'generation_id' => 'required|exists:generations,id',
+            'role'          => 'required|exists:roles,name',
+            'avatar'        => 'nullable|image|max:2048',
+            'instagram_url' => 'nullable|string',
+            'linkedin_url'  => 'nullable|string',
+            'is_active'     => 'boolean'
+        ]);
+
+        return DB::transaction(function () use ($request, $member, $validated) {
+            $userData = ['email' => $validated['email']];
+            if ($request->filled('password')) {
+                $userData['password'] = Hash::make($validated['password']);
+            }
+
+            $member->user->update($userData);
+            $member->user->syncRoles($validated['role']);
+
+            $member->update([
+                'department_id' => null,
+                'generation_id' => $validated['generation_id'],
+                'full_name'     => $validated['full_name'],
+                'npm'           => $validated['npm'],
+                'instagram_url' => $validated['instagram_url'],
+                'linkedin_url'  => $validated['linkedin_url'],
+                'is_active'     => filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN),
+            ]);
+
+            if ($request->hasFile('avatar')) {
+                $member->clearMediaCollection('avatars');
+                $member->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+            }
+
+            return redirect()->back()->with('success', 'Data anggota berhasil diperbarui.');
         });
     }
 
     public function destroy(Member $member)
     {
         return DB::transaction(function () use ($member) {
-            $member->user->delete();
+            if ($member->user) {
+                $member->user->delete();
+            }
             $member->delete();
 
-            return redirect()->back()->with('success', 'Member berhasil dihapus.');
+            return redirect()->back()->with('success', 'Anggota dan akun terkait berhasil dihapus.');
         });
     }
 }

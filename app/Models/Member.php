@@ -27,6 +27,13 @@ class Member extends Model implements HasMedia
         'linkedin_url',
     ];
 
+    protected $appends = ['preview_url'];
+
+    public function getPreviewUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('avatars', 'thumb') ?: null;
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -55,9 +62,10 @@ class Member extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->width(368)
-            ->height(232)
+            ->width(400)
+            ->height(400)
             ->sharpen(10)
+            ->quality(80)
             ->nonOptimized();
     }
 }

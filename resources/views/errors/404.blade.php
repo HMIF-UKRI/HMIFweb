@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Not Found')
+@section('code', '404')
+@section('message', 'Lost in Space')
+@section('description', 'Halaman yang Anda cari telah dipindahkan atau tidak pernah ada dalam basis data sistem kami.')

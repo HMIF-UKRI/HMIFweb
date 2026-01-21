@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Gallery extends Model
+class Gallery extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'member_id',
         'event_id',
@@ -21,5 +26,15 @@ class Gallery extends Model
     public function member()
     {
         return $this->belongsTo(Member::class, 'member_id');
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('galery')
+            ->width(368)
+            ->height(232)
+            ->sharpen(10)
+            ->quality(80)
+            ->nonOptimized();
     }
 }

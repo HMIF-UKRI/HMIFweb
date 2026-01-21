@@ -7,45 +7,14 @@ use App\Models\Event;
 use App\Models\EventCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class EventController extends Controller
+class AdminEventController extends Controller
 {
-    public function kegiatan(Request $request)
-    {
-        $events = Event::with('category', 'media')->latest()->get()->map(function ($event) {
-            $event->thumbnail_url = $event->getFirstMediaUrl('thumbnail', 'thumb');
-            return $event;
-        });
-
-        $eventCategories = EventCategory::lazy();
-
-        return view('page.kegiatan', compact('events', 'eventCategories'));
-    }
-
-    public function show($slug)
-    {
-        $event = Event::with(['category', 'media'])
-            ->where('slug', $slug)
-            ->firstOrFail();
-
-        $relatedEvents = Event::with(['category', 'media'])
-            ->where('event_category_id', $event->event_category_id)
-            ->where('id', '!=', $event->id)
-            ->where('status', '!=', 'cancelled')
-            ->latest()
-            ->limit(3)
-            ->get();
-
-        return view('page.event.show', compact('event', 'relatedEvents'));
-    }
-
     public function index(Request $request)
     {
-        $query = Event::with('category', 'media')->latest()->get();
+        $query = Event::with('category', 'media');
 
-        // Fitur Search & Filter
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
@@ -54,10 +23,16 @@ class EventController extends Controller
             $query->where('event_category_id', $request->category_id);
         }
 
-        $events = $query->latest()->paginate(10);
-        $categories = EventCategory::all();
+        $events = $query->latest()->paginate(9);
+        $categories = EventCategory::lazy();
 
-        return view('admin.events.index', compact('events', 'categories'));
+        return view('admin.event.index', compact('events', 'categories'));
+    }
+
+    public function create()
+    {
+        $categories = EventCategory::all();
+        return view('admin.event.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -73,7 +48,6 @@ class EventController extends Controller
         ]);
 
         return DB::transaction(function () use ($request, $validated) {
-            // Slug otomatis & Unik
             $slug = Str::slug($validated['title']);
             $originalSlug = $slug;
             $count = 1;
@@ -84,7 +58,6 @@ class EventController extends Controller
 
             $event = Event::create($validated);
 
-            // Spatie Media Library
             if ($request->hasFile('thumbnail')) {
                 $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
             }
@@ -118,7 +91,7 @@ class EventController extends Controller
         $event->update($validated);
 
         if ($request->hasFile('thumbnail')) {
-            $event->syncAssets('thumbnail', 'thumbnails'); // Custom helper atau method bawaan Spatie
+            $event->syncAssets('thumbnail', 'thumbnails');
             $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
         }
 
@@ -127,7 +100,6 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
-        // Media Library otomatis menghapus file fisik
         $event->delete();
         return redirect()->back()->with('success', 'Event dihapus.');
     }

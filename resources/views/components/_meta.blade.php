@@ -1,14 +1,15 @@
 @props([
-    "title" => "HMIF UKRI",
-    "description" => "Website resmi Himpunan Mahasiswa Teknik Informatika UKRI",
-    "keywords" => "hmif,ukri,himatif,hima,informatika",
-    "image" => asset("images/banner.png"),
-    "url" => url()->current(),
+    'title' => 'HMIF UKRI',
+    'description' => 'Website resmi Himpunan Mahasiswa Teknik Informatika UKRI',
+    'keywords' => 'hmif,ukri,himatif,hima,informatika',
+    'image' => asset('images/banner.png'),
+    'url' => url()->current(),
 ])
 
 {{-- General Meta Tags --}}
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ $title }}</title>
 <meta name="title" content="{{ $title }}" />
 <meta name="description" content="{{ $description }}" />

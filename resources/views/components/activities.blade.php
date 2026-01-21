@@ -58,7 +58,7 @@
 
                         <div
                             class="mt-auto flex items-center justify-between border-t border-white/10 pt-4 transition group-hover:border-red-900/50">
-                            <a href="{{ route('events.show', $event->slug) }}"
+                            <a href="{{ route('event.show', $event->slug) }}"
                                 class="flex items-center gap-2 text-sm font-semibold text-white transition group-hover:translate-x-1 hover:text-red-500">
                                 Baca Selengkapnya
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
@@ -83,7 +83,7 @@
 
         <div class="mt-8 text-center">
             <a class="group relative inline-flex items-center overflow-hidden rounded-lg border-2 border-current bg-red-900 px-8 py-3 text-white transition-colors duration-300 hover:text-red-500 focus:ring-3 focus:outline-none"
-                href="{{ route('kegiatan') }}">
+                href="{{ route('event.index') }}">
                 <span
                     class="absolute top-0 left-0 z-0 h-full w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
                 <span class="absolute -end-full transition-all group-hover:end-4">

@@ -71,7 +71,7 @@
                         class="ring-opacity-5 absolute top-full right-0 mt-2 w-56 origin-top-right rounded-xl border border-white/10 bg-gray-900/95 p-2 shadow-xl ring-1 ring-black backdrop-blur-xl"
                         style="display: none">
                         <div class="space-y-1">
-                            <a href="{{ route('kegiatan') }}"
+                            <a href="{{ route('event.index') }}"
                                 class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400">
                                 <i class="fa-solid fa-calendar-day w-5 text-center text-xs opacity-70"></i>
                                 Kegiatan

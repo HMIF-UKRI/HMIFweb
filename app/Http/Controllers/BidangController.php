@@ -20,7 +20,7 @@ class BidangController extends Controller
 
         $bidangs = $query->paginate(10);
 
-        return view('admin.bidangs.index', compact('bidangs', 'departments'));
+        return view('admin.bidang.index', compact('bidangs', 'departments'));
     }
 
     public function store(Request $request)

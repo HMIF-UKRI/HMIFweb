@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Portofolio extends Model implements HasMedia
 {
@@ -36,6 +37,7 @@ class Portofolio extends Model implements HasMedia
             ->width(368)
             ->height(232)
             ->sharpen(10)
+            ->quality(80)
             ->nonOptimized();
     }
 }

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->foreignId('generation_id')->constrained('generations');
+            $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('cascade');
             $table->string('full_name', 100);
             $table->string('npm', 20)->unique();
             $table->boolean('is_active')->default(true);

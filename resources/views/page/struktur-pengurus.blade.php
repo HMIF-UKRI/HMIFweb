@@ -282,6 +282,13 @@
                             class="relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-gray-900/50 p-3 backdrop-blur-sm transition-all duration-300 hover:border-red-500/50 hover:bg-gray-900/80 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]">
 
                             <div class="relative aspect-3/4 overflow-hidden rounded-xl bg-gray-800">
+                                @php
+                                    $photoUrl = $pgrs->getFirstMediaUrl('foto_pengurus', 'card');
+                                    $defaultPhoto =
+                                        'https://ui-avatars.com/api/?name=' .
+                                        urlencode($pgrs->member->full_name) .
+                                        '&background=0D0D0D&color=fff';
+                                @endphp
                                 <img src="{{ $photoUrl ?: $defaultPhoto }}" alt="{{ $pgrs->member->full_name }}"
                                     class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     onerror="this.src='https://placehold.co/300x400/111111/666666?text=No+Photo';" />
@@ -312,7 +319,7 @@
                                 <div class="mt-2 flex items-center justify-between">
                                     <span
                                         class="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-red-500/20 text-red-500">
-                                        {{ $pgrs->position }}
+                                        {{ $pgrs->bidang->name ?? $pgrs->department->name }}
                                     </span>
 
                                     <i

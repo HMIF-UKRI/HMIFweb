@@ -19,7 +19,7 @@ class DepartemenController extends Controller
 
         $departments = $query->withCount('members')->paginate(10);
 
-        return view('admin.departments.index', compact('departments'));
+        return view('admin.departement.index', compact('departments'));
     }
 
     public function store(Request $request)

@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Payment Required')
+@section('code', '402')
+@section('message', 'Gate Restricted')
+@section('description', 'Akses ke fitur ini memerlukan verifikasi status keanggotaan aktif HMIF.')

@@ -3,30 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bidang;
+use App\Models\Departemen;
+use App\Models\Member;
 use App\Models\Pengurus;
 use App\Models\PeriodeKepengurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class PengurusController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
+        $query = Pengurus::with(['member.generation', 'member.media', 'period', 'department', 'bidang']);
 
-        $query = Pengurus::with(['member.media', 'department', 'bidang', 'period'])
-            ->orderBy('hierarchy_level', 'asc');
-
-        // Filter per periode
-        if ($request->filled('period_id')) {
-            $query->where('period_id', $request->period_id);
-        } else {
-            $query->where('period_id', $activePeriod?->id);
+        if (request()->filled('period_id')) {
+            $query->where('period_id', request()->period_id);
         }
 
-        $pengurus = $query->get();
-        $periods = PeriodeKepengurusan::all();
+        $pengurus = $query->orderBy('hierarchy_level', 'asc')->paginate(12);
 
-        return view('admin.pengurus.index', compact('pengurus', 'periods', 'activePeriod'));
+        return view('admin.pengurus.index', [
+            'pengurus' => $pengurus,
+            'members' => Member::orderBy('full_name')->get(),
+            'periods' => PeriodeKepengurusan::orderBy('start_date', 'desc')->get(),
+            'departments' => Departemen::all(),
+            'bidangs' => Bidang::all(),
+        ]);
     }
 
     public function store(Request $request)
@@ -35,26 +38,57 @@ class PengurusController extends Controller
             'member_id'       => 'required|exists:members,id',
             'period_id'       => 'required|exists:periods,id',
             'department_id'   => 'required|exists:departments,id',
-            'bidang_id'       => 'nullable|exists:bidangs,id', // Nullable untuk Kadep/Ring 1
-            'hierarchy_level' => 'required|integer|in:1,2,3',
+            'bidang_id'       => 'nullable|exists:bidangs,id',
+            'hierarchy_level' => 'required|integer|min:1|max:10',
             'position'        => 'required|string|max:100',
+            'card'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        Pengurus::create($validated);
+        $data = Arr::except($validated, ['card']);
 
-        return redirect()->back()->with('success', 'Jabatan pengurus berhasil ditetapkan.');
+        $pengurus = Pengurus::create($data);
+
+        if ($request->hasFile('card')) {
+            $pengurus->addMediaFromRequest('card')
+                ->toMediaCollection('foto_pengurus');
+        }
+
+        return redirect()->route('admin.managements.index')->with('success', 'Data pengurus berhasil ditambahkan.');
     }
 
-    public function update(Request $request, Pengurus $penguru)
+    public function update(Request $request, Pengurus $management)
     {
         $validated = $request->validate([
-            'hierarchy_level' => 'required|integer|in:1,2,3',
+            'member_id'       => 'required|integer|exists:members,id',
+            'period_id'       => 'required|integer|exists:periods,id',
+            'department_id'   => 'required|integer|exists:departments,id',
+            'bidang_id'       => 'nullable|integer|exists:bidangs,id',
+            'hierarchy_level' => 'required|integer|min:1|max:10',
             'position'        => 'required|string|max:100',
-            'bidang_id'       => 'nullable|exists:bidangs,id',
+            'card'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $penguru->update($validated);
+        if (!$validated) {
+            return redirect()->back()->withErrors($validated)->withInput();
+        }
 
-        return redirect()->back()->with('success', 'Data pengurus diperbarui.');
+        $data = Arr::except($validated, ['card']);
+
+        $management->update($data);
+
+        if ($request->hasFile('card')) {
+            $management->clearMediaCollection('foto_pengurus');
+            $management->addMediaFromRequest('card')
+                ->toMediaCollection('foto_pengurus');
+        }
+
+        return redirect()->route('admin.managements.index')->with('success', 'Data pengurus berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $pengurus = Pengurus::findOrFail($id);
+        $pengurus->delete();
+        return redirect()->back()->with('success', 'Data pengurus berhasil dihapus.');
     }
 }

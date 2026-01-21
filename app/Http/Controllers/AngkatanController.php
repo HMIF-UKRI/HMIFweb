@@ -10,41 +10,46 @@ class AngkatanController extends Controller
 {
     public function index()
     {
-        $generations = Angkatan::withCount('members')->orderBy('year', 'desc')->get();
-        return view('admin.generations.index', compact('generations'));
+        $generations = Angkatan::withCount('members')
+            ->orderBy('year', 'desc')
+            ->paginate(10);
+
+        return view('admin.angkatan.index', compact('generations'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'year' => 'required|numeric|unique:generations,year',
-            'description' => 'nullable|string|max:255',
+            'year' => 'required|numeric|digits:4|unique:angkatan,year',
+            'description' => 'nullable|string|max:100',
         ]);
 
         Angkatan::create($validated);
-
-        return redirect()->back()->with('success', 'Angkatan berhasil ditambahkan.');
+        return redirect()->back()->with('success', "Angkatan {$request->year} berhasil diarsipkan.");
     }
 
-    public function update(Request $request, Angkatan $generation)
+    public function update(Request $request, Angkatan $angkatan)
     {
         $validated = $request->validate([
-            'year' => 'required|numeric|unique:generations,year,' . $generation->id,
-            'description' => 'nullable|string|max:255',
+            'year' => 'required|numeric|digits:4|unique:angkatan,year,' . $angkatan->id,
+            'description' => 'nullable|string|max:100',
         ]);
 
-        $generation->update($validated);
-
-        return redirect()->back()->with('success', 'Data angkatan diperbarui.');
+        try {
+            $angkatan->update($validated);
+            return redirect()->back()->with('success', "Data Angkatan {$angkatan->year} berhasil diperbarui.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', "Gagal memperbarui data. Silakan coba lagi.");
+        }
     }
 
-    public function destroy(Angkatan $generation)
+    public function destroy(Angkatan $angkatan)
     {
-        if ($generation->members()->exists()) {
-            return redirect()->back()->with('error', 'Tidak bisa menghapus angkatan yang masih memiliki anggota.');
+        if ($angkatan->members()->exists()) {
+            return redirect()->back()->with('error', "Gagal! Angkatan {$angkatan->year} masih memiliki anggota aktif.");
         }
 
-        $generation->delete();
-        return redirect()->back()->with('success', 'Angkatan berhasil dihapus.');
+        $angkatan->delete();
+        return redirect()->back()->with('success', 'Data angkatan telah dihapus dari sistem.');
     }
 }

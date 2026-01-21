@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', 'Unauthorized')
+@section('code', '401')
+@section('message', 'Access Denied')
+@section('description', 'Maaf, Anda tidak memiliki izin untuk mengakses area terenkripsi ini. Silakan login kembali.')

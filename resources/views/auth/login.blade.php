@@ -1,4 +1,15 @@
 <x-auth-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Login - HMIF UKRI',
+            'description' =>
+                'Portal Internal Pengurus HMIF UKRI untuk mengelola konten dan kegiatan organisasi secara efisien.',
+            'keywords' => 'hmif, ukri, himatif, hima, informatika, kegiatan, agenda, seminar, workshop',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
+
     <div
         class="relative min-h-screen w-full overflow-hidden bg-gray-950 flex items-center justify-center px-6 selection:bg-red-500 selection:text-white">
 

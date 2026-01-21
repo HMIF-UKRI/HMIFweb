@@ -2,15 +2,14 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Admin Dashboard' }} | HMIF UKRI</title>
+    {{ $meta ?? '' }}
 
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script src="https://kit.fontawesome.com/a9ea8e1647.js" crossorigin="anonymous"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('styles')
 </head>
 
 <body class="bg-gray-950 text-gray-200 antialiased overflow-x-hidden font-poppins" x-data="{ sidebarOpen: true }">
@@ -44,7 +43,7 @@
                         [
                             'icon' => 'shield-checkmark-outline',
                             'title' => 'Pengurus',
-                            'route' => 'admin.pengurus.index',
+                            'route' => 'admin.managements.index',
                         ],
                         [
                             'icon' => 'calendar-number-outline',
@@ -62,7 +61,7 @@
                         [
                             'icon' => 'document-attach-outline',
                             'title' => 'Doc Events',
-                            'route' => 'admin.administrations.index',
+                            'route' => 'admin.doc-event.index',
                         ],
                     ],
                 ];
@@ -78,10 +77,17 @@
                     <ul class="relative w-full pl-3">
                         @foreach ($menus as $menu)
                             @php
+                                $hasRoute = Route::has($menu['route']);
+
+                                $routeParts = explode('.', $menu['route']);
+                                $baseRoute =
+                                    isset($routeParts[0]) && isset($routeParts[1])
+                                        ? $routeParts[0] . '.' . $routeParts[1]
+                                        : $menu['route'];
+
                                 $isActive =
-                                    Route::has($menu['route']) &&
-                                    (request()->routeIs($menu['route']) ||
-                                        request()->routeIs(explode('.', $menu['route'])[0] . '.*'));
+                                    $hasRoute &&
+                                    (request()->routeIs($menu['route']) || request()->routeIs($baseRoute . '.*'));
                             @endphp
                             <li class="nav-item relative w-full list-none {{ $isActive ? 'active' : '' }}">
                                 <a href="{{ Route::has($menu['route']) ? route($menu['route']) : '#' }}"
@@ -152,7 +158,7 @@
 
             <footer class="mt-auto p-8 border-t border-white/5 text-center">
                 <p class="text-[10px] uppercase tracking-[0.3em] text-gray-600 font-bold">
-                    HMIF Dashboard &bull; Core System v2.0 &bull; 2026
+                    HMIF Dashboard &bull; Kabinet Metaforsa &bull; 2026
                 </p>
             </footer>
         </main>
