@@ -19,6 +19,7 @@ class Event extends Model implements HasMedia
     protected $fillable = [
         'title',
         'slug',
+        'short_description',
         'description',
         'event_date',
         'location',
@@ -53,14 +54,17 @@ class Event extends Model implements HasMedia
         return $this->hasMany(DocumentEvents::class, 'event_id');
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('thumbnails')
+            ->singleFile();
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaCollection('thumbnail')
-            ->addMediaConversion('thumb')
+        $this->addMediaConversion('thumb')
             ->width(368)
             ->height(232)
-            ->sharpen(10)
-            ->nonOptimized()
-            ->singleFile();
+            ->sharpen(10);
     }
 }

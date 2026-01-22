@@ -12,7 +12,7 @@ class PublicEventController extends Controller
     public function index(Request $request)
     {
         $events = Event::with('category', 'media')->latest()->get()->map(function ($event) {
-            $event->thumbnail_url = $event->getFirstMediaUrl('thumbnail', 'thumb');
+            $event->thumbnail_url = $event->getFirstMediaUrl('thumbnails', 'thumb');
             return $event;
         });
 

@@ -1,149 +1,147 @@
 <x-app-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Create Event - HMIF UKRI',
+            'description' =>
+                'Portal Internal Pengurus HMIF UKRI untuk mengelola konten dan kegiatan organisasi secara efisien.',
+            'keywords' => 'hmif, ukri, himatif, hima, informatika, kegiatan, agenda, seminar, workshop',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
 
-    <section class="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 pt-20">
-        <div class="text-dark container mx-auto rounded-xl bg-white p-8 shadow-lg">
-            <h1 class="mb-6 text-center text-3xl font-bold text-indigo-700">
-                Create New Event
-            </h1>
+    <x-slot name="header_title">Content / Events / Create</x-slot>
 
-            @if (session('success'))
-                <div class="mb-4 rounded-lg bg-green-100 p-4 text-green-700" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div x-data="{ imageUrl: null, status: 'upcoming' }" class="relative pb-24">
+        <a href="{{ route('admin.events.index') }}"
+            class="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] hover:text-red-600 transition-colors">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+            Back to Events
+        </a>
+        <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" id="eventForm">
+            @csrf
+            <input type="hidden" name="description" id="descriptionInput">
 
-            @if ($errors->any())
-                <div class="mb-4 rounded-lg bg-red-100 p-4 text-red-700" role="alert">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
 
-            <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data"
-                class="grid grid-cols-1 gap-4 space-y-6">
-                @csrf
-                @method('POST')
-                <div>
-                    <label for="title" class="mb-1 block font-semibold text-gray-700">
-                        Event Name
-                    </label>
-                    <input type="text"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        id="title" name="title" required placeholder="Enter event name"
-                        value="{{ old('title') }}" />
-                </div>
-                <div>
-                    <label for="short_description" class="mb-1 block font-semibold text-gray-700">
-                        Short Description
-                    </label>
-                    <input type="text"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        id="short_description" name="short_description" required placeholder="Enter event name"
-                        value="{{ old('short_description') }}" />
-                </div>
-                <div>
-                    <label for="description" class="mb-1 block font-semibold text-gray-700">
-                        Description
-                    </label>
-                    <textarea
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        id="description" name="description" rows="4" required placeholder="Enter event description">
-    {{ old('description') }}</textarea>
-                </div>
-                <div>
-                    <label for="event_date" class="mb-1 block font-semibold text-gray-700">
-                        Date
-                    </label>
-                    <input type="date"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        id="event_date" name="event_date" required value="{{ old('event_date') }}" />
-                </div>
-                <div>
-                    <label for="location" class="mb-1 block font-semibold text-gray-700">
-                        Location
-                    </label>
-                    <input type="text"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        id="location" name="location" required placeholder="Enter event location"
-                        value="{{ old('location') }}" />
-                </div>
-                <div>
-                    <label for="status" class="mb-1 block font-semibold text-gray-700">
-                        Status
-                    </label>
-                    <select id="status" name="status"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        required>
-                        <option value="" disabled selected>
-                            Select event status
-                        </option>
-                        <option value="berlangsung" {{ old('status') == 'berlangsung' ? 'selected' : '' }}>
-                            Berlangsung
-                        </option>
-                        <option value="rutin" {{ old('status') == 'rutin' ? 'selected' : '' }}>
-                            Rutin
-                        </option>
-                        <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>
-                            Selesai
-                        </option>
-                        <option value="dibatalkan" {{ old('status') == 'dibatalkan' ? 'selected' : '' }}>
-                            Dibatalkan
-                        </option>
-                    </select>
-                </div>
-                <div>
-                    <label for="event_category_id" class="mb-1 block font-semibold text-gray-700">
-                        Event Category
-                    </label>
-                    <select id="event_category_id" name="event_category_id"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 transition focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                        required>
-                        <option value="" disabled selected>
-                            Select event category
-                        </option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}"
-                                {{ old('event_category_id') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label for="image" class="mb-1 block font-semibold text-gray-700">
-                        Event Image
-                    </label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label for="image"
-                            class="flex cursor-pointer flex-col items-center rounded border border-gray-300 p-4 text-gray-900 shadow-sm sm:p-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                            </svg>
+                <div
+                    class="flex-1 w-full bg-white/2 border border-white/5 rounded-[3rem] p-8 md:p-16 shadow-2xl backdrop-blur-sm min-h-200">
+                    <div class="max-w-3xl mx-auto space-y-4">
 
-                            <span class="mt-4 font-medium">
-                                Upload event image
-                            </span>
+                        <div class="space-y-4">
+                            <div class="group relative">
+                                <label
+                                    class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Judul
+                                    Kegiatan</label>
+                                <textarea name="title" rows="1" required
+                                    class="w-full bg-transparent border-none p-0 text-3xl md:text-4xl font-black text-white placeholder:text-white/10 outline-none resize-none overflow-hidden"
+                                    placeholder="Judul Kegiatan..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'">{{ old('title', $event->title ?? '') }}</textarea>
+                                <div
+                                    class="h-1 w-20 bg-red-600 rounded-full shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all group-focus-within:w-full">
+                                </div>
+                            </div>
 
-                            <span
-                                class="mt-2 inline-block rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-center text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-100">
-                                Browse files
-                            </span>
-
-                            <input type="file" id="image" name="thumbnail_path" accept="image/*" class="sr-only"
-                                aria-label="Upload Image" value="{{ old('thumbnail_path') }}" />
-                        </label>
+                            <div class="group relative">
+                                <label
+                                    class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Deskripsi
+                                    Singkat (Gausah panjang panjang)</label>
+                                <textarea name="short_description" rows="2" required maxlength="255"
+                                    class="w-full bg-transparent border-none p-0 text-base md:text-lg font-medium text-gray-400 placeholder:text-white/5 outline-none resize-none overflow-hidden"
+                                    placeholder="Masukan deskripsi singkat...">{{ old('short_description', $event->short_description ?? '') }}</textarea>
+                            </div>
+                        </div>
+                        <label
+                            class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Deskripsi</label>
+                        <div id="editorjs" data-upload-url="{{ route('admin.events.upload-image') }}"
+                            class="text-white"></div>
                     </div>
                 </div>
-                <button type="submit"
-                    class="w-full rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white shadow transition hover:bg-indigo-700">
-                    Create Event
-                </button>
-            </form>
-        </div>
-    </section>
+
+                <div class="w-full lg:w-95 space-y-6 sticky top-24">
+                    <div class="bg-gray-900 border border-white/10 rounded-[2.5rem] p-8 space-y-8 shadow-2xl">
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 bg-red-600 rounded-full"></span>
+                                <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Event
+                                    Identity</h4>
+                            </div>
+
+                            <div class="space-y-5">
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Kategori</label>
+                                    <select name="event_category_id" required
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white focus:border-red-600 outline-none transition-all appearance-none">
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ old('event_category_id') == $category->id ? 'selected' : '' }}
+                                                class="bg-gray-950">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Status
+                                        Publikasi</label>
+                                    <select name="status" x-model="status" required
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white outline-none appearance-none focus:border-red-600">
+                                        <option value="upcoming" class="bg-gray-950">UPCOMING</option>
+                                        <option value="ongoing" class="bg-gray-950">ONGOING</option>
+                                        <option value="completed" class="bg-gray-950">COMPLETED</option>
+                                    </select>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-1.5">
+                                        <label
+                                            class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Tanggal</label>
+                                        <input type="date" name="event_date" value="{{ old('event_date') }}" required
+                                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-[10px] text-white outline-none">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label
+                                            class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Lokasi</label>
+                                        <input type="text" name="location" value="{{ old('location') }}" required
+                                            placeholder="e.g. Ruang Multimedia"
+                                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-[10px] text-white outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-4 border-t border-white/5">
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Featured Media
+                            </h4>
+                            <div
+                                class="relative h-48 border-2 border-dashed border-white/10 rounded-4xl bg-white/1 flex items-center justify-center overflow-hidden group hover:border-red-600/30 transition-all cursor-pointer">
+                                <input type="file" name="thumbnail"
+                                    class="absolute inset-0 opacity-0 z-20 cursor-pointer"
+                                    @change="const file = $event.target.files[0]; if(file) imageUrl = URL.createObjectURL(file)"
+                                    accept="image/*">
+                                <template x-if="imageUrl">
+                                    <img :src="imageUrl"
+                                        class="absolute inset-0 w-full h-full object-cover z-10 transition-transform duration-500 group-hover:scale-110">
+                                </template>
+                                <div x-show="!imageUrl"
+                                    class="text-center opacity-20 group-hover:opacity-100 transition-opacity">
+                                    <ion-icon name="cloud-upload-outline" class="text-4xl mb-1"></ion-icon>
+                                    <p class="text-[8px] font-black uppercase tracking-widest">Main Thumbnail</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="saveEvent()"
+                            class="w-full bg-red-600 hover:bg-red-700 text-white py-5 rounded-3xl font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-red-600/30 active:scale-95 border border-red-500/50">
+                            Launch Event
+                        </button>
+                    </div>
+
+                    <div class="text-center opacity-20">
+                        <p class="text-[9px] font-black text-white uppercase tracking-[0.4em]">HMIF System Engine</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </x-app-layout>

@@ -7,9 +7,9 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script src="https://kit.fontawesome.com/a9ea8e1647.js" crossorigin="anonymous"></script>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/editorjs.css', 'resources/js/codex-editor.js'])
 
-    @stack('styles')
+    {{ $styles ?? '' }}
 </head>
 
 <body class="bg-gray-950 text-gray-200 antialiased overflow-x-hidden font-poppins" x-data="{ sidebarOpen: true }">
@@ -164,7 +164,7 @@
         </main>
     </div>
 
-    @stack('scripts')
+    {{ $scripts ?? '' }}
 </body>
 
 </html>

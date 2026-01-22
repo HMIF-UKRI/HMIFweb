@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('period_id')->nullable()->constrained('periods')->nullOnDelete();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->string('short_description')->nullable();
             $table->text('description');
             $table->dateTime('event_date');
             $table->string('location')->nullable();

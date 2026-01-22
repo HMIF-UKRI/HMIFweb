@@ -81,16 +81,16 @@
                                 <i class="fa-solid fa-users w-5 text-center text-xs opacity-70"></i>
                                 Struktur Pengurus
                             </a>
-                            <a href="{{ route('blog.index') }}"
+                            <a href="{{ route('coming-soon') }}"
                                 class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400">
                                 <i class="fa-solid fa-newspaper w-5 text-center text-xs opacity-70"></i>
                                 Blog
                             </a>
-                            {{-- <a href="{{ route('home') }}"
+                            <a href="{{ route('coming-soon') }}"
                                 class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-white/5 hover:text-red-400">
                                 <i class="fa-solid fa-images w-5 text-center text-xs opacity-70"></i>
                                 Galeri
-                            </a> --}}
+                            </a>
                         </div>
                     </div>
                 </div>

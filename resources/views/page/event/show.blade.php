@@ -18,7 +18,7 @@
         </div>
 
         <div class="relative h-[55vh] min-h-112.5 w-full overflow-hidden">
-            <img src="{{ $event->getFirstMediaUrl('thumbnail', 'thumb') }}" alt="{{ $event->title }}"
+            <img src="{{ $event->getFirstMediaUrl('thumbnails', 'thumb') }}" alt="{{ $event->title }}"
                 class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-1000 hover:scale-105"
                 onerror="this.onerror=null; this.src='https://placehold.co/1200x600/1a1a1a/cccccc?text=No+Image';" />
 
@@ -85,13 +85,12 @@
                     <div class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:p-10">
                         <div class="mb-8 rounded-xl border-l-4 border-red-600 bg-red-900/10 p-5">
                             <p class="text-lg leading-relaxed font-medium text-gray-200 italic">
-                                "{{ Str::limit($event->description, 55, '...') }}"
+                                "{{ Str::limit($event->short_description, 55, '...') }}"
                             </p>
                         </div>
 
-                        <div
-                            class="prose prose-invert prose-lg prose-headings:font-bold prose-headings:text-white prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-red-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-li:text-gray-300 prose-img:rounded-xl prose-img:shadow-lg max-w-none">
-                            {!! $event->description !!}
+                        <div id="editorjs-content"
+                            class="prose prose-invert prose-lg prose-headings:font-bold prose-headings:text-white prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-red-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-li:text-gray-300 prose-img:rounded-xl prose-img:shadow-lg max-w-none font-poppins">
                         </div>
 
                         <div
@@ -125,7 +124,7 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-4">
+                <div class="lg:col-span-4 font-poppins">
                     <div class="sticky top-24 space-y-6">
                         <div
                             class="rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
@@ -305,4 +304,88 @@
             </section>
         @endif
     </div>
+
+    @push('script')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const rawData = {!! $event->description !!};
+                const container = document.getElementById('editorjs-content');
+
+                if (rawData && rawData.blocks) {
+                    rawData.blocks.forEach(block => {
+                        let el;
+                        switch (block.type) {
+                            case 'header':
+                                el = document.createElement(`h${block.data.level}`);
+                                el.className =
+                                    'cdx-header font-extrabold leading-tight text-white mb-4 mt-6 tracking-tight';
+                                if (block.data.level == 2) {
+                                    el.className += ' text-3xl';
+                                } else if (block.data.level == 3) {
+                                    el.className += ' text-2xl';
+                                } else {
+                                    el.className += ' text-xl';
+                                }
+                                el.innerHTML = block.data.text;
+                                break;
+
+                            case 'paragraph':
+                                el = document.createElement('p');
+                                el.className =
+                                    'cdx-paragraph text-gray-300 leading-relaxed mb-4 text-base text-justify';
+                                el.innerHTML = block.data.text;
+                                break;
+
+                            case 'list':
+                                const isOrdered = block.data.style == 'ordered';
+                                el = document.createElement(isOrdered ? 'ol' : 'ul');
+                                el.className =
+                                    `cdx-list-${isOrdered ? 'ordered' : 'unordered'} list-inside text-gray-400 text-base mb-4 ml-4 space-y-2`;
+
+                                block.data.items.forEach(item => {
+                                    const li = document.createElement('li');
+                                    li.innerHTML = item.content || item;
+                                    li.className = 'text-gray-300 leading-relaxed';
+                                    el.appendChild(li);
+                                });
+                                break;
+
+                            case 'image':
+                                const figure = document.createElement('figure');
+                                figure.className = 'cdx-image my-6 py-2';
+                                const img = document.createElement('img');
+                                img.src = block.data.file.url;
+                                img.className =
+                                    'mx-auto max-h-70 object-contain';
+                                img.draggable = false;
+                                figure.appendChild(img);
+                                if (block.data.caption) {
+                                    const cap = document.createElement('figcaption');
+                                    cap.className = 'text-center text-sm mt-3 italic text-gray-500';
+                                    cap.innerHTML = block.data.caption;
+                                    figure.appendChild(cap);
+                                }
+                                el = figure;
+                                break;
+
+                            case 'quote':
+                                el = document.createElement('blockquote');
+                                el.className =
+                                    'cdx-quote border-l-4 border-red-600 bg-red-900/20 pl-6 pr-4 py-4 my-4 italic text-lg text-gray-300 rounded-r-lg';
+                                el.innerHTML = `<p>${block.data.text}</p>`;
+                                if (block.data.caption) {
+                                    el.innerHTML +=
+                                        `<cite class="block mt-3 text-sm text-red-400 font-semibold not-italic">— ${block.data.caption}</cite>`;
+                                }
+                                break;
+                        }
+                        if (el) container.appendChild(el);
+                    });
+                } else {
+                    container.innerHTML =
+                        '<p class="text-gray-500 italic text-center uppercase tracking-widest text-[10px]">No description available.</p>';
+                }
+            });
+        </script>
+    @endpush
 </x-guest-layout>

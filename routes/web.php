@@ -38,6 +38,10 @@ Route::get('/blog/{slug}', [PublicBlogController::class, 'show'])->name('blog.sh
 Route::get('/portofolio', [PublicPortofolioController::class, 'index'])->name('portofolio.index');
 Route::get('/portofolio/{slug}', [PublicPortofolioController::class, 'show'])->name('portofolio.show');
 
+Route::get('/cooming-soon', function () {
+    return view('page.coming-soon');
+})->name('coming-soon');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Manajemen Organisasi & Konten
         Route::resource('managements', PengurusController::class);
         Route::resource('events', AdminEventController::class);
+        Route::post('/events/upload-image', [AdminEventController::class, 'uploadImage'])->name('events.upload-image');
         Route::resource('galleries', GalleriesController::class);
         Route::resource('blogs', AdminBlogController::class);
         Route::resource('doc-event', DocEventController::class);

@@ -17,6 +17,7 @@ class EventFactory extends Factory
         return [
             'title'             => $title,
             'slug'              => Str::slug($title),
+            'short_description' => fake()->sentence(10),
             'description'       => fake()->paragraphs(3, true),
             'event_date'        => fake()->dateTimeBetween('-1 month', '+3 months'),
             'location'          => fake()->address(),
@@ -36,7 +37,7 @@ class EventFactory extends Factory
 
             try {
                 $event->addMediaFromUrl($url)
-                    ->toMediaCollection('thumbnail');
+                    ->toMediaCollection('thumbnails');
             } catch (\Exception $e) {
                 logger("Gagal mengunduh gambar untuk Event ID {$event->id}: " . $e->getMessage());
             }

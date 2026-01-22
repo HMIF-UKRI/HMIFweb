@@ -10,7 +10,6 @@
     </x-slot>
 
     <div class="min-h-screen bg-gray-950 text-white" x-data="eventFilter(@js($events))">
-        {{-- HERO / BANNER SECTION --}}
         <div class="relative flex h-[50vh] min-h-100 w-full items-center justify-center overflow-hidden">
             <div class="absolute inset-0 z-0">
                 <img src="{{ asset('images/banner-kegiatan.png') }}" alt="Banner Kegiatan"
@@ -45,7 +44,6 @@
 
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="lg:grid lg:grid-cols-4 lg:gap-8">
-                    {{-- SIDEBAR FILTER (Sticky) --}}
                     <div class="mb-8 lg:col-span-1 lg:mb-0">
                         <div class="space-y-6 lg:sticky lg:top-24">
                             <div class="relative">
@@ -135,7 +133,6 @@
                         </div>
                     </div>
 
-                    {{-- EVENT LIST GRID --}}
                     <div class="lg:col-span-3">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
                             <template x-for="event in filteredEvents.slice(0, limit)" :key="event.slug">
@@ -155,7 +152,8 @@
                                         <span x-html="getStatusBadge(event.status)"></span>
                                         <h3 class="mt-2 text-xl font-bold text-white group-hover:text-red-500 line-clamp-2"
                                             x-text="event.title"></h3>
-                                        <p class="mt-3 text-sm text-gray-400 line-clamp-3" x-text="event.description">
+                                        <p class="mt-3 text-sm text-gray-400 line-clamp-3"
+                                            x-text="event.short_description">
                                         </p>
                                         <a :href="'/kegiatan/' + event.slug"
                                             class="mt-auto pt-4 text-sm font-medium text-white hover:text-red-400">Lihat

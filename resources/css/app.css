@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -174,6 +175,27 @@
         format("truetype-variations");
     font-weight: 200 800;
     font-style: italic;
+}
+
+.cdx-input.image-tool__caption,
+.hmif-rendered-caption {
+    @apply mt-4 text-center text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase;
+}
+
+.checklist-item {
+    @apply mb-3 flex items-center gap-3 text-gray-400;
+}
+.checklist-checkbox {
+    @apply flex h-5 w-5 items-center justify-center rounded border border-white/20 transition-all;
+}
+.checklist-checkbox.checked {
+    @apply border-red-600 bg-red-600;
+}
+.checklist-checkbox.checked svg {
+    @apply text-white;
+}
+.checklist-label {
+    @apply flex-1;
 }
 
 :root {

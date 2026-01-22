@@ -53,7 +53,7 @@
                         </h3>
 
                         <p class="mb-6 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-400">
-                            {{ Str::limit($event->description, 50) }}
+                            {{ Str::limit($event->short_description, 50) }}
                         </p>
 
                         <div

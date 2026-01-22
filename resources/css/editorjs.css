@@ -1,0 +1,109 @@
+body {
+    background-color: #030712;
+}
+
+.ce-block__content,
+.ce-toolbar__content {
+    max-width: 800px;
+}
+
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    transition: all 0.2s ease;
+}
+
+.ce-toolbar__plus svg path,
+.ce-toolbar__settings-btn svg path {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover {
+    background-color: #dc2626 !important;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+}
+
+.ce-popover {
+    background: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white !important;
+    border-radius: 12px;
+}
+
+.ce-popover__item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.ce-popover__item-icon {
+    background: #1f2937 !important;
+    color: white !important;
+}
+
+/* Header styles */
+.ce-header {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+/* Paragraph styles */
+.ce-paragraph {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #9ca3af;
+}
+
+/* List styles */
+.cdx-list {
+    padding-left: 20px;
+}
+
+/* Image Styles */
+.cdx-image {
+    margin: 2rem 0;
+}
+.image-tool__image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-height: 400px;
+    width: fit-content;
+    margin: 0 auto;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+}
+
+.image-tool__image-picture {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
+}
+
+.cdx-quote {
+    border-left: 3px solid #dc2626;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 2rem;
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+.title-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.05);
+}
+
+.ce-block {
+    color: white;
+}
