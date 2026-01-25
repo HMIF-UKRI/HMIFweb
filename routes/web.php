@@ -54,6 +54,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('page.dashboard');
     })->name('dashboard');
+    Route::get('/aspirasi', function () {
+        return view('page.aspirasi');
+    })->name('aspirasi');
 
     // Profile Management (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
