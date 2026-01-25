@@ -86,6 +86,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/events/upload-image', [AdminEventController::class, 'uploadImage'])->name('events.upload-image');
         Route::resource('galleries', GalleriesController::class);
         Route::resource('blogs', AdminBlogController::class);
+        Route::post('/blogs/upload-image', [AdminBlogController::class, 'uploadImage'])->name('blogs.upload-image');
         Route::resource('doc-event', DocEventController::class);
 
         // Manajemen Absensi

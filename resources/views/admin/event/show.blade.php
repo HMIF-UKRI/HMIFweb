@@ -67,7 +67,7 @@
                             </div>
 
                             <h1
-                                class="max-w-5xl text-3xl leading-tight font-extrabold tracking-tight text-white drop-shadow-2xl sm:text-5xl lg:text-6xl">
+                                class="max-w-5xl text-2xl leading-tight font-extrabold tracking-tight text-white drop-shadow-2xl md:text-3xl">
                                 {{ $event->title }}
                             </h1>
 
@@ -279,65 +279,53 @@
                             case 'header':
                                 el = document.createElement(`h${block.data.level}`);
                                 el.className =
-                                    'cdx-header font-extrabold leading-tight text-white mb-4 mt-6 tracking-tight';
-                                if (block.data.level == 2) {
-                                    el.className += ' text-3xl';
-                                } else if (block.data.level == 3) {
-                                    el.className += ' text-2xl';
-                                } else {
-                                    el.className += ' text-xl';
-                                }
+                                    'text-3xl text-white font-black tracking-tight mt-12 mb-6 uppercase';
                                 el.innerHTML = block.data.text;
                                 break;
-
                             case 'paragraph':
                                 el = document.createElement('p');
-                                el.className =
-                                    'cdx-paragraph text-gray-300 leading-relaxed mb-4 text-base text-justify';
+                                el.className = 'text-white text-lg md:text-xl leading-loose mb-4 opacity-80';
                                 el.innerHTML = block.data.text;
                                 break;
-
                             case 'list':
-                                const isOrdered = block.data.style == 'ordered';
+                                const isOrdered = block.data.style === 'ordered';
                                 el = document.createElement(isOrdered ? 'ol' : 'ul');
-                                el.className =
-                                    `cdx-list-${isOrdered ? 'ordered' : 'unordered'} list-inside text-gray-400 text-base mb-4 ml-4 space-y-2`;
-
+                                el.className = 'space-y-4 text-gray-400 text-lg ' + (isOrdered ?
+                                    'list-decimal ml-6' : 'list-disc ml-6');
                                 block.data.items.forEach(item => {
                                     const li = document.createElement('li');
                                     li.innerHTML = item.content || item;
-                                    li.className = 'text-gray-300 leading-relaxed';
                                     el.appendChild(li);
                                 });
                                 break;
-
+                            case 'quote':
+                                const blockquote = document.createElement('blockquote');
+                                blockquote.className =
+                                    'relative p-8 md:p-12 border-l-4 border-red-600 bg-white/2 rounded-r-[2rem] my-12';
+                                blockquote.innerHTML =
+                                    `<p class="text-lg md:text-xl font-black text-white italic leading-tight">"${block.data.text}"</p>`;
+                                if (block.data.caption) {
+                                    blockquote.innerHTML +=
+                                        `<cite class="block mt-4 text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">— ${block.data.caption}</cite>`;
+                                }
+                                el = blockquote;
+                                break;
                             case 'image':
                                 const figure = document.createElement('figure');
-                                figure.className = 'cdx-image my-6 py-2';
+                                figure.className = 'my-16 space-y-4';
                                 const img = document.createElement('img');
                                 img.src = block.data.file.url;
                                 img.className =
-                                    'mx-auto max-h-70 object-contain';
-                                img.draggable = false;
+                                    'w-full max-h-96 object-contain bg-center rounded-[3rem] border border-white/10 shadow-2xl';
                                 figure.appendChild(img);
                                 if (block.data.caption) {
-                                    const cap = document.createElement('figcaption');
-                                    cap.className = 'text-center text-sm mt-3 italic text-gray-500';
-                                    cap.innerHTML = block.data.caption;
-                                    figure.appendChild(cap);
+                                    const figcaption = document.createElement('figcaption');
+                                    figcaption.className =
+                                        'text-center text-[10px] font-bold text-gray-600 uppercase tracking-widest italic';
+                                    figcaption.innerHTML = block.data.caption;
+                                    figure.appendChild(figcaption);
                                 }
                                 el = figure;
-                                break;
-
-                            case 'quote':
-                                el = document.createElement('blockquote');
-                                el.className =
-                                    'cdx-quote border-l-4 border-red-600 bg-red-900/20 pl-6 pr-4 py-4 my-4 italic text-lg text-gray-300 rounded-r-lg';
-                                el.innerHTML = `<p>${block.data.text}</p>`;
-                                if (block.data.caption) {
-                                    el.innerHTML +=
-                                        `<cite class="block mt-3 text-sm text-red-400 font-semibold not-italic">— ${block.data.caption}</cite>`;
-                                }
                                 break;
                         }
                         if (el) container.appendChild(el);

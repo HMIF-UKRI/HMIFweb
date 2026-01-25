@@ -25,6 +25,8 @@ class Event extends Model implements HasMedia
         'location',
         'status',
         'event_category_id',
+        'period_id',
+        'member_id',
     ];
 
     protected $casts = ['event_date' => 'datetime'];
@@ -51,7 +53,7 @@ class Event extends Model implements HasMedia
 
     public function documents(): HasMany
     {
-        return $this->hasMany(DocumentEvents::class, 'event_id');
+        return $this->hasMany(DocumentEvents::class);
     }
 
     public function registerMediaCollections(): void

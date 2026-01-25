@@ -87,3 +87,28 @@ function saveEvent() {
 }
 
 window.saveEvent = saveEvent;
+
+function saveBlog() {
+    editor
+        .save()
+        .then((outputData) => {
+            const contentInput = document.getElementById("contentInput");
+            const form = document.getElementById("blogForm");
+
+            if (!contentInput || !form) {
+                console.error("Elemen form tidak ditemukan!");
+                return;
+            }
+
+            contentInput.value = JSON.stringify(outputData);
+            console.log("Data siap kirim:", contentInput.value);
+
+            form.submit();
+        })
+        .catch((error) => {
+            console.error("EditorJS Error:", error);
+            alert("Gagal mengambil data deskripsi");
+        });
+}
+
+window.saveBlog = saveBlog;

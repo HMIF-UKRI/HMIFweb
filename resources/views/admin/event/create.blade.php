@@ -21,6 +21,7 @@
         <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" id="eventForm">
             @csrf
             <input type="hidden" name="description" id="descriptionInput">
+            <input type="hidden" name="member_id" value="{{ auth()->user()->member->id }}">
 
             <div class="flex flex-col lg:flex-row gap-8 items-start">
 
@@ -34,7 +35,7 @@
                                     class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Judul
                                     Kegiatan</label>
                                 <textarea name="title" rows="1" required
-                                    class="w-full bg-transparent border-none p-0 text-3xl md:text-4xl font-black text-white placeholder:text-white/10 outline-none resize-none overflow-hidden"
+                                    class="w-full bg-transparent border-none p-0 text-xl md:text-2xl font-black text-white placeholder:text-white/10 outline-none resize-none overflow-hidden"
                                     placeholder="Judul Kegiatan..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'">{{ old('title', $event->title ?? '') }}</textarea>
                                 <div
                                     class="h-1 w-20 bg-red-600 rounded-full shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all group-focus-within:w-full">
@@ -82,6 +83,20 @@
 
                                 <div class="space-y-1.5">
                                     <label
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Kabinet
+                                        penyelenggara</label>
+                                    <select name="period_id" required
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white focus:border-red-600 outline-none transition-all appearance-none">
+                                        @foreach ($periods as $period)
+                                            <option value="{{ $period->id }}"
+                                                {{ old('period_id') == $period->id ? 'selected' : '' }}
+                                                class="bg-gray-950">{{ $period->cabinet_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <label
                                         class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Status
                                         Publikasi</label>
                                     <select name="status" x-model="status" required
@@ -96,7 +111,8 @@
                                     <div class="space-y-1.5">
                                         <label
                                             class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Tanggal</label>
-                                        <input type="date" name="event_date" value="{{ old('event_date') }}" required
+                                        <input type="date" name="event_date" value="{{ old('event_date') }}"
+                                            required
                                             class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-[10px] text-white outline-none">
                                     </div>
                                     <div class="space-y-1.5">

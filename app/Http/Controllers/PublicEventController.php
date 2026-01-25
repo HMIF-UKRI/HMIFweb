@@ -23,7 +23,7 @@ class PublicEventController extends Controller
 
     public function show($slug)
     {
-        $event = Event::with(['category', 'media'])
+        $event = Event::with(['category', 'period', 'media'])
             ->where('slug', $slug)
             ->firstOrFail();
 

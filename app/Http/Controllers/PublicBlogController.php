@@ -13,7 +13,7 @@ class PublicBlogController extends Controller
     {
         $categories = BlogCategory::all();
 
-        $query = Blog::with(['category', 'author.media', 'media'])
+        $query = Blog::with(['category', 'media'])
             ->where('status', 'published');
 
         if ($request->filled('category')) {
@@ -23,23 +23,26 @@ class PublicBlogController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%')
-                ->orWhere('content', 'like', '%' . $request->search . '%');
+            $search = strtolower($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(summary) LIKE ?', ["%{$search}%"]);
+            });
         }
 
-        $blogs = $query->latest()->paginate(9);
+        $blogs = $query->latest()->paginate(6);
 
         return view('page.blog.index', compact('blogs', 'categories'));
     }
 
     public function show($slug)
     {
-        $blog = Blog::with(['category', 'author.media', 'media'])
+        $blog = Blog::with(['category', 'media'])
             ->where('slug', $slug)
             ->where('status', 'published')
             ->firstOrFail();
 
-        $relatedBlogs = Blog::with(['category', 'author.media', 'media'])
+        $relatedBlogs = Blog::with(['category', 'media'])
             ->where('blog_category_id', $blog->blog_category_id)
             ->where('id', '!=', $blog->id)
             ->where('status', 'published')

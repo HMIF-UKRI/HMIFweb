@@ -91,6 +91,16 @@ class UserMemberSeeder extends Seeder
         ]);
 
         $superAdmin->assignRole('super-admin');
+
+        Member::updateOrCreate(
+            ['npm' => '20000000001'],
+            [
+                'user_id' => $superAdmin->id,
+                'generation_id' => $gen2024->id,
+                'full_name' => 'Super Admin',
+                'is_active' => false,
+            ]
+        );
     }
 
     private function determineLevel($pos)

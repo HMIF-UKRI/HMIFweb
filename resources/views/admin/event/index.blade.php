@@ -11,10 +11,10 @@
     </x-slot>
 
     <x-slot name="header_title">
-        Events Management
+        Core Content / Event
     </x-slot>
 
-    <div x-data="eventHandler()">
+    <div>
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-black text-white tracking-tight uppercase">Daftar Kegiatan</h1>
@@ -26,7 +26,7 @@
             <div class="flex gap-3">
                 <form method="GET" action="{{ route('admin.events.index') }}" class="relative group">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="SEARCH EVENT..."
-                        class="bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-[10px] font-bold text-white uppercase tracking-widest focus:border-red-600 focus:w-64 w-40 transition-all outline-none placeholder-gray-700">
+                        class="bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-[10px] font-bold text-white  tracking-widest focus:border-red-600 focus:w-64 w-40 transition-all outline-none placeholder-gray-700">
                     <ion-icon name="search-outline"
                         class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-red-600 transition-colors"></ion-icon>
                 </form>
@@ -138,7 +138,7 @@
             @endforelse
         </div>
 
-        <div class="mt-8">
+        <div class="my-8">
             {{ $events->links() }}
         </div>
 </x-app-layout>

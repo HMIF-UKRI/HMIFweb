@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventCategory;
+use App\Models\PeriodeKepengurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AdminEventController extends Controller
 {
-    /**
-     * Menampilkan daftar event
-     */
     public function index(Request $request)
     {
         $query = Event::with('category', 'media');
@@ -39,13 +38,16 @@ class AdminEventController extends Controller
     public function create()
     {
         $categories = EventCategory::all();
-        return view('admin.event.create', compact('categories'));
+        $periods = PeriodeKepengurusan::all();
+
+        return view('admin.event.create', compact('categories', 'periods'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'event_category_id' => 'required|exists:event_categories,id',
+            'period_id'         => 'required|exists:periods,id',
             'title'             => 'required|string|max:255',
             'short_description' => 'required|string|max:255',
             'description'       => 'required|string',
@@ -56,13 +58,13 @@ class AdminEventController extends Controller
         ]);
 
         return DB::transaction(function () use ($request, $validated) {
-            $validated['slug'] = Str::slug($validated['title']);
-
-            $originalSlug = $validated['slug'];
-            $count = 1;
-            while (Event::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug . '-' . $count++;
+            $member = Auth::user()->member;
+            if (!$member) {
+                return redirect()->back()->with('error', 'Akaun anda tidak mempunyai profil Ahli.');
             }
+
+            $validated['member_id'] = $member->id;
+            $validated['slug'] = $this->generateUniqueSlug($validated['title']);
 
             $event = Event::create($validated);
 
@@ -70,70 +72,55 @@ class AdminEventController extends Controller
                 $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
             }
 
-            return redirect()->route('admin.events.index')->with('success', 'Event berhasil diluncurkan.');
+            return redirect()->route('admin.events.index')->with('success', 'Event berjaya diterbitkan.');
         });
     }
 
-    /**
-     * Refactor: Menggunakan slug untuk pencarian
-     */
     public function show($slug)
     {
-        $event = Event::where('slug', $slug)->with(['category', 'media'])->firstOrFail();
+        $event = Event::where('slug', $slug)->with(['category', 'period', 'media'])->firstOrFail();
         return view('admin.event.show', compact('event'));
     }
 
-    /**
-     * Refactor: Menggunakan slug untuk pencarian
-     */
     public function edit($slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $categories = EventCategory::all();
-        return view('admin.event.edit', compact('event', 'categories'));
+        $periods = PeriodeKepengurusan::all();
+        return view('admin.event.edit', compact('event', 'categories', 'periods'));
     }
 
-    /**
-     * Refactor: Menggunakan slug untuk pencarian dan pembaruan
-     */
     public function update(Request $request, $slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
 
         $validated = $request->validate([
             'event_category_id' => 'required|exists:event_categories,id',
+            'period_id'         => 'required|exists:periods,id',
             'title'             => 'required|string|max:255',
             'short_description' => 'required|string|max:255',
             'description'       => 'required|string',
             'event_date'        => 'required|date',
             'location'          => 'required|string|max:255',
             'status'            => 'required|in:upcoming,ongoing,completed,cancelled',
-            'thumbnail'         => 'nullable|image|max:2048',
         ]);
 
-        if ($request->title !== $event->title) {
-            $newSlug = Str::slug($request->title);
-            $originalSlug = $newSlug;
-            $count = 1;
-            while (Event::where('slug', $newSlug)->where('id', '!=', $event->id)->exists()) {
-                $newSlug = $originalSlug . '-' . $count++;
+        return DB::transaction(function () use ($request, $event, $validated) {
+            if ($request->title !== $event->title) {
+                $validated['slug'] = $this->generateUniqueSlug($request->title, $event->id);
             }
-            $event->slug = $newSlug;
-        }
 
-        $event->update($validated);
+            $event->update($validated);
 
-        if ($request->hasFile('thumbnail')) {
-            $event->clearMediaCollection('thumbnails');
-            $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
-        }
+            if ($request->hasFile('thumbnail')) {
+                $event->clearMediaCollection('thumbnails');
+                $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
+            }
 
-        return redirect()->route('admin.events.index')->with('success', 'Data event berhasil diperbarui.');
+            return redirect()->route('admin.events.index')->with('success', 'Data event berjaya dikemaskini.');
+        });
     }
 
-    /**
-     * Refactor: Menggunakan slug untuk penghapusan
-     */
     public function destroy($slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
@@ -145,9 +132,6 @@ class AdminEventController extends Controller
         });
     }
 
-    /**
-     * Endpoint untuk upload gambar editor tetap menggunakan sistem storage standar
-     */
     public function uploadImage(Request $request)
     {
         try {
@@ -169,5 +153,16 @@ class AdminEventController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function generateUniqueSlug($title, $exceptId = null)
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Event::where('slug', $slug)->when($exceptId, fn($q) => $q->where('id', '!=', $exceptId))->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        return $slug;
     }
 }
