@@ -38,6 +38,10 @@ Route::get('/blog/{slug}', [PublicBlogController::class, 'show'])->name('blog.sh
 Route::get('/portofolio', [PublicPortofolioController::class, 'index'])->name('portofolio.index');
 Route::get('/portofolio/{slug}', [PublicPortofolioController::class, 'show'])->name('portofolio.show');
 
+Route::get('/aspirasi', function () {
+    return view('page.aspirasi');
+})->name('aspirasi');
+
 Route::get('/cooming-soon', function () {
     return view('page.coming-soon');
 })->name('coming-soon');
@@ -54,9 +58,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('page.dashboard');
     })->name('dashboard');
-    Route::get('/aspirasi', function () {
-        return view('page.aspirasi');
-    })->name('aspirasi');
 
     // Profile Management (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
