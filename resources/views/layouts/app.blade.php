@@ -16,15 +16,26 @@
     x-data="{
         sidebarOpen: true,
         mobileOpen: false,
+        isMobile: window.innerWidth < 768,
         toggleSidebar() {
-            if (window.innerWidth < 768) {
+            if (this.isMobile) {
                 this.mobileOpen = !this.mobileOpen;
             } else {
                 this.sidebarOpen = !this.sidebarOpen;
             }
         }
     }"
-    x-init="() => { if (window.innerWidth < 768) { mobileOpen = false; sidebarOpen = true; } }">
+    x-init="() => {
+        const setMode = () => {
+            isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                mobileOpen = false;
+                sidebarOpen = true;
+            }
+        };
+        setMode();
+        window.addEventListener('resize', setMode);
+    }">
     <div class="flex relative w-full min-h-screen">
         <div x-show="mobileOpen" x-transition.opacity
             class="fixed inset-0 z-40 bg-black/70 md:hidden" @click="mobileOpen = false"></div>
@@ -134,7 +145,9 @@
                 <div class="flex items-center gap-4">
                     <button @click="toggleSidebar()"
                         class="text-2xl text-gray-400 hover:text-red-500 transition-colors">
-                        <ion-icon :name="sidebarOpen ? 'chevron-back-outline' : 'menu-outline'"></ion-icon>
+                        <ion-icon
+                            :name="isMobile ? (mobileOpen ? 'close-outline' : 'menu-outline') : (sidebarOpen ? 'chevron-back-outline' : 'menu-outline')">
+                        </ion-icon>
                     </button>
                     <h2 class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">
                         {{ $header_title ?? 'System Overview' }}
