@@ -195,6 +195,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </section>
     </div>
 
@@ -249,4 +250,4 @@
             }
         </script>
     @endpush
-    </x-app-layout>
+    </x-guest-layout>
