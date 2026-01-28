@@ -35,4 +35,24 @@ class BidangController extends Controller
 
         return redirect()->back()->with('success', 'Bidang berhasil ditambahkan.');
     }
+
+    public function update(Request $request, Bidang $bidang)
+    {
+        $validated = $request->validate([
+            'department_id' => 'required|exists:departments,id',
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string',
+        ]);
+
+        $bidang->update($validated);
+
+        return redirect()->back()->with('success', 'Bidang berhasil diperbarui.');
+    }
+
+    public function destroy(Bidang $bidang)
+    {
+        $bidang->delete();
+
+        return redirect()->back()->with('success', 'Bidang berhasil dihapus.');
+    }
 }

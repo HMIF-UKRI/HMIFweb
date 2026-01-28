@@ -21,12 +21,14 @@ class PeriodeKepengurusan extends Model implements HasMedia
         'start_date',
         'end_date',
         'is_current',
+        'show_on_homepage',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'is_current' => 'boolean',
+        'show_on_homepage' => 'boolean',
     ];
 
     public function pengurus(): HasMany

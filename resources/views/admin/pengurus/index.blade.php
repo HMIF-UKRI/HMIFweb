@@ -12,46 +12,7 @@
 
     <x-slot name="header_title">Organization / Pengurus</x-slot>
 
-    <div class="space-y-6" x-data="{
-        openModal: false,
-        editMode: false,
-        formAction: '',
-        imageUrl: null,
-    
-        member_id: '',
-        period_id: '',
-        department_id: '',
-        bidang_id: '',
-        hierarchy_level: '',
-        position: '',
-    
-        setEdit(item) {
-            this.editMode = true;
-            this.formAction = `/admin/managements/${item.id}`;
-            this.member_id = item.member_id;
-            this.period_id = item.period_id;
-            this.department_id = item.department_id;
-            this.bidang_id = item.bidang_id || '';
-            this.hierarchy_level = item.hierarchy_level;
-            this.position = item.position;
-    
-            this.imageUrl = item.preview_url;
-            this.openModal = true;
-        },
-    
-        setCreate() {
-            this.editMode = false;
-            this.formAction = '{{ route('admin.managements.store') }}';
-            this.member_id = '';
-            this.period_id = '';
-            this.department_id = '';
-            this.bidang_id = '';
-            this.hierarchy_level = '';
-            this.position = '';
-            this.imageUrl = null;
-            this.openModal = true;
-        }
-    }">
+    <div class="space-y-6" x-data="pengurusForm">
 
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
             <div class="space-y-1">
@@ -141,18 +102,105 @@
         {{ $pengurus->links() }}
 
         <x-modal-form>
+            @if ($errors->any())
+                <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-[10px] text-red-300">
+                    <div class="mb-2 font-black uppercase tracking-widest">Gagal menyimpan</div>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <input type="hidden" name="member_mode" :value="member_mode">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
+                    <div class="space-y-1.5" x-show="!editMode">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Mode
+                            Anggota</label>
+                        <div class="flex gap-2">
+                            <button type="button" @click="member_mode = 'existing'"
+                                :class="member_mode === 'existing' ? 'bg-red-600 text-white' : 'bg-white/5 text-gray-400'"
+                                class="px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">
+                                Pilih Anggota
+                            </button>
+                            <button type="button" @click="member_mode = 'new'"
+                                :class="member_mode === 'new' ? 'bg-red-600 text-white' : 'bg-white/5 text-gray-400'"
+                                class="px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">
+                                Buat Anggota Baru
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="space-y-1.5">
                         <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Anggota
                             HMIF</label>
                         <select name="member_id" x-model="member_id"
+                            x-show="member_mode === 'existing' || editMode"
+                            :required="member_mode === 'existing' || editMode"
                             class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
                             <option value="" class="bg-gray-950">Select Member</option>
                             @foreach ($members as $m)
                                 <option value="{{ $m->id }}" class="bg-gray-950">{{ $m->full_name }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="space-y-3" x-show="member_mode === 'new' && !editMode">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Nama
+                                Lengkap</label>
+                            <input type="text" name="new_member_full_name" x-model="new_member_full_name"
+                                :required="member_mode === 'new'"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="space-y-1.5">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">NPM</label>
+                                <input type="text" name="new_member_npm" x-model="new_member_npm"
+                                    :required="member_mode === 'new'"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Angkatan</label>
+                                <select name="new_member_generation_id" x-model="new_member_generation_id"
+                                    :required="member_mode === 'new'"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
+                                    <option value="" class="bg-gray-950">Pilih</option>
+                                    @foreach ($generations as $gen)
+                                        <option value="{{ $gen->id }}" class="bg-gray-950">{{ $gen->year }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Email</label>
+                            <input type="email" name="new_member_email" x-model="new_member_email"
+                                :required="member_mode === 'new'"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Password</label>
+                                <input type="password" name="new_member_password" x-model="new_member_password"
+                                    placeholder="Optional"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Role</label>
+                                <select name="new_member_role" x-model="new_member_role"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->name }}" class="bg-gray-950">{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -223,8 +271,9 @@
                 <div class="space-y-1.5">
                     <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Bidang
                         (Optional)</label>
-                    <select name="bidang_id" x-model="bidang_id" :disabled="editMode ? hierarchy_level != 3 : false"
-                        :class="editMode && hierarchy_level != 3 ? 'opacity-50 cursor-not-allowed' : ''"
+                    <select name="bidang_id" x-model="bidang_id" :disabled="hierarchy_level != 3"
+                        :required="hierarchy_level == 3"
+                        :class="hierarchy_level != 3 ? 'opacity-50 cursor-not-allowed' : ''"
                         class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white appearance-none outline-none transition-opacity">
                         <option value="" class="bg-gray-950">Select Bidang</option>
                         @foreach ($bidangs as $b)
@@ -235,4 +284,72 @@
             </div>
         </x-modal-form>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('pengurusForm', () => ({
+                openModal: @json($errors->any()),
+                editMode: false,
+                formAction: @json(route('admin.managements.store')),
+                imageUrl: null,
+
+                member_mode: @json(old('member_id') ? 'existing' : (old('new_member_full_name') ? 'new' : 'existing')),
+                member_id: @json(old('member_id')),
+                period_id: @json(old('period_id')),
+                department_id: @json(old('department_id')),
+                bidang_id: @json(old('bidang_id')),
+                hierarchy_level: @json(old('hierarchy_level')),
+                position: @json(old('position')),
+
+                new_member_full_name: @json(old('new_member_full_name')),
+                new_member_npm: @json(old('new_member_npm')),
+                new_member_email: @json(old('new_member_email')),
+                new_member_password: '',
+                new_member_generation_id: @json(old('new_member_generation_id')),
+                new_member_role: @json(old('new_member_role') ?? 'pengurus'),
+
+                setEdit(item) {
+                    this.editMode = true;
+                    this.formAction = `/admin/managements/${item.id}`;
+                    this.member_id = item.member_id;
+                    this.period_id = item.period_id;
+                    this.department_id = item.department_id;
+                    this.bidang_id = item.bidang_id || '';
+                    this.hierarchy_level = item.hierarchy_level;
+                    this.position = item.position;
+
+                    this.member_mode = 'existing';
+                    this.new_member_full_name = '';
+                    this.new_member_npm = '';
+                    this.new_member_email = '';
+                    this.new_member_password = '';
+                    this.new_member_generation_id = '';
+                    this.new_member_role = 'pengurus';
+
+                    this.imageUrl = item.preview_url;
+                    this.openModal = true;
+                },
+
+                setCreate() {
+                    this.editMode = false;
+                    this.formAction = @json(route('admin.managements.store'));
+                    this.member_mode = 'existing';
+                    this.member_id = '';
+                    this.period_id = '';
+                    this.department_id = '';
+                    this.bidang_id = '';
+                    this.hierarchy_level = '';
+                    this.position = '';
+                    this.new_member_full_name = '';
+                    this.new_member_npm = '';
+                    this.new_member_email = '';
+                    this.new_member_password = '';
+                    this.new_member_generation_id = '';
+                    this.new_member_role = 'pengurus';
+                    this.imageUrl = null;
+                    this.openModal = true;
+                },
+            }));
+        });
+    </script>
 </x-app-layout>

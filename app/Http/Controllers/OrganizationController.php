@@ -19,18 +19,53 @@ class OrganizationController extends Controller
             ->take(3)
             ->get();
 
-        $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
+        $activePeriod = PeriodeKepengurusan::where('show_on_homepage', true)->first();
+        if (!$activePeriod) {
+            $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
+        }
+        if (!$activePeriod) {
+            $activePeriod = PeriodeKepengurusan::orderBy('start_date', 'desc')->first();
+        }
 
         $pengurus = [];
+        $pengurusDepartments = collect();
+        $pengurusBidang = collect();
+        $allDepartments = Departemen::orderByRaw("CASE WHEN name = 'Ring 1' THEN 0 ELSE 1 END, name ASC")->get();
         if ($activePeriod) {
             $pengurus = Pengurus::with(['member.media', 'department'])
                 ->where('period_id', $activePeriod->id)
                 ->where('hierarchy_level', 1)
                 ->orderBy('id', 'asc')
                 ->get();
+
+            $pengurusDepartments = Pengurus::with(['member.media', 'department'])
+                ->where('period_id', $activePeriod->id)
+                ->where('hierarchy_level', 2)
+                ->orderBy('department_id', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
+
+            $pengurusBidang = Pengurus::with(['member.media', 'bidang', 'department'])
+                ->where('period_id', $activePeriod->id)
+                ->where('hierarchy_level', 3)
+                ->orderBy('bidang_id', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
         }
 
-        return view('page.home', compact('events', 'pengurus', 'activePeriod'));
+        $bidangGroups = $pengurusBidang->groupBy(function ($item) {
+            return $item->bidang?->name ?? 'Bidang Lainnya';
+        });
+
+        $departmentGroups = $allDepartments->mapWithKeys(function ($dept) use ($pengurusDepartments) {
+            $heads = $pengurusDepartments->filter(function ($item) use ($dept) {
+                return $item->department_id === $dept->id;
+            });
+
+            return [$dept->id => ['department' => $dept, 'heads' => $heads->values()]];
+        });
+
+        return view('page.home', compact('events', 'pengurus', 'activePeriod', 'bidangGroups', 'departmentGroups', 'pengurusBidang', 'allDepartments'));
     }
 
     public function index(Request $request)
