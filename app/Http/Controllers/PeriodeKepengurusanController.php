@@ -23,31 +23,30 @@ class PeriodeKepengurusanController extends Controller
             'mission'      => 'nullable|string',
             'start_date'   => 'nullable|date',
             'end_date'     => 'nullable|date',
-            'is_current'   => 'boolean',
-            'show_on_homepage' => 'boolean',
             'logo'         => 'nullable|image|max:2048'
         ]);
 
+        $validated['is_current'] = $request->has('is_current');
+
         DB::transaction(function () use ($validated, $request) {
-            if ($request->has('is_current') && $request->is_current) {
+            if ($validated['is_current']) {
                 PeriodeKepengurusan::where('is_current', true)->update(['is_current' => false]);
-            }
-            if ($request->has('show_on_homepage') && $request->show_on_homepage) {
-                PeriodeKepengurusan::where('show_on_homepage', true)->update(['show_on_homepage' => false]);
             }
 
             $periode = PeriodeKepengurusan::create($validated);
 
             if ($request->hasFile('logo')) {
-                $periode->addMediaFromRequest('logo')->toMediaCollection('cabinet_logos');
+                $periode->addMediaFromRequest('logo')->toMediaCollection('logo_cabinet');
             }
         });
 
-        return redirect()->back()->with('success', 'Periode baru berhasil disinkronisasi.');
+        return redirect()->back()->with('success', 'Kabinet berhasil ditambahkan.');
     }
 
-    public function update(Request $request, PeriodeKepengurusan $periode)
+    public function update(Request $request, $id)
     {
+        $periode = PeriodeKepengurusan::findOrFail($id);
+
         $validated = $request->validate([
             'cabinet_name' => 'required|string|max:100',
             'period_range' => 'required|string',
@@ -55,37 +54,32 @@ class PeriodeKepengurusanController extends Controller
             'mission'      => 'nullable|string',
             'start_date'   => 'nullable|date',
             'end_date'     => 'nullable|date',
-            'is_current'   => 'boolean',
-            'show_on_homepage' => 'boolean',
             'logo'         => 'nullable|image|max:2048'
         ]);
 
+        $validated['is_current'] = $request->has('is_current');
+
         DB::transaction(function () use ($validated, $request, $periode) {
-            if ($request->has('is_current') && $request->is_current) {
+            if ($validated['is_current']) {
                 PeriodeKepengurusan::where('id', '!=', $periode->id)
                     ->where('is_current', true)
                     ->update(['is_current' => false]);
-            }
-            if ($request->has('show_on_homepage') && $request->show_on_homepage) {
-                PeriodeKepengurusan::where('id', '!=', $periode->id)
-                    ->where('show_on_homepage', true)
-                    ->update(['show_on_homepage' => false]);
             }
 
             $periode->update($validated);
 
             if ($request->hasFile('logo')) {
-                $periode->clearMediaCollection('cabinet_logos');
-                $periode->addMediaFromRequest('logo')->toMediaCollection('cabinet_logos');
+                $periode->clearMediaCollection('logo_cabinet');
+                $periode->addMediaFromRequest('logo')
+                    ->toMediaCollection('logo_cabinet');
             }
         });
 
-        return redirect()->back()->with('success', 'Data periode berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Data kabinet berhasil diperbarui.');
     }
 
     public function destroy(PeriodeKepengurusan $periode)
     {
-        // Hindari menghapus periode yang sedang aktif
         if ($periode->is_current) {
             return redirect()->back()->with('error', 'Tidak dapat menghapus periode yang sedang aktif.');
         }

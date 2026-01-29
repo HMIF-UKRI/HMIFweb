@@ -6,7 +6,7 @@
         editMode: false,
         formAction: '',
         imageUrl: null,
-
+    
         cabinet_name: '',
         period_range: '',
         vision: '',
@@ -14,20 +14,18 @@
         start_date: '',
         end_date: '',
         is_current: false,
-        show_on_homepage: false,
     
         setEdit(item) {
             this.editMode = true;
             this.formAction = `/admin/periods/${item.id}`;
             this.cabinet_name = item.cabinet_name;
             this.period_range = item.period_range;
-            this.vision = item.vision || '';
-            this.mission = item.mission || '';
+            this.vision = item.vision;
+            this.mission = item.mission;
             this.start_date = item.start_date;
             this.end_date = item.end_date;
-            this.is_current = !!item.is_current;
-            this.show_on_homepage = !!item.show_on_homepage;
-            this.imageUrl = item.logo_url;
+            this.is_current = item.is_current;
+            this.imageUrl = item.preview_url || null;
             this.openModal = true;
         },
     
@@ -41,7 +39,6 @@
             this.start_date = '';
             this.end_date = '';
             this.is_current = false;
-            this.show_on_homepage = false;
             this.imageUrl = null;
             this.openModal = true;
         },
@@ -74,8 +71,6 @@
                             Duration</th>
                         <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
                             Status</th>
-                        <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
-                            Homepage</th>
                         <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
                             Actions</th>
                     </tr>
@@ -87,8 +82,8 @@
                                 <div class="flex items-center gap-4">
                                     <div
                                         class="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
-                                        @if ($item->getFirstMediaUrl('cabinet_logos'))
-                                            <img src="{{ $item->getFirstMediaUrl('cabinet_logos') }}"
+                                        @if ($item->preview_url)
+                                            <img src="{{ $item->preview_url ?: 'https://ui-avatars.com/api/?name=' . urlencode($item->member->full_name) . '&background=dc2626&color=fff' }}"
                                                 class="w-full h-full object-contain p-2">
                                         @else
                                             <i class="fa-solid fa-shield-halved text-gray-700"></i>
@@ -117,19 +112,6 @@
                                     <span
                                         class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-black text-gray-600 uppercase tracking-widest">
                                         Archived
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="p-6 text-center">
-                                @if ($item->show_on_homepage)
-                                    <span
-                                        class="px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/30 text-[9px] font-black text-green-500 uppercase tracking-widest">
-                                        Show
-                                    </span>
-                                @else
-                                    <span
-                                        class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-black text-gray-600 uppercase tracking-widest">
-                                        -
                                     </span>
                                 @endif
                             </td>
@@ -184,22 +166,13 @@
                     </div>
                     <label
                         class="flex items-center gap-4 p-5 rounded-2xl bg-white/2 border border-white/5 cursor-pointer hover:border-red-600/50 transition-all">
-                        <input type="checkbox" name="is_current" value="1" x-model="is_current"
+                        <input type="checkbox" name="is_current" :checked x-model="is_current"
                             class="w-6 h-6 rounded-lg border-white/10 text-red-600 bg-gray-950 focus:ring-red-600/20">
                         <div>
                             <p class="text-[10px] font-black text-white uppercase tracking-tighter">Set as Current
                                 Cabinet</p>
                             <p class="text-[8px] text-gray-500 uppercase font-bold tracking-widest">Active System Period
                             </p>
-                        </div>
-                    </label>
-                    <label
-                        class="flex items-center gap-4 p-5 rounded-2xl bg-white/2 border border-white/5 cursor-pointer hover:border-green-600/50 transition-all">
-                        <input type="checkbox" name="show_on_homepage" value="1" x-model="show_on_homepage"
-                            class="w-6 h-6 rounded-lg border-white/10 text-green-600 bg-gray-950 focus:ring-green-600/20">
-                        <div>
-                            <p class="text-[10px] font-black text-white uppercase tracking-tighter">Show on Homepage</p>
-                            <p class="text-[8px] text-gray-500 uppercase font-bold tracking-widest">Homepage Period</p>
                         </div>
                     </label>
                 </div>
@@ -224,15 +197,13 @@
 
             <div class="space-y-6 pt-4">
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Strategic
-                        Vision</label>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Visi</label>
                     <textarea name="vision" x-model="vision" rows="3"
                         class="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm text-gray-300 focus:border-red-600 transition-all outline-none resize-none"
                         placeholder="Define the future goal..."></textarea>
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Operational
-                        Mission</label>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Misi</label>
                     <textarea name="mission" x-model="mission" rows="6"
                         class="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm text-gray-300 focus:border-red-600 transition-all outline-none resize-none"
                         placeholder="List the tactical steps..."></textarea>
