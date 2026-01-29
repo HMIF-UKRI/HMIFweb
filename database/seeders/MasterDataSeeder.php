@@ -4,18 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\Angkatan;
 use App\Models\Bidang;
-use App\Models\BlogCategory;
 use App\Models\Departemen;
-use App\Models\EventCategory;
-use App\Models\PortofolioCategory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MasterDataSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $years = ['2022', '2023', '2024', '2025'];
@@ -24,34 +17,48 @@ class MasterDataSeeder extends Seeder
         }
 
         $departments = [
-            'Ring 1',
-            'Riset dan Teknologi',
-            'Pengembangan Sumber Daya Manusia',
-            'Media dan Komunikasi'
+            'Ring 1' => 'Struktur pimpinan inti',
+            'Riset dan Teknologi' => 'Fokus pada pengembangan teknologi dan riset mahasiswa',
+            'Pengembangan Sumber Daya Manusia' => 'Fokus pada pemberdayaan anggota',
+            'Media dan Komunikasi' => 'Fokus pada branding dan informasi'
         ];
 
-        foreach ($departments as $name) {
-            Departemen::firstOrCreate([
-                'name' => $name,
-                'description' => 'Departemen ' . $name
-            ]);
+        foreach ($departments as $name => $desc) {
+            Departemen::firstOrCreate(
+                ['name' => $name],
+                ['description' => $desc]
+            );
         }
 
-        $bidangList = [
-            'Bidang Pendidikan',
-            'Bidang Pelatihan dan Pengembangan',
-            'Bidang Pengabdian Masyarakat',
-            'Bidang Minat dan Bakat'
+        $mappingBidang = [
+            'Riset dan Teknologi' => [
+                'Pendidikan',
+            ],
+            'Pengembangan Sumber Daya Manusia' => [
+                'Pelatihan dan Pengembangan',
+                'Pengabdian Masyarakat',
+                'Minat dan Bakat',
+            ],
+            'Media dan Komunikasi' => [
+                'Humas Internal',
+                'Humas Eksternal',
+                'Media dan Publikasi',
+            ],
         ];
 
-        $ristek = Departemen::where('name', 'Riset dan Teknologi')->first();
+        foreach ($mappingBidang as $deptName => $listBidang) {
+            $dept = Departemen::where('name', $deptName)->first();
 
-        foreach ($bidangList as $bName) {
-            Bidang::firstOrCreate([
-                'department_id' => $ristek->id,
-                'name' => $bName,
-                'description' => 'Fokus pada ' . $bName
-            ]);
+            if ($dept) {
+                foreach ($listBidang as $bName) {
+                    Bidang::firstOrCreate([
+                        'department_id' => $dept->id,
+                        'name'          => $bName,
+                    ], [
+                        'description'   => 'Fokus pada ' . $bName
+                    ]);
+                }
+            }
         }
     }
 }

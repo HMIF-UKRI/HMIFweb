@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('mission')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->boolean('is_current')->default(false);
+            $table->boolean('is_current')->nullable()->default(false);
             $table->timestamps();
         });
     }

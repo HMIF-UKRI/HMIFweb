@@ -19,43 +19,33 @@ class OrganizationController extends Controller
             ->take(3)
             ->get();
 
-        $activePeriod = PeriodeKepengurusan::where('show_on_homepage', true)->first();
-        if (!$activePeriod) {
-            $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
-        }
-        if (!$activePeriod) {
-            $activePeriod = PeriodeKepengurusan::orderBy('start_date', 'desc')->first();
-        }
+        $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
 
         $pengurus = [];
         $pengurusDepartments = collect();
         $pengurusBidang = collect();
-        $allDepartments = Departemen::orderByRaw("CASE WHEN name = 'Ring 1' THEN 0 ELSE 1 END, name ASC")->get();
+        $allDepartments = Departemen::orderByRaw("CASE WHEN name = 'Ring 1' THEN 0 ELSE 1 END, name DESC")->get();
         if ($activePeriod) {
-            $pengurus = Pengurus::with(['member.media', 'department'])
+            $pengurus = Pengurus::with(['member', 'department', 'media'])
                 ->where('period_id', $activePeriod->id)
                 ->where('hierarchy_level', 1)
                 ->orderBy('id', 'asc')
                 ->get();
 
-            $pengurusDepartments = Pengurus::with(['member.media', 'department'])
+            $pengurusDepartments = Pengurus::with(['member', 'department', 'media'])
                 ->where('period_id', $activePeriod->id)
                 ->where('hierarchy_level', 2)
                 ->orderBy('department_id', 'asc')
                 ->orderBy('id', 'asc')
                 ->get();
 
-            $pengurusBidang = Pengurus::with(['member.media', 'bidang', 'department'])
+            $pengurusBidang = Pengurus::with(['member', 'bidang', 'department', 'media'])
                 ->where('period_id', $activePeriod->id)
                 ->where('hierarchy_level', 3)
                 ->orderBy('bidang_id', 'asc')
                 ->orderBy('id', 'asc')
                 ->get();
         }
-
-        $bidangGroups = $pengurusBidang->groupBy(function ($item) {
-            return $item->bidang?->name ?? 'Bidang Lainnya';
-        });
 
         $departmentGroups = $allDepartments->mapWithKeys(function ($dept) use ($pengurusDepartments) {
             $heads = $pengurusDepartments->filter(function ($item) use ($dept) {
@@ -65,7 +55,7 @@ class OrganizationController extends Controller
             return [$dept->id => ['department' => $dept, 'heads' => $heads->values()]];
         });
 
-        return view('page.home', compact('events', 'pengurus', 'activePeriod', 'bidangGroups', 'departmentGroups', 'pengurusBidang', 'allDepartments'));
+        return view('page.home', compact('events', 'pengurus', 'activePeriod', 'departmentGroups', 'pengurusBidang'));
     }
 
     public function index(Request $request)

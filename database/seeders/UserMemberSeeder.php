@@ -66,7 +66,7 @@ class UserMemberSeeder extends Seeder
                     ['member_id' => $member->id, 'period_id' => $period->id],
                     [
                         'department_id' => $data['dept_id'],
-                        'bidang_id' => $bidangId,
+                        'bidang_id' => $data['bid_id'] ?? $bidangId,
                         'position' => $data['pos'],
                         'hierarchy_level' => $level,
                     ]
@@ -120,8 +120,15 @@ class UserMemberSeeder extends Seeder
             ['name' => 'Melani Marnia Putri', 'img' => 'melani.png', 'nim' => '20241310042', 'pos' => 'Bendahara', 'dept_id' => 1],
             ['name' => 'Siti Fatimah Assyadia Rohani', 'img' => 'asya.png', 'nim' => '20241310019', 'pos' => 'Bendahara 2', 'dept_id' => 1],
             ['name' => 'Haniep Fathan Riziq', 'img' => 'haniep.png', 'nim' => '20241310011', 'pos' => 'Kepala Departemen Riset Dan Teknologi', 'dept_id' => 2],
-            ['name' => 'Reyfasha Fadlan Azizan', 'img' => 'reyfasha.png', 'nim' => '20241310047', 'pos' => 'Kepala Departemen Pengembangan Sumber Daya Manusia', 'dept_id' => 2],
-            ['name' => 'Maulana Yusuf', 'img' => 'cupe.png', 'nim' => '20231310008', 'pos' => 'Kepala Departemen Media dan Informasi', 'dept_id' => 2],
+            ['name' => 'Reyfasha Fadlan Azizan', 'img' => 'reyfasha.png', 'nim' => '20241310047', 'pos' => 'Kepala Departemen Pengembangan Sumber Daya Manusia', 'dept_id' => 3],
+            ['name' => 'Maulana Yusuf', 'img' => 'cupe.png', 'nim' => '20231310008', 'pos' => 'Kepala Departemen Media dan Informasi', 'dept_id' => 4],
+            ['name' => 'Haris Ramdhani', 'img' => 'haris.png', 'nim' => '20241310020', 'pos' => 'Staff', 'dept_id' => 2, 'bid_id' => 1],
+            ['name' => 'Putu Alif Milanarsa', 'img' => 'putu.png', 'nim' => '20241310021', 'pos' => 'Staff', 'dept_id' => 3, 'bid_id' => 2],
+            ['name' => 'Alamudin SDaka', 'img' => 'alam.png', 'nim' => '20241310022', 'pos' => 'Staff', 'dept_id' => 3, 'bid_id' => 3],
+            ['name' => 'Taufiq Rahman', 'img' => 'pampam.png', 'nim' => '20241310023', 'pos' => 'Staff', 'dept_id' => 3, 'bid_id' => 4],
+            ['name' => 'Chelsea Alliya', 'img' => 'chelsea.png', 'nim' => '20241310024', 'pos' => 'Staff', 'dept_id' => 4, 'bid_id' => 5],
+            ['name' => 'Syahnuran Kaafii', 'img' => 'kaafii.png', 'nim' => '20241310025', 'pos' => 'Staff', 'dept_id' => 4, 'bid_id' => 6],
+            ['name' => 'Insania Nabella', 'img' => 'insania.png', 'nim' => '20241310026', 'pos' => 'Staff', 'dept_id' => 4, 'bid_id' => 7],
         ];
     }
 
@@ -134,8 +141,8 @@ class UserMemberSeeder extends Seeder
             ['name' => 'Raka Zilva Inggia', 'img' => 'raka.png', 'nim' => '20221310010', 'pos' => 'Kesekretariatan', 'dept_id' => 1],
             ['name' => 'Siti Maisyaroh', 'img' => 'simai.png', 'nim' => '20221310014', 'pos' => 'Bendahara', 'dept_id' => 1],
             ['name' => 'Departemen RISTEK', 'img' => 'ristek-dw.png', 'nim' => '20221310001', 'pos' => 'Kepala Departemen Riset Dan Teknologi', 'dept_id' => 2],
-            ['name' => 'Departemen PSDM', 'img' => 'psdm-dw.png', 'nim' => '20221310002', 'pos' => 'Kepala Departemen Pengembangan Sumber Daya Manusia', 'dept_id' => 2],
-            ['name' => 'Departemen MEDFO', 'img' => 'kominfo-dw.png', 'nim' => '20221310003', 'pos' => 'Kepala Departemen Media Dan Informasi', 'dept_id' => 2],
+            ['name' => 'Departemen PSDM', 'img' => 'psdm-dw.png', 'nim' => '20221310002', 'pos' => 'Kepala Departemen Pengembangan Sumber Daya Manusia', 'dept_id' => 3],
+            ['name' => 'Departemen MEDFO', 'img' => 'kominfo-dw.png', 'nim' => '20221310003', 'pos' => 'Kepala Departemen Media Dan Informasi', 'dept_id' => 4],
         ];
     }
 
@@ -148,8 +155,8 @@ class UserMemberSeeder extends Seeder
             ['name' => 'Aliya', 'img' => null, 'nim' => '20221310024', 'pos' => 'Bendahara 1', 'dept_id' => 1],
             ['name' => 'Salsa', 'img' => null, 'nim' => '20221310025', 'pos' => 'Bendahara 2', 'dept_id' => 1],
             ['name' => 'Leo', 'img' => null, 'nim' => '20221310026', 'pos' => 'Koordinator Pendidikan', 'dept_id' => 2],
-            ['name' => 'Farid', 'img' => null, 'nim' => '20221310027', 'pos' => 'Koordinator PSDM', 'dept_id' => 2],
-            ['name' => 'Zaki', 'img' => null, 'nim' => '20221310028', 'pos' => 'Koordinator Humas', 'dept_id' => 2],
+            ['name' => 'Farid', 'img' => null, 'nim' => '20221310027', 'pos' => 'Koordinator PSDM', 'dept_id' => 3],
+            ['name' => 'Zaki', 'img' => null, 'nim' => '20221310028', 'pos' => 'Koordinator Humas', 'dept_id' => 4],
         ];
     }
 }
