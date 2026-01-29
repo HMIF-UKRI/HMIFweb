@@ -13,6 +13,7 @@ class Portofolio extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $fillable = [
+        'portofolio_category_id',
         'member_id',
         'title',
         'slug',
@@ -25,6 +26,11 @@ class Portofolio extends Model implements HasMedia
     protected $casts = [
         'is_featured' => 'boolean'
     ];
+
+    public function portofolioCategory(): BelongsTo
+    {
+        return $this->belongsTo(PortofolioCategory::class, 'portofolio_category_id');
+    }
 
     public function author(): BelongsTo
     {
