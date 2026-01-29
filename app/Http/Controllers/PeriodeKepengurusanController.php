@@ -24,12 +24,16 @@ class PeriodeKepengurusanController extends Controller
             'start_date'   => 'nullable|date',
             'end_date'     => 'nullable|date',
             'is_current'   => 'boolean',
+            'show_on_homepage' => 'boolean',
             'logo'         => 'nullable|image|max:2048'
         ]);
 
         DB::transaction(function () use ($validated, $request) {
             if ($request->has('is_current') && $request->is_current) {
                 PeriodeKepengurusan::where('is_current', true)->update(['is_current' => false]);
+            }
+            if ($request->has('show_on_homepage') && $request->show_on_homepage) {
+                PeriodeKepengurusan::where('show_on_homepage', true)->update(['show_on_homepage' => false]);
             }
 
             $periode = PeriodeKepengurusan::create($validated);
@@ -52,6 +56,7 @@ class PeriodeKepengurusanController extends Controller
             'start_date'   => 'nullable|date',
             'end_date'     => 'nullable|date',
             'is_current'   => 'boolean',
+            'show_on_homepage' => 'boolean',
             'logo'         => 'nullable|image|max:2048'
         ]);
 
@@ -60,6 +65,11 @@ class PeriodeKepengurusanController extends Controller
                 PeriodeKepengurusan::where('id', '!=', $periode->id)
                     ->where('is_current', true)
                     ->update(['is_current' => false]);
+            }
+            if ($request->has('show_on_homepage') && $request->show_on_homepage) {
+                PeriodeKepengurusan::where('id', '!=', $periode->id)
+                    ->where('show_on_homepage', true)
+                    ->update(['show_on_homepage' => false]);
             }
 
             $periode->update($validated);

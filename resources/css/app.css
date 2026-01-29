@@ -277,6 +277,22 @@
     pointer-events: none;
 }
 
+@media (max-width: 768px) {
+    .nav-item:not(.active):hover .nav-link {
+        transform: none;
+    }
+
+    .nav-item.active .nav-link {
+        border-radius: 12px;
+        box-shadow: none;
+    }
+
+    .nav-item.active .nav-link::before,
+    .nav-item.active .nav-link::after {
+        display: none;
+    }
+}
+
 .sidebar-menu-container {
     height: calc(100vh - 140px);
     overflow-y: auto;

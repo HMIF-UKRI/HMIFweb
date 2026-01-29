@@ -6,7 +6,7 @@
         editMode: false,
         formAction: '',
         imageUrl: null,
-    
+
         cabinet_name: '',
         period_range: '',
         vision: '',
@@ -14,6 +14,7 @@
         start_date: '',
         end_date: '',
         is_current: false,
+        show_on_homepage: false,
     
         setEdit(item) {
             this.editMode = true;
@@ -25,6 +26,7 @@
             this.start_date = item.start_date;
             this.end_date = item.end_date;
             this.is_current = !!item.is_current;
+            this.show_on_homepage = !!item.show_on_homepage;
             this.imageUrl = item.logo_url;
             this.openModal = true;
         },
@@ -39,6 +41,7 @@
             this.start_date = '';
             this.end_date = '';
             this.is_current = false;
+            this.show_on_homepage = false;
             this.imageUrl = null;
             this.openModal = true;
         },
@@ -71,6 +74,8 @@
                             Duration</th>
                         <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
                             Status</th>
+                        <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
+                            Homepage</th>
                         <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
                             Actions</th>
                     </tr>
@@ -112,6 +117,19 @@
                                     <span
                                         class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-black text-gray-600 uppercase tracking-widest">
                                         Archived
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="p-6 text-center">
+                                @if ($item->show_on_homepage)
+                                    <span
+                                        class="px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/30 text-[9px] font-black text-green-500 uppercase tracking-widest">
+                                        Show
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-black text-gray-600 uppercase tracking-widest">
+                                        -
                                     </span>
                                 @endif
                             </td>
@@ -173,6 +191,15 @@
                                 Cabinet</p>
                             <p class="text-[8px] text-gray-500 uppercase font-bold tracking-widest">Active System Period
                             </p>
+                        </div>
+                    </label>
+                    <label
+                        class="flex items-center gap-4 p-5 rounded-2xl bg-white/2 border border-white/5 cursor-pointer hover:border-green-600/50 transition-all">
+                        <input type="checkbox" name="show_on_homepage" value="1" x-model="show_on_homepage"
+                            class="w-6 h-6 rounded-lg border-white/10 text-green-600 bg-gray-950 focus:ring-green-600/20">
+                        <div>
+                            <p class="text-[10px] font-black text-white uppercase tracking-tighter">Show on Homepage</p>
+                            <p class="text-[8px] text-gray-500 uppercase font-bold tracking-widest">Homepage Period</p>
                         </div>
                     </label>
                 </div>

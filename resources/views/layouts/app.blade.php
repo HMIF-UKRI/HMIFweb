@@ -12,15 +12,45 @@
     {{ $styles ?? '' }}
 </head>
 
-<body class="bg-gray-950 text-gray-200 antialiased overflow-x-hidden font-poppins" x-data="{ sidebarOpen: true }">
+<body class="bg-gray-950 text-gray-200 antialiased overflow-x-hidden font-poppins"
+    x-data="{
+        sidebarOpen: true,
+        mobileOpen: false,
+        isMobile: window.innerWidth < 768,
+        toggleSidebar() {
+            if (this.isMobile) {
+                this.mobileOpen = !this.mobileOpen;
+            } else {
+                this.sidebarOpen = !this.sidebarOpen;
+            }
+        }
+    }"
+    x-init="() => {
+        const setMode = () => {
+            isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                mobileOpen = false;
+                sidebarOpen = true;
+            }
+        };
+        setMode();
+        window.addEventListener('resize', setMode);
+    }">
     <div class="flex relative w-full min-h-screen">
-        <nav class="fixed h-full bg-black border-r border-white/5 transition-all duration-500 z-50 shadow-2xl"
-            :class="sidebarOpen ? 'w-64' : 'w-20'">
+        <div x-show="mobileOpen" x-transition.opacity
+            class="fixed inset-0 z-40 bg-black/70 md:hidden" @click="mobileOpen = false"></div>
 
-            <div class="px-6 py-3 mb-2">
+        <nav class="fixed h-full bg-black border-r border-white/5 transition-all duration-500 z-50 shadow-2xl"
+            :class="[
+                mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+                sidebarOpen ? 'md:w-64' : 'md:w-20',
+                'w-64'
+            ]">
+
+            <div class="px-4 md:px-6 py-3 mb-2">
                 <a href="{{ route('home') }}" class="flex items-center no-underline">
                     <img src="{{ asset('images/logo.png') }}" alt="HMIF LOGO" width="30" height="30"
-                        class="w-20 h-20 object-contain">
+                        class="w-14 h-14 md:w-20 md:h-20 object-contain">
                     <span x-show="sidebarOpen" x-transition
                         class="font-black text-lg tracking-wide leading-6 text-white uppercase">
                         HMIF <span class="text-red-600 italic">Dashboard</span>
@@ -91,7 +121,7 @@
                             @endphp
                             <li class="nav-item relative w-full list-none {{ $isActive ? 'active' : '' }}">
                                 <a href="{{ Route::has($menu['route']) ? route($menu['route']) : '#' }}"
-                                    class="nav-link">
+                                    class="nav-link" @click="if (window.innerWidth < 768) mobileOpen = false">
                                     <span class="inline-block min-w-12.5 h-12.5 leading-13.75 text-center text-xl">
                                         <ion-icon name="{{ $menu['icon'] }}"></ion-icon>
                                     </span>
@@ -107,15 +137,17 @@
             </div>
         </nav>
 
-        <main class="relative transition-all duration-500 bg-gray-950 min-h-screen flex-1 flex flex-col"
-            :class="sidebarOpen ? 'ml-64' : 'ml-20'">
+        <main class="relative transition-all duration-500 bg-gray-950 min-h-screen flex-1 flex flex-col ml-0"
+            :class="sidebarOpen ? 'md:ml-64' : 'md:ml-20'">
 
             <header
-                class="w-full h-17.5 flex justify-between items-center px-8 sticky top-0 bg-gray-950/50 backdrop-blur-xl border-b border-white/5 z-40">
+                class="w-full h-17.5 flex justify-between items-center px-4 sm:px-6 lg:px-8 sticky top-0 bg-gray-950/50 backdrop-blur-xl border-b border-white/5 z-40">
                 <div class="flex items-center gap-4">
-                    <button @click="sidebarOpen = !sidebarOpen"
+                    <button @click="toggleSidebar()"
                         class="text-2xl text-gray-400 hover:text-red-500 transition-colors">
-                        <ion-icon :name="sidebarOpen ? 'chevron-back-outline' : 'menu-outline'"></ion-icon>
+                        <ion-icon
+                            :name="isMobile ? (mobileOpen ? 'close-outline' : 'menu-outline') : (sidebarOpen ? 'chevron-back-outline' : 'menu-outline')">
+                        </ion-icon>
                     </button>
                     <h2 class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">
                         {{ $header_title ?? 'System Overview' }}
@@ -147,7 +179,7 @@
                 </div>
             </header>
 
-            <div class="p-8">
+            <div class="p-4 sm:p-6 lg:p-8">
                 <div class="pointer-events-none fixed inset-0 z-0 opacity-[0.02]"
                     style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
 
