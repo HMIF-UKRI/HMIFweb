@@ -63,15 +63,10 @@
 
                         <div class="mt-2 hidden items-center gap-6 text-gray-300 sm:flex">
                             <div class="flex items-center gap-2">
-                                <i class="fa-regular fa-calendar text-red-500"></i>
-                                <span>
-                                    {{ \Carbon\Carbon::parse($event->event_date)->translatedFormat('l, d F Y') }}
+                                <i class="fa-regular fa-clock text-red-500"></i>
+                                <span class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+                                    Diposting {{ $event->created_at->locale('id')->diffForHumans() }}
                                 </span>
-                            </div>
-                            <div class="h-4 w-px bg-gray-700"></div>
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-location-dot text-red-500"></i>
-                                <span>{{ $event->location }}</span>
                             </div>
                         </div>
                     </div>
@@ -180,8 +175,8 @@
                                         <p class="text-xs font-bold text-gray-500 uppercase">
                                             Tanggal Pelaksanaan
                                         </p>
-                                        <p class="mt-0.5 font-semibold text-white">
-                                            {{ \Carbon\Carbon::parse($event->event_date)->translatedFormat('l, d F Y') }}
+                                        <p class="mt-0.5 font-semibold text-white text-xs">
+                                            {{ \Carbon\Carbon::parse($event->event_date)->locale('id')->translatedFormat('l, d F Y') }}
                                         </p>
                                     </div>
                                 </div>
@@ -195,7 +190,7 @@
                                         <p class="text-xs font-bold text-gray-500 uppercase">
                                             Lokasi
                                         </p>
-                                        <p class="mt-0.5 leading-snug font-semibold text-white">
+                                        <p class="mt-0.5 leading-snug font-semibold text-white text-xs">
                                             {{ $event->location }}
                                         </p>
                                         <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($event->location) }}"
@@ -274,7 +269,7 @@
                             <a href="{{ route('event.show', $relatedEvent->slug) }}"
                                 class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-gray-900 transition hover:-translate-y-1 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-900/10">
                                 <div class="relative h-48 w-full overflow-hidden">
-                                    <img src="{{ $relatedEvent->getFirstMediaUrl('thumbnail', 'thumb') }}"
+                                    <img src="{{ $relatedEvent->getFirstMediaUrl('thumbnails', 'thumb') }}"
                                         alt="{{ $relatedEvent->title }}"
                                         class="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                                         onerror="this.onerror=null; this.src='https://placehold.co/600x400/1a1a1a/cccccc?text=No+Image';" />

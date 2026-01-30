@@ -36,35 +36,12 @@
             <p class="max-w-2xl mx-auto text-gray-400 text-sm md:text-lg mb-12 font-medium leading-relaxed">
                 Sabar yaa, Lagi high-speed development nihh buat bikin fitur keren dan menarik pastinya di website HMIF
                 UKRI. <br class="hidden md:block">
-                Jangan sampai kelewatan grand launching Kabinet <span class="text-white font-bold">METAFORSA</span>.
                 <br class="hidden md:block"> <span
                     class="text-transparent bg-clip-text bg-linear-to-r from-red-500 to-red-400 italic">We're upgrading
                     the
                     feature, and you're
                     invited.</span>
             </p>
-
-            <div class="flex flex-wrap justify-center gap-4 md:gap-8 mb-16" x-data="countdown()">
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-6xl font-black text-white" x-text="days">00</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em] mt-2">Days</span>
-                </div>
-                <div class="text-4xl md:text-6xl font-black text-red-600">:</div>
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-6xl font-black text-white" x-text="hours">00</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em] mt-2">Hours</span>
-                </div>
-                <div class="text-4xl md:text-6xl font-black text-red-600">:</div>
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-6xl font-black text-white" x-text="minutes">00</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em] mt-2">Minutes</span>
-                </div>
-                <div class="text-4xl md:text-6xl font-black text-red-600">:</div>
-                <div class="flex flex-col items-center">
-                    <span class="text-4xl md:text-6xl font-black text-white" x-text="seconds">00</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em] mt-2">Seconds</span>
-                </div>
-            </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('home') }}"
@@ -81,33 +58,4 @@
             </div>
         </div>
     </div>
-
-    @push('script')
-        <script>
-            function countdown() {
-                return {
-                    days: '00',
-                    hours: '00',
-                    minutes: '00',
-                    seconds: '00',
-                    expiry: new Date('2026-03-01T00:00:00').getTime(),
-                    init() {
-                        setInterval(() => {
-                            let now = new Date().getTime();
-                            let distance = this.expiry - now;
-
-                            this.days = this.formatNumber(Math.floor(distance / (1000 * 60 * 60 * 24)));
-                            this.hours = this.formatNumber(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-                                60)));
-                            this.minutes = this.formatNumber(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-                            this.seconds = this.formatNumber(Math.floor((distance % (1000 * 60)) / 1000));
-                        }, 1000);
-                    },
-                    formatNumber(number) {
-                        return number < 10 ? '0' + number : number;
-                    }
-                }
-            }
-        </script>
-    @endpush
 </x-guest-layout>

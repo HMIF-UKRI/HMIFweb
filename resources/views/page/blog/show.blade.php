@@ -44,15 +44,14 @@
                         <div class="h-10 w-px bg-white/10 hidden md:block"></div>
 
                         <div class="flex flex-col">
-                            <span class="text-gray-600 text-[9px] font-black uppercase tracking-widest">Released
-                                On</span>
+                            <span class="text-gray-600 text-[9px] font-black uppercase tracking-widest">Diposting</span>
                             <span
-                                class="text-xs font-bold text-gray-300">{{ $blog->created_at->format('d F, Y') }}</span>
+                                class="text-xs font-bold text-gray-300">{{ $blog->created_at->locale('id')->translatedFormat('d F Y') }}</span>
                         </div>
 
                         <div class="flex flex-col">
-                            <span class="text-gray-600 text-[9px] font-black uppercase tracking-widest">Reading
-                                Time</span>
+                            <span class="text-gray-600 text-[9px] font-black uppercase tracking-widest">Waktu
+                                Baca</span>
                             <span class="text-xs font-bold text-red-500 tracking-wide uppercase italic">
                                 <i class="fa-regular fa-clock mr-1.5"></i>
                                 {{ ceil(str_word_count(strip_tags($blog->content)) / 200) }} Mins Read
@@ -105,7 +104,7 @@
                         <div class="space-y-6">
                             <h4 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-3">
                                 <span class="h-1 w-8 bg-red-600 rounded-full"></span>
-                                Next Read
+                                Baca Juga
                             </h4>
                             <div class="space-y-8">
                                 @foreach ($relatedBlogs as $related)

@@ -12,19 +12,18 @@
     {{ $styles ?? '' }}
 </head>
 
-<body class="bg-gray-950 text-gray-200 antialiased overflow-x-hidden font-poppins"
-    x-data="{
-        sidebarOpen: true,
-        mobileOpen: false,
-        isMobile: window.innerWidth < 768,
-        toggleSidebar() {
-            if (this.isMobile) {
-                this.mobileOpen = !this.mobileOpen;
-            } else {
-                this.sidebarOpen = !this.sidebarOpen;
-            }
+<body class="bg-gray-950 text-gray-200 antialiased overflow-x-hidden font-poppins" x-data="{
+    sidebarOpen: true,
+    mobileOpen: false,
+    isMobile: window.innerWidth < 768,
+    toggleSidebar() {
+        if (this.isMobile) {
+            this.mobileOpen = !this.mobileOpen;
+        } else {
+            this.sidebarOpen = !this.sidebarOpen;
         }
-    }"
+    }
+}"
     x-init="() => {
         const setMode = () => {
             isMobile = window.innerWidth < 768;
@@ -37,8 +36,8 @@
         window.addEventListener('resize', setMode);
     }">
     <div class="flex relative w-full min-h-screen">
-        <div x-show="mobileOpen" x-transition.opacity
-            class="fixed inset-0 z-40 bg-black/70 md:hidden" @click="mobileOpen = false"></div>
+        <div x-show="mobileOpen" x-transition.opacity class="fixed inset-0 z-40 bg-black/70 md:hidden"
+            @click="mobileOpen = false"></div>
 
         <nav class="fixed h-full bg-black border-r border-white/5 transition-all duration-500 z-50 shadow-2xl"
             :class="[
@@ -146,7 +145,8 @@
                     <button @click="toggleSidebar()"
                         class="text-2xl text-gray-400 hover:text-red-500 transition-colors">
                         <ion-icon
-                            :name="isMobile ? (mobileOpen ? 'close-outline' : 'menu-outline') : (sidebarOpen ? 'chevron-back-outline' : 'menu-outline')">
+                            :name="isMobile ? (mobileOpen ? 'close-outline' : 'menu-outline') : (sidebarOpen ?
+                                'chevron-back-outline' : 'menu-outline')">
                         </ion-icon>
                     </button>
                     <h2 class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">
@@ -154,28 +154,44 @@
                     </h2>
                 </div>
 
-                <div class="flex items-center gap-6">
-                    <div class="relative hidden sm:block">
-                        <input type="text" placeholder="Quick search..."
-                            class="w-64 h-9 rounded-full bg-white/5 border border-white/10 py-1 pl-10 pr-4 text-xs text-white outline-none focus:border-red-600/50 transition-all">
-                        <ion-icon name="search-outline"
-                            class="absolute top-1/2 -translate-y-1/2 left-3 text-gray-500 text-lg"></ion-icon>
-                    </div>
+                <div class="flex items-center gap-3 pl-6 border-l border-white/10">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button
+                                class="flex items-center gap-3 focus:outline-none transition duration-150 ease-in-out">
+                                <div class="text-right hidden lg:block">
+                                    <p class="text-xs font-bold text-white">
+                                        {{ Auth::user()->member?->full_name ?? 'Admin' }}
+                                    </p>
+                                    <p class="text-[10px] text-red-500 font-medium uppercase tracking-tighter italic">
+                                        {{ Auth::user()->getRoleNames()->first() ?? 'Member' }}
+                                    </p>
+                                </div>
 
-                    <div class="flex items-center gap-3 pl-6 border-l border-white/10">
-                        <div class="text-right hidden lg:block">
-                            <p class="text-xs font-bold text-white">{{ Auth::user()->member?->full_name ?? 'Admin' }}
-                            </p>
-                            <p class="text-[10px] text-red-500 font-medium uppercase tracking-tighter italic">
-                                {{ Auth::user()->getRoleNames()->first() ?? 'Member' }}
-                            </p>
-                        </div>
-                        <div
-                            class="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-lg group cursor-pointer">
-                            <img src="{{ Auth::user()->member?->getFirstMediaUrl('avatars') ?: 'https://ui-avatars.com/api/?name=' . Auth::user()->email . '&background=dc2626&color=fff' }}"
-                                class="w-full h-full object-cover transition-transform group-hover:scale-110">
-                        </div>
-                    </div>
+                                <div
+                                    class="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-lg group cursor-pointer">
+                                    <img src="{{ Auth::user()->member?->getFirstMediaUrl('avatars') ?: 'https://ui-avatars.com/api/?name=' . Auth::user()->email . '&background=dc2626&color=fff' }}"
+                                        class="w-full h-full object-cover transition-transform group-hover:scale-110">
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <div class="block px-4 py-2 text-xs text-gray-400 uppercase tracking-widest">
+                                Manage Account
+                            </div>
+
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
+                            </x-dropdown-link>
+
+                            <hr class="border-gray-800 my-1">
+
+                            <x-dropdown-link as="button" @click.prevent="$dispatch('open-modal', 'confirm-logout')">
+                                {{ __('Log Out') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
                 </div>
             </header>
 
@@ -194,6 +210,29 @@
                 </p>
             </footer>
         </main>
+
+        <x-modal name="confirm-logout" focusable>
+            <div class="p-6 bg-gray-900 border border-white/10 rounded-xl">
+                <h2 class="text-lg font-medium text-white">
+                    Apakah Anda yakin ingin keluar?
+                </h2>
+                <p class="mt-1 text-sm text-gray-400">
+                    Pastikan semua pekerjaan Anda (seperti draft artikel, kegiatan, dll) sudah tersimpan.
+                </p>
+                <div class="mt-6 flex justify-end gap-3">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        Batal
+                    </x-secondary-button>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <x-danger-button>
+                            Keluar Sekarang
+                        </x-danger-button>
+                    </form>
+                </div>
+            </div>
+        </x-modal>
     </div>
 
     {{ $scripts ?? '' }}

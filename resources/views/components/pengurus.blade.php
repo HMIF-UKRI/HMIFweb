@@ -42,7 +42,8 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-3">
                                     <div class="h-px w-8 bg-linear-to-r from-red-600 to-transparent"></div>
-                                    <h3 class="text-lg font-black uppercase tracking-widest text-red-500">
+                                    <h3
+                                        class="text-xs md:text-md lg:text-lg font-black uppercase tracking-widest text-red-500">
                                         {{ $dept->name }}
                                     </h3>
                                     <div class="h-px flex-1 bg-linear-to-l from-red-600/60 to-transparent"></div>
@@ -53,7 +54,8 @@
                                     </p>
                                 @elseif ($deptHead)
                                     <p class="mt-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                                        Kepala Departemen: {{ $deptHead->member->full_name }}
+                                        Kepala Departemen: <span
+                                            class="text-gray-300">{{ $deptHead->member->full_name }}</span>
                                     </p>
                                 @else
                                     <p class="mt-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">
@@ -113,7 +115,7 @@
                                 <div
                                     class="mb-6 grid grid-cols-1 gap-16 sm:grid-cols-2 lg:grid-cols-3 place-content-center place-self-center">
                                     <div
-                                        class="col-start-2 group relative rounded-2xl border border-red-900/30 bg-gray-900/60 backdrop-blur-sm transition duration-500 hover:-translate-y-1 hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)]">
+                                        class="lg:col-start-2 group relative rounded-2xl border border-red-900/30 bg-gray-900/60 backdrop-blur-sm transition duration-500 hover:-translate-y-1 hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)]">
                                         <div
                                             class="relative aspect-3/4 w-full overflow-hidden rounded-2xl border border-red-900/30 bg-gray-900/40">
                                             @php
@@ -164,7 +166,7 @@
                                                 </h4>
                                             </div>
 
-                                            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                                            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                                 @foreach ($members as $pgrs)
                                                     <div
                                                         class="group relative rounded-2xl border border-red-900/30 bg-gray-900/50 backdrop-blur-sm transition duration-500 hover:-translate-y-1 hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)]">

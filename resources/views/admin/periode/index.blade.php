@@ -155,6 +155,7 @@
                             <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Start
                                 Date</label>
                             <input type="date" name="start_date" x-model="start_date"
+                                value="{{ old('start_date', $item->start_date ?? '') }}"
                                 class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-red-600 outline-none transition-all">
                         </div>
                         <div class="space-y-2">

@@ -79,7 +79,8 @@
                                     <select name="event_category_id" required
                                         class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white focus:border-red-600 outline-none transition-all appearance-none">
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ $category->id ? 'selected' : '' }}
+                                            <option value="{{ $category->id }}"
+                                                {{ $category->id == $event->event_category_id ? 'selected' : '' }}
                                                 class="bg-gray-950">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
@@ -92,7 +93,8 @@
                                     <select name="period_id" required
                                         class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white focus:border-red-600 outline-none transition-all appearance-none">
                                         @foreach ($periods as $period)
-                                            <option value="{{ $period->id }}" {{ $period->id ? 'selected' : '' }}
+                                            <option value="{{ $period->id }}"
+                                                {{ $period->id == $event->period_id ? 'selected' : '' }}
                                                 class="bg-gray-950">{{ $period->cabinet_name }}</option>
                                         @endforeach
                                     </select>
@@ -104,9 +106,12 @@
                                         Publikasi</label>
                                     <select name="status" x-model="status" required
                                         class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white outline-none appearance-none focus:border-red-600">
-                                        <option value="upcoming" class="bg-gray-950">UPCOMING</option>
-                                        <option value="ongoing" class="bg-gray-950">ONGOING</option>
-                                        <option value="completed" class="bg-gray-950">COMPLETED</option>
+                                        <option value="upcoming" class="bg-gray-950"
+                                            {{ $event->status == 'upcoming' ? 'selected' : '' }}>UPCOMING</option>
+                                        <option value="ongoing" class="bg-gray-950"
+                                            {{ $event->status == 'ongoing' ? 'selected' : '' }}>ONGOING</option>
+                                        <option value="completed" class="bg-gray-950"
+                                            {{ $event->status == 'completed' ? 'selected' : '' }}>COMPLETED</option>
                                     </select>
                                 </div>
 

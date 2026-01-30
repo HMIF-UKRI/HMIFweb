@@ -73,7 +73,7 @@
                                 class="mb-4 flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-500">
                                 <span class="flex items-center gap-2"><i
                                         class="fa-regular fa-calendar-check text-red-600"></i>
-                                    {{ $blog->created_at->format('M d, Y') }}</span>
+                                    {{ $blog->created_at->locale('id')->translatedFormat('d F Y') }}</span>
                                 <span class="h-1 w-1 rounded-full bg-gray-800"></span>
                             </div>
 

@@ -10,13 +10,10 @@
     <div class="relative container mx-auto px-6 md:px-12">
         <div class="mb-16 text-center">
             <h2 class="mb-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Program
-                <span class="text-red-600">Kerja</span>
+                Kegiatan
+                <span class="text-red-600">HMIF</span>
             </h2>
             <div class="mx-auto h-1 w-24 rounded-full bg-linear-to-r from-red-900 to-red-600"></div>
-            <p class="mx-auto mt-4 max-w-2xl text-gray-400">
-                Agenda dan aktivitas terbaru yang dilaksanakan oleh HMIF untuk meningkatkan kualitas mahasiswa.
-            </p>
         </div>
 
         <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
