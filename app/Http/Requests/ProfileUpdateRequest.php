@@ -22,7 +22,7 @@ class ProfileUpdateRequest extends FormRequest
             'no_hp'         => ['nullable', 'string', 'max:20'],
             'instagram_url' => ['nullable', 'url'],
             'linkedin_url'  => ['nullable', 'url'],
-            'avatar'        => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'avatar'        => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,heic', 'max:5120'],
         ];
     }
 }

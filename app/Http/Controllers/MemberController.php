@@ -46,7 +46,7 @@ class MemberController extends Controller
             'npm'           => 'required|unique:members,npm',
             'generation_id' => 'required|exists:generations,id',
             'role'          => 'required|exists:roles,name',
-            'avatar'        => 'nullable|image|max:2048',
+            'avatar'        => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
             'instagram_url' => 'nullable|string',
             'linkedin_url'  => 'nullable|string',
         ]);
@@ -90,7 +90,7 @@ class MemberController extends Controller
             'npm'           => 'required|unique:members,npm,' . $member->id,
             'generation_id' => 'required|exists:generations,id',
             'role'          => 'required|exists:roles,name',
-            'avatar'        => 'nullable|image|max:2048',
+            'avatar'        => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
             'instagram_url' => 'nullable|string',
             'linkedin_url'  => 'nullable|string',
             'is_active'     => 'boolean'

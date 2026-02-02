@@ -64,7 +64,7 @@ class PengurusController extends Controller
             'bidang_id'       => 'nullable|exists:bidangs,id',
             'hierarchy_level' => 'required|integer|min:1|max:10',
             'position'        => 'required|string|max:100',
-            'card'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'card'            => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
             'new_member_full_name' => 'required_if:member_mode,new|nullable|string|max:100',
             'new_member_npm' => 'required_if:member_mode,new|nullable|string|max:20|unique:members,npm',
             'new_member_email' => 'required_if:member_mode,new|nullable|email|unique:users,email',
@@ -136,7 +136,7 @@ class PengurusController extends Controller
             'bidang_id'       => 'nullable|integer|exists:bidangs,id',
             'hierarchy_level' => 'required|integer|min:1|max:10',
             'position'        => 'required|string|max:100',
-            'card'            => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'card'            => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ];
 
         if ((int) $request->input('hierarchy_level') === 3) {

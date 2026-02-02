@@ -23,7 +23,7 @@ class PeriodeKepengurusanController extends Controller
             'mission'      => 'nullable|string',
             'start_date'   => 'nullable|date',
             'end_date'     => 'nullable|date',
-            'logo'         => 'nullable|image|max:2048'
+            'logo'         => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120'
         ]);
 
         $validated['is_current'] = $request->has('is_current');
@@ -54,7 +54,7 @@ class PeriodeKepengurusanController extends Controller
             'mission'      => 'nullable|string',
             'start_date'   => 'nullable|date',
             'end_date'     => 'nullable|date',
-            'logo'         => 'nullable|image|max:2048'
+            'logo'         => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120'
         ]);
 
         $validated['is_current'] = $request->has('is_current');

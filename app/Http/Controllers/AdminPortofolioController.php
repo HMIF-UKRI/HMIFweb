@@ -32,7 +32,7 @@ class AdminPortofolioController extends Controller
             'url_linkedin' => 'nullable|url',
             'status'       => 'required|in:Draft,Published',
             'is_featured'  => 'boolean',
-            'thumbnail'    => 'required|image|max:2048',
+            'thumbnail'    => 'required|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ]);
 
         // Otomatis mengambil Member ID dari user yang login

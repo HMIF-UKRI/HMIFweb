@@ -47,7 +47,7 @@ class AdminBlogController extends Controller
             'summary'           => 'required|string|max:255',
             'content'           => 'required|string',
             'status'            => 'required|in:draft,published,archived',
-            'thumbnail'         => 'required|image|max:2048',
+            'thumbnail'         => 'required|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ]);
 
         return DB::transaction(function () use ($request, $validated) {
@@ -86,7 +86,7 @@ class AdminBlogController extends Controller
             'summary'           => 'required|string|max:255',
             'content'           => 'required|string',
             'status'            => 'required|in:draft,published,archived',
-            'thumbnail'         => 'nullable|image|max:2048',
+            'thumbnail'         => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ]);
 
         return DB::transaction(function () use ($request, $blog, $validated) {
@@ -131,7 +131,7 @@ class AdminBlogController extends Controller
     public function uploadImage(Request $request)
     {
         try {
-            $request->validate(['image' => 'required|image|max:2048']);
+            $request->validate(['image' => 'required|image|mimes:jpeg,png,jpg,webp,heic|max:5120']);
             $path = $request->file('image')->store('editor-uploads/blog', 'public');
             return response()->json(['success' => 1, 'file' => ['url' => asset('storage/' . $path)]], 200);
         } catch (\Exception $e) {

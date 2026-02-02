@@ -54,7 +54,7 @@ class AdminEventController extends Controller
             'event_date'        => 'required|date',
             'location'          => 'required|string|max:255',
             'status'            => 'required|in:upcoming,ongoing,completed,cancelled',
-            'thumbnail'         => 'required|image|max:2048',
+            'thumbnail'         => 'required|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ]);
 
         return DB::transaction(function () use ($request, $validated) {
@@ -136,7 +136,7 @@ class AdminEventController extends Controller
     {
         try {
             $request->validate([
-                'image' => 'required|image|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
             ]);
 
             $path = $request->file('image')->store('editor-uploads', 'public');
