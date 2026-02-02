@@ -21,39 +21,33 @@ class OrganizationController extends Controller
 
         $activePeriod = PeriodeKepengurusan::where('is_current', true)->first();
 
-        $pengurus = [];
-        $pengurusDepartments = collect();
+        $pengurus = collect();
         $pengurusBidang = collect();
-        $allDepartments = Departemen::orderByRaw("CASE WHEN name = 'Ring 1' THEN 0 ELSE 1 END, name DESC")->get();
+        $departmentGroups = collect();
+
         if ($activePeriod) {
-            $pengurus = Pengurus::with(['member', 'department', 'media'])
+            $allPengurus = Pengurus::with(['member', 'department', 'bidang', 'media'])
                 ->where('period_id', $activePeriod->id)
-                ->where('hierarchy_level', 1)
-                ->orderBy('id', 'asc')
                 ->get();
 
-            $pengurusDepartments = Pengurus::with(['member', 'department', 'media'])
-                ->where('period_id', $activePeriod->id)
-                ->where('hierarchy_level', 2)
-                ->orderBy('department_id', 'asc')
-                ->orderBy('id', 'asc')
-                ->get();
+            $pengurus = $allPengurus->where('hierarchy_level', 1)->sortBy('id');
 
-            $pengurusBidang = Pengurus::with(['member', 'bidang', 'department', 'media'])
-                ->where('period_id', $activePeriod->id)
-                ->where('hierarchy_level', 3)
-                ->orderBy('bidang_id', 'asc')
-                ->orderBy('id', 'asc')
-                ->get();
+            $pengurusDepartments = $allPengurus->where('hierarchy_level', 2);
+
+            $pengurusBidang = $allPengurus->where('hierarchy_level', 3)
+                ->sortBy(['bidang_id', 'id']);
+
+            $departmentGroups = $pengurusDepartments->groupBy('department_id')
+                ->map(function ($heads) {
+                    return [
+                        'department' => $heads->first()->department,
+                        'heads' => $heads->values()
+                    ];
+                })
+                ->sortBy(function ($item) {
+                    return ($item['department']->name === 'Ring 1') ? 0 : 1;
+                });
         }
-
-        $departmentGroups = $allDepartments->mapWithKeys(function ($dept) use ($pengurusDepartments) {
-            $heads = $pengurusDepartments->filter(function ($item) use ($dept) {
-                return $item->department_id === $dept->id;
-            });
-
-            return [$dept->id => ['department' => $dept, 'heads' => $heads->values()]];
-        });
 
         return view('page.home', compact('events', 'pengurus', 'activePeriod', 'departmentGroups', 'pengurusBidang'));
     }

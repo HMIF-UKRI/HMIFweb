@@ -135,8 +135,7 @@
                     <div class="space-y-1.5">
                         <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Anggota
                             HMIF</label>
-                        <select name="member_id" x-model="member_id"
-                            x-show="member_mode === 'existing' || editMode"
+                        <select name="member_id" x-model="member_id" x-show="member_mode === 'existing' || editMode"
                             :required="member_mode === 'existing' || editMode"
                             class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
                             <option value="" class="bg-gray-950">Select Member</option>
@@ -157,7 +156,8 @@
 
                         <div class="grid grid-cols-2 gap-3">
                             <div class="space-y-1.5">
-                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">NPM</label>
+                                <label
+                                    class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">NPM</label>
                                 <input type="text" name="new_member_npm" x-model="new_member_npm"
                                     :required="member_mode === 'new'"
                                     class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
@@ -170,14 +170,16 @@
                                     class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
                                     <option value="" class="bg-gray-950">Pilih</option>
                                     @foreach ($generations as $gen)
-                                        <option value="{{ $gen->id }}" class="bg-gray-950">{{ $gen->year }}</option>
+                                        <option value="{{ $gen->id }}" class="bg-gray-950">{{ $gen->year }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
                         <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Email</label>
+                            <label
+                                class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Email</label>
                             <input type="email" name="new_member_email" x-model="new_member_email"
                                 :required="member_mode === 'new'"
                                 class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
@@ -192,11 +194,13 @@
                                     class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
                             </div>
                             <div class="space-y-1.5">
-                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Role</label>
+                                <label
+                                    class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Role</label>
                                 <select name="new_member_role" x-model="new_member_role"
                                     class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}" class="bg-gray-950">{{ $role->name }}</option>
+                                        <option value="{{ $role->name }}" class="bg-gray-950">{{ $role->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -235,8 +239,10 @@
                             Pengurus</label>
                         <div
                             class="relative h-28 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center bg-white/1 overflow-hidden group">
-                            <input type="file" name="card" class="absolute inset-0 opacity-0 z-20 cursor-pointer"
-                                @change="imageUrl = URL.createObjectURL($event.target.files[0])" accept="image/*">
+
+                            <input type="file" name="card"
+                                class="absolute inset-0 opacity-0 z-20 cursor-pointer"
+                                @change="handleFileUpload($event)" accept="image/*">
 
                             <template x-if="imageUrl">
                                 <img :src="imageUrl"
@@ -291,7 +297,7 @@
                 openModal: @json($errors->any()),
                 editMode: false,
                 formAction: @json(route('admin.managements.store')),
-                imageUrl: null,
+                imageUrl: sessionStorage.getItem('temp_image_preview') || null,
 
                 member_mode: @json(old('member_id') ? 'existing' : (old('new_member_full_name') ? 'new' : 'existing')),
                 member_id: @json(old('member_id')),
@@ -347,7 +353,25 @@
                     this.new_member_generation_id = '';
                     this.new_member_role = 'pengurus';
                     this.imageUrl = null;
+                    sessionStorage.removeItem('temp_image_preview');
                     this.openModal = true;
+                },
+
+                handleFileUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.imageUrl = e.target.result;
+                        sessionStorage.setItem('temp_image_preview', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                resetImagePreview() {
+                    this.imageUrl = null;
+                    sessionStorage.removeItem('temp_image_preview');
                 },
             }));
         });

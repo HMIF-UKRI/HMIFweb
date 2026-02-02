@@ -109,13 +109,14 @@
                                 break;
                             case 'paragraph':
                                 el = document.createElement('p');
-                                el.className = 'text-white text-lg md:text-xl leading-loose mb-4 opacity-80';
+                                el.className =
+                                    'text-white text-sm md:text-lg text-justify leading-loose mb-4 opacity-80';
                                 el.innerHTML = block.data.text;
                                 break;
                             case 'list':
                                 const isOrdered = block.data.style === 'ordered';
                                 el = document.createElement(isOrdered ? 'ol' : 'ul');
-                                el.className = 'space-y-4 text-gray-400 text-lg ' + (isOrdered ?
+                                el.className = 'space-y-4 text-white text-sm md:text-lg ' + (isOrdered ?
                                     'list-decimal ml-6' : 'list-disc ml-6');
                                 block.data.items.forEach(item => {
                                     const li = document.createElement('li');
@@ -128,7 +129,7 @@
                                 blockquote.className =
                                     'relative p-8 md:p-12 border-l-4 border-red-600 bg-white/2 rounded-r-[2rem] my-12';
                                 blockquote.innerHTML =
-                                    `<p class="text-lg md:text-xl font-black text-white italic leading-tight">"${block.data.text}"</p>`;
+                                    `<p class="text-lg md:text-xl font-black text-white italic leading-tight">${block.data.text}</p>`;
                                 if (block.data.caption) {
                                     blockquote.innerHTML +=
                                         `<cite class="block mt-4 text-[10px] font-black text-red-500 uppercase tracking-[0.2em]">— ${block.data.caption}</cite>`;

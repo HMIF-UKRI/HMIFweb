@@ -152,13 +152,14 @@
                                 break;
                             case 'paragraph':
                                 el = document.createElement('p');
-                                el.className = 'text-white text-lg md:text-xl leading-loose mb-4 opacity-80';
+                                el.className =
+                                    'text-white text-sm md:text-lg text-justify leading-loose mb-4 opacity-80';
                                 el.innerHTML = block.data.text;
                                 break;
                             case 'list':
                                 const isOrdered = block.data.style === 'ordered';
                                 el = document.createElement(isOrdered ? 'ol' : 'ul');
-                                el.className = 'space-y-4 text-gray-400 text-lg ' + (isOrdered ?
+                                el.className = 'space-y-4 text-white text-sm md:text-lg ' + (isOrdered ?
                                     'list-decimal ml-6' : 'list-disc ml-6');
                                 block.data.items.forEach(item => {
                                     const li = document.createElement('li');
