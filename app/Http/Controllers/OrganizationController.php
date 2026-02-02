@@ -32,12 +32,12 @@ class OrganizationController extends Controller
 
             $pengurus = $allPengurus->where('hierarchy_level', 1)->sortBy('id');
 
-            $pengurusDepartments = $allPengurus->where('hierarchy_level', 2);
+            $pengurusForGroups = $allPengurus->whereIn('hierarchy_level', [1, 2]);
 
             $pengurusBidang = $allPengurus->where('hierarchy_level', 3)
                 ->sortBy(['bidang_id', 'id']);
 
-            $departmentGroups = $pengurusDepartments->groupBy('department_id')
+            $departmentGroups = $pengurusForGroups->groupBy('department_id')
                 ->map(function ($heads) {
                     return [
                         'department' => $heads->first()->department,
@@ -45,7 +45,17 @@ class OrganizationController extends Controller
                     ];
                 })
                 ->sortBy(function ($item) {
-                    return ($item['department']->name === 'Ring 1') ? 0 : 1;
+                    $name = strtolower($item['department']->name ?? '');
+
+                    $priority = [
+                        'ring 1' => 0,
+                        'pendidikan' => 1,
+                        'pelatihan dan pengembangan' => 2,
+                        'minat dan bakat' => 3,
+                        'sosial' => 4,
+                    ];
+
+                    return $priority[$name] ?? 99;
                 });
         }
 
