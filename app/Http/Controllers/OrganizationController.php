@@ -39,20 +39,28 @@ class OrganizationController extends Controller
 
             $departmentGroups = $pengurusForGroups->groupBy('department_id')
                 ->map(function ($heads) {
+
+                    $dept = $heads->first()->department;
+                    if (!$dept) return null;
+
                     return [
                         'department' => $heads->first()->department,
                         'heads' => $heads->values()
                     ];
                 })
+                ->filter()
                 ->sortBy(function ($item) {
-                    $name = strtolower($item['department']->name ?? '');
+                    $name = strtolower($item->department->name ?? 'tanpa departemen');
 
                     $priority = [
                         'ring 1' => 0,
                         'pendidikan' => 1,
                         'pelatihan dan pengembangan' => 2,
-                        'minat dan bakat' => 3,
-                        'sosial' => 4,
+                        'pengabdian masyarakat' => 3,
+                        'minat dan bakat' => 4,
+                        'humas internal' => 5,
+                        'humas eksternal' => 6,
+                        'media dan publikasi' => 7,
                     ];
 
                     return $priority[$name] ?? 99;
