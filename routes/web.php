@@ -42,6 +42,10 @@ Route::get('/aspirasi', function () {
     return view('page.aspirasi');
 })->name('aspirasi');
 
+Route::get('/merchandise', function () {
+    return view('page.merchandise');
+})->name('merchandise');
+
 Route::get('/cooming-soon', function () {
     return view('page.coming-soon');
 })->name('coming-soon');

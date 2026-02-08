@@ -8,6 +8,10 @@
         'xl' => 'sm:max-w-xl',
         '2xl' => 'sm:max-w-2xl',
         '3xl' => 'sm:max-w-3xl',
+        '4xl' => 'sm:max-w-4xl',
+        '5xl' => 'sm:max-w-5xl',
+        '6xl' => 'sm:max-w-6xl',
+        '7xl' => 'sm:max-w-7xl',
     ][$maxWidth];
 @endphp
 
@@ -46,7 +50,7 @@
     </div>
 
     <div x-show="show"
-        class="relative w-full {{ $maxWidth }} bg-gray-950 border border-white/10 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden transform transition-all"
+        class="relative w-full {{ $maxWidth }} bg-gray-950 border border-white/10 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-y-auto transform transition-all max-h-[95%] mt-14"
         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"

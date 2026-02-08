@@ -1,4 +1,4 @@
-<section id="home"
+<section
     class="relative flex min-h-screen items-center overflow-hidden bg-linear-to-br from-gray-900 via-black to-red-950 pt-24 text-white md:pt-0">
     <div class="absolute inset-0 overflow-hidden opacity-20">
         <div class="absolute top-20 left-10 h-72 w-72 animate-pulse rounded-full bg-red-600 blur-3xl"></div>

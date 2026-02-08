@@ -41,15 +41,16 @@
                         class="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-red-600 opacity-0 transition-all duration-300 group-hover:opacity-100"></span>
                 </a>
 
-                <a href="#about" class="group relative text-sm font-medium text-gray-300 transition hover:text-white">
-                    Tentang Kami
+                <a href="{{ route('aspirasi') }}"
+                    class="group relative text-sm font-medium text-gray-300 transition hover:text-white">
+                    Kotak Aspirasi
                     <span
                         class="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-red-600 opacity-0 transition-all duration-300 group-hover:opacity-100"></span>
                 </a>
 
-                <a href="{{ route('aspirasi') }}"
+                <a href="{{ route('merchandise') }}"
                     class="group relative text-sm font-medium text-gray-300 transition hover:text-white">
-                    Kotak Aspirasi
+                    Merchandise HMIF
                     <span
                         class="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-red-600 opacity-0 transition-all duration-300 group-hover:opacity-100"></span>
                 </a>
@@ -136,14 +137,15 @@
                 class="flex items-center rounded-xl border border-white/5 bg-white/5 px-4 py-4 text-base font-medium text-white transition hover:border-red-500/30 hover:bg-red-900/20 hover:text-red-400">
                 Beranda
             </a>
-            <a href="#about"
-                class="flex items-center rounded-xl border border-white/5 bg-white/5 px-4 py-4 text-base font-medium text-white transition hover:border-red-500/30 hover:bg-red-900/20 hover:text-red-400">
-                Tentang Kami
-            </a>
 
             <a href="{{ route('aspirasi') }}"
                 class="flex items-center rounded-xl border border-white/5 bg-white/5 px-4 py-4 text-base font-medium text-white transition hover:border-red-500/30 hover:bg-red-900/20 hover:text-red-400">
                 Kotak Aspirasi
+            </a>
+
+            <a href="{{ route('merchandise') }}"
+                class="flex items-center rounded-xl border border-white/5 bg-white/5 px-4 py-4 text-base font-medium text-white transition hover:border-red-500/30 hover:bg-red-900/20 hover:text-red-400">
+                Merchandise HMIF
             </a>
 
             <div x-data="{ dropdownOpen: false }" class="overflow-hidden rounded-xl border border-white/5 bg-white/5">

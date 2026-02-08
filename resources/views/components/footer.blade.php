@@ -79,13 +79,13 @@
         <div class="mt-16 border-t border-white/10 pt-8">
             <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <p class="text-sm text-slate-500">
-                    &copy; 2025
+                    &copy; 2026
                     <span class="text-teal-400">HMIF UKRI</span>
                     . All rights reserved.
                 </p>
 
-                <a href="#home"
-                    class="group flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-5 py-2 text-sm text-teal-300 transition hover:bg-teal-500 hover:text-white">
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+                    class="group flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/10 px-5 py-2 text-sm text-teal-300 transition hover:bg-teal-500 hover:text-white scroll-smooth">
                     Back to Top
                     <svg xmlns="http://www.w3.org/2000/svg" class="size-4 transition group-hover:-translate-y-1"
                         viewBox="0 0 20 20" fill="currentColor">
@@ -93,7 +93,7 @@
                             d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                             clip-rule="evenodd" />
                     </svg>
-                </a>
+                </button>
             </div>
         </div>
     </div>
