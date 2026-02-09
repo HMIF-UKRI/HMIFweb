@@ -29,7 +29,7 @@
 
         <div class="flex items-center justify-between bg-black/40 p-2 rounded-2xl border border-white/5">
             <div class="flex gap-2">
-                @foreach (['blog' => 'Blog', 'event' => 'Event', 'porto' => 'Portofolio'] as $key => $label)
+                @foreach (['blog' => 'Blog', 'event' => 'Event', 'porto' => 'Portofolio', 'merchandise' => 'Merchandise'] as $key => $label)
                     <button @click="activeTab = '{{ $key }}'"
                         :class="activeTab === '{{ $key }}' ? 'bg-red-600 text-white' :
                             'text-gray-500 hover:text-gray-300'"
@@ -127,6 +127,34 @@
                     <h3 class="text-white font-black uppercase tracking-widest text-sm mb-1">{{ $cat->name }}</h3>
                     <div class="flex items-center gap-2 py-2 px-4 bg-black/40 rounded-full w-fit">
                         <span class="text-[9px] font-black text-red-600">{{ $cat->portofolios_count }}</span>
+                        <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">Merchandise
+                            Showcased</span>
+                    </div>
+                </div>
+            @endforeach
+
+            @foreach ($merchandiseCategory as $cat)
+                <div x-show="activeTab === 'merchandise'"
+                    class="group relative bg-gray-900/40 border border-white/5 rounded-4xl p-6 transition-all hover:border-red-600/30">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-red-600"><ion-icon name="briefcase-outline"
+                                class="text-2xl"></ion-icon></div>
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button @click="initEdit({{ $cat }}, 'merchandise')"
+                                class="p-2 text-gray-400 hover:text-white"><ion-icon
+                                    name="pencil-outline"></ion-icon></button>
+                            <form action="{{ route('admin.merchandises.destroy', $cat->slug) }}" method="POST"
+                                onsubmit="return confirm('Hapus Categori ini?')">
+                                @csrf @method('DELETE')
+                                <input type="hidden" name="type" :value="activeTab">
+                                <button class="p-2 text-gray-400 hover:text-red-500" type="submit"><ion-icon
+                                        name="trash-outline"></ion-icon></button>
+                            </form>
+                        </div>
+                    </div>
+                    <h3 class="text-white font-black uppercase tracking-widest text-sm mb-1">{{ $cat->name }}</h3>
+                    <div class="flex items-center gap-2 py-2 px-4 bg-black/40 rounded-full w-fit">
+                        <span class="text-[9px] font-black text-red-600">{{ $cat->merchandises_count }}</span>
                         <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">Projects
                             Showcased</span>
                     </div>
