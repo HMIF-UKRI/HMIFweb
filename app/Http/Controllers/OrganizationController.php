@@ -104,4 +104,14 @@ class OrganizationController extends Controller
             'departments'   => $activeDepartments,
         ]);
     }
+
+    public function aspirasi()
+    {
+        return view('page.aspirasi');
+    }
+
+    public function comingsoon()
+    {
+        return view('page.coming-soon');
+    }
 }

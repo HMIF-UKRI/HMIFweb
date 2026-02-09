@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminBlogController;
 use App\Http\Controllers\AdminEventController;
+use App\Http\Controllers\AdminMerchandiseController;
 use App\Http\Controllers\AdminPortofolioController;
 use App\Http\Controllers\AngkatanController;
 use App\Http\Controllers\AttendanceController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\PeriodeKepengurusanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\PublicEventController;
+use App\Http\Controllers\PublicMerchandiseController;
 use App\Http\Controllers\PublicPortofolioController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,17 +40,11 @@ Route::get('/blog/{slug}', [PublicBlogController::class, 'show'])->name('blog.sh
 Route::get('/portofolio', [PublicPortofolioController::class, 'index'])->name('portofolio.index');
 Route::get('/portofolio/{slug}', [PublicPortofolioController::class, 'show'])->name('portofolio.show');
 
-Route::get('/aspirasi', function () {
-    return view('page.aspirasi');
-})->name('aspirasi');
+Route::get('/aspirasi', [OrganizationController::class, 'aspirasi'])->name('aspirasi');
 
-Route::get('/merchandise', function () {
-    return view('page.merchandise');
-})->name('merchandise');
+Route::get('/merchandise', [PublicMerchandiseController::class, 'index'])->name('merchandise');
 
-Route::get('/cooming-soon', function () {
-    return view('page.coming-soon');
-})->name('coming-soon');
+Route::get('/cooming-soon', [OrganizationController::class . 'comingsoon'])->name('coming-soon');
 
 
 /*
@@ -83,6 +79,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::resource('members', MemberController::class);
             Route::resource('generations', AngkatanController::class);
             Route::resource('categories', CategoriesController::class);
+            Route::resource('merchandises', AdminMerchandiseController::class);
+
+            Route::patch('merchandises/{merchandise}/increment', [AdminMerchandiseController::class, 'incrementStock'])->name('merchandises.increment');
+            Route::patch('merchandises/{merchandise}/decrement', [AdminMerchandiseController::class, 'decrementStock'])->name('merchandises.decrement');
         });
 
         // Manajemen Organisasi & Konten

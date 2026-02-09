@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\BlogCategory;
 use App\Models\EventCategory;
+use App\Models\MerchandiseCategory;
 use App\Models\PortofolioCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -17,6 +18,7 @@ class CategoriesController extends Controller
             'blogCategory' => BlogCategory::withCount('blogs')->latest()->get(),
             'eventCategory' => EventCategory::withCount('events')->latest()->get(),
             'portofolioCategory' => PortofolioCategory::withCount('portofolios')->latest()->get(),
+            'merchandiseCategory' => MerchandiseCategory::withCount('merchandises')->latest()->get(),
         ]);
     }
 
@@ -36,6 +38,7 @@ class CategoriesController extends Controller
             'blog' => BlogCategory::create($data),
             'event' => EventCategory::create($data),
             'porto' => PortofolioCategory::create($data),
+            'merchandise' => MerchandiseCategory::create($data),
         };
 
         return back()->with('success', 'Kategori berhasil dibuat.');
@@ -52,6 +55,7 @@ class CategoriesController extends Controller
             'blog'  => BlogCategory::where('slug', $slug)->firstOrFail(),
             'event' => EventCategory::where('slug', $slug)->firstOrFail(),
             'porto' => PortofolioCategory::where('slug', $slug)->firstOrFail(),
+            'merchandise' => MerchandiseCategory::where('slug', $slug)->firstOrFail(),
             default => abort(404),
         };
 
@@ -73,6 +77,7 @@ class CategoriesController extends Controller
             'blog' => BlogCategory::where('slug', $slug)->firstOrFail(),
             'event' => EventCategory::where('slug', $slug)->firstOrFail(),
             'porto' => PortofolioCategory::where('slug', $slug)->firstOrFail(),
+            'merchandise' => MerchandiseCategory::where('slug', $slug)->firstOrFail(),
             default => abort(404)
         };
 
@@ -80,6 +85,7 @@ class CategoriesController extends Controller
             'blog' => $model->blogs()->exists(),
             'event' => $model->events()->exists(),
             'porto' => $model->portofolios()->exists(),
+            'merchandise' => $model->merchandises()->exists(),
         };
 
         if ($hasRelation) {

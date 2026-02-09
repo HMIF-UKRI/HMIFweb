@@ -85,43 +85,26 @@
                                 class="px-6 py-3 rounded-full border transition-all duration-300 whitespace-nowrap font-medium">
                                 All Items
                             </button>
-                            <button @click="selectedCategory = 'apparel'"
-                                :class="selectedCategory === 'apparel' ? 'bg-red-600 text-white border-red-600' :
-                                    'bg-transparent text-gray-400 border-white/10 hover:border-red-600/50'"
-                                class="px-6 py-3 rounded-full border transition-all duration-300 whitespace-nowrap font-medium">
-                                Apparel
-                            </button>
-                            <button @click="selectedCategory = 'accessories'"
-                                :class="selectedCategory === 'accessories' ? 'bg-red-600 text-white border-red-600' :
-                                    'bg-transparent text-gray-400 border-white/10 hover:border-red-600/50'"
-                                class="px-6 py-3 rounded-full border transition-all duration-300 whitespace-nowrap font-medium">
-                                Accessories
-                            </button>
-                            <button @click="selectedCategory = 'stationery'"
-                                :class="selectedCategory === 'stationery' ? 'bg-red-600 text-white border-red-600' :
-                                    'bg-transparent text-gray-400 border-white/10 hover:border-red-600/50'"
-                                class="px-6 py-3 rounded-full border transition-all duration-300 whitespace-nowrap font-medium">
-                                Stationery
-                            </button>
+
+                            <template x-for="cat in categories" :key="cat.id">
+                                <button @click="selectedCategory = cat.name"
+                                    :class="selectedCategory === cat.name ? 'bg-red-600 text-white border-red-600' :
+                                        'bg-transparent text-gray-400 border-white/10 hover:border-red-600/50'"
+                                    class="px-6 py-3 rounded-full border transition-all duration-300 whitespace-nowrap font-medium uppercase text-xs tracking-widest">
+                                    <span x-text="cat.name"></span>
+                                </button>
+                            </template>
                         </div>
 
                         <div class="relative w-full md:w-auto" x-data="{ open: false }">
                             <button @click="open = !open"
                                 class="w-full md:w-auto px-6 py-3 bg-white/5 border border-white/10 rounded-full text-gray-400 hover:border-red-600/50 transition flex items-center justify-between gap-8 backdrop-blur-sm">
-                                <span class="font-medium">Sort By</span>
-                                <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                                <span class="font-medium" x-text="'Sort: ' + sortBy"></span>
+                                <i class="fa-solid fa-chevron-down transition-transform"
+                                    :class="open ? 'rotate-180' : ''"></i>
                             </button>
                             <div x-show="open" @click.away="open = false"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0 translate-y-2"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                class="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl z-50"
-                                style="display: none;">
+                                class="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl z-50">
                                 <button @click="sortBy = 'featured'; open = false"
                                     class="w-full px-4 py-3 text-left text-gray-300 hover:bg-red-600/20 hover:text-white transition">Featured</button>
                                 <button @click="sortBy = 'price-low'; open = false"
@@ -131,7 +114,8 @@
                                     class="w-full px-4 py-3 text-left text-gray-300 hover:bg-red-600/20 hover:text-white transition">Price:
                                     High to Low</button>
                                 <button @click="sortBy = 'newest'; open = false"
-                                    class="w-full px-4 py-3 text-left text-gray-300 hover:bg-red-600/20 hover:text-white transition">Newest</button>
+                                    class="w-full px-4 py-3 text-left text-gray-300 hover:bg-red-600/20 hover:text-white transition">Newest
+                                    Arrival</button>
                             </div>
                         </div>
                     </div>
@@ -144,15 +128,15 @@
                                 <div
                                     class="relative bg-linear-to-br from-gray-900/50 to-black/50 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-sm hover:border-red-500/50 transition-all duration-500 cursor-pointer">
                                     <div class="relative aspect-square overflow-hidden">
-                                        <img :src="product.image" :alt="product.name"
+                                        <img :src="product.preview_url" :alt="product.name"
                                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
 
                                         <div
                                             class="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-60">
                                         </div>
 
-                                        <div class="absolute top-6 left-6 flex flex-col gap-2 z-10">
-                                            <span x-show="product.isNew"
+                                        <div class="absolute top-3 left-3 sm:top-6 sm:left-6 flex flex-col gap-2 z-10">
+                                            <span x-show="product.is_new"
                                                 class="px-4 py-2 bg-red-600 text-white text-xs font-bold tracking-wider uppercase rounded-full">
                                                 New Arrival
                                             </span>
@@ -192,7 +176,7 @@
                                         <div class="flex items-center gap-2 mb-3">
                                             <div class="w-1 h-1 bg-red-500 rounded-full"></div>
                                             <span class="text-xs font-semibold text-red-500 uppercase tracking-[0.2em]"
-                                                x-text="product.category"></span>
+                                                x-text="product.category.name"></span>
                                         </div>
 
                                         <h3 class="text-2xl font-bold text-white mb-3 leading-tight group-hover:text-red-400 transition-colors"
@@ -202,9 +186,9 @@
                                             <div>
                                                 <p class="text-2xl font-bold text-white"
                                                     x-text="formatPrice(product.price)"></p>
-                                                <p x-show="product.originalPrice"
+                                                <p x-show="product.original_price"
                                                     class="text-sm text-gray-500 line-through"
-                                                    x-text="formatPrice(product.originalPrice)"></p>
+                                                    x-text="formatPrice(product.original_price)"></p>
                                             </div>
                                             <div
                                                 class="w-12 h-12 bg-red-600/20 border border-red-600/30 rounded-full flex items-center justify-center group-hover:bg-red-600 transition-all duration-300">
@@ -243,12 +227,12 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12">
                         <div>
                             <div class="relative max-w-2xl aspect-square rounded-3xl overflow-hidden bg-gray-900 mb-6">
-                                <img :src="selectedProduct?.image" :alt="selectedProduct?.name"
+                                <img :src="selectedProduct?.preview_url" :alt="selectedProduct?.name"
                                     class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
 
-                                <div class="absolute top-6 left-6 flex flex-col gap-2">
-                                    <span x-show="selectedProduct?.isNew"
+                                <div class="absolute top-3 left-3 sm:top-6 sm:left-6 flex flex-col gap-2 text-xs">
+                                    <span x-show="selectedProduct?.is_new"
                                         class="px-4 py-2 bg-red-600 text-white text-xs font-bold tracking-wider uppercase rounded-full">
                                         New Arrival
                                     </span>
@@ -265,7 +249,7 @@
                                 <div class="flex items-center gap-2 mb-4">
                                     <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
                                     <span class="text-sm font-semibold text-red-500 uppercase tracking-[0.2em]"
-                                        x-text="selectedProduct?.category"></span>
+                                        x-text="selectedProduct?.category.name"></span>
                                 </div>
 
                                 <h2 class="text-xl lg:text-3xl font-bold text-white mb-6 leading-tight"
@@ -274,13 +258,13 @@
                                 <div class="flex flex-col items-baseline gap-2 mb-8">
                                     <p class="text-2xl font-bold text-white"
                                         x-text="formatPrice(selectedProduct?.price)"></p>
-                                    <p x-show="selectedProduct?.originalPrice"
+                                    <p x-show="selectedProduct?.original_price"
                                         class="text-sm text-gray-500 line-through"
-                                        x-text="formatPrice(selectedProduct?.originalPrice)"></p>
+                                        x-text="formatPrice(selectedProduct?.original_price)"></p>
                                 </div>
 
                                 <div class="mb-8">
-                                    <h4 class="text-white font-semibold text-lg mb-3">Description</h4>
+                                    <h4 class="text-white font-semibold text-lg mb-3">Deskripsi Produk</h4>
                                     <p class="text-gray-400 leading-relaxed text-justify"
                                         x-text="selectedProduct?.description">
                                     </p>
@@ -288,7 +272,7 @@
 
                                 <section class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8"
                                     aria-labelledby="specs-title">
-                                    <h4 id="specs-title" class="text-white font-semibold text-lg mb-4">Specifications
+                                    <h4 id="specs-title" class="text-white font-semibold text-lg mb-4">Spesifikasi
                                     </h4>
 
                                     <dl class="space-y-3 text-xs">
@@ -331,7 +315,7 @@
                                         x-text="selectedProduct?.stock === 0 ? 'Out of Stock' : 'Order via WhatsApp'"></span>
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </button>
-                                <p class="text-center text-sm text-gray-500">
+                                <p class="text-center tracking-tighter text-sm text-gray-500">
                                     <i class="fa-solid fa-shield-alt mr-2"></i>
                                     Pembelian terpercaya hanya di Official Whatsapp HMIF
                                 </p>
@@ -440,13 +424,14 @@
                     selectedCategory: 'all',
                     sortBy: 'featured',
                     selectedProduct: null,
-                    products: @json($products),
+                    products: @json($merchandises),
+                    categories: @json($categories),
 
                     get filteredProducts() {
                         let filtered = this.products;
 
                         if (this.selectedCategory !== 'all') {
-                            filtered = filtered.filter(p => p.category === this.selectedCategory);
+                            filtered = filtered.filter(p => p.category.name === this.selectedCategory);
                         }
 
                         if (this.sortBy === 'price-low') {
@@ -454,15 +439,14 @@
                         } else if (this.sortBy === 'price-high') {
                             filtered = [...filtered].sort((a, b) => b.price - a.price);
                         } else if (this.sortBy === 'newest') {
-                            filtered = [...filtered].sort((a, b) => b.isNew - a.isNew);
+                            filtered = [...filtered].sort((a, b) => b.id - a.id);
                         }
 
                         return filtered;
                     },
 
                     formatPrice(price) {
-                        if (!price) return '';
-                        return 'Rp ' + price.toLocaleString('id-ID');
+                        return 'Rp ' + Number(price).toLocaleString('id-ID');
                     },
 
                     openProductDetail(product) {
@@ -471,17 +455,13 @@
                     },
 
                     orderWhatsApp(product) {
-                        if (product.stock === 0) return;
+                        const message = `Halo Admin HMIF, saya ingin memesan produk eksklusif:\n\n` +
+                            `📦 *Produk:* ${product.name}\n` +
+                            `💰 *Harga:* ${this.formatPrice(product.price)}\n` +
+                            `🏷️ *Kategori:* ${product.category.name}\n\n` +
+                            `Apakah stok masih tersedia?`;
 
-                        const message = `Hi, I'm interested in this exclusive item:\n\n` +
-                            `🏷️ Product: ${product.name}\n` +
-                            `💎 Price: ${this.formatPrice(product.price)}\n` +
-                            `📦 Category: ${product.category}\n\n` +
-                            `Is this still available?`;
-
-                        const whatsappNumber = '6281234567890'; // Replace with actual admin number
-                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-
+                        const whatsappUrl = `https://wa.me/628815134641?text=${encodeURIComponent(message)}`;
                         window.open(whatsappUrl, '_blank');
                     }
                 }

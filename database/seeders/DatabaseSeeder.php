@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             PeriodSeeder::class,         // Periode Kepengurusan
             UserMemberSeeder::class,     // Users, Members, Pengurus
             EventSeeder::class,          // Event & Event Category
-            BlogSeeder::class            // Blog & Blog Category
+            BlogSeeder::class,            // Blog & Blog Category
+            MerchandiseSeeder::class     // Merchandise & Merchandise Category
         ]);
     }
 }

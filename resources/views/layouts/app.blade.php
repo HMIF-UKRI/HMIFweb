@@ -84,6 +84,11 @@
                         ['icon' => 'newspaper-outline', 'title' => 'Blog Posts', 'route' => 'admin.blogs.index'],
                         ['icon' => 'calendar-outline', 'title' => 'Events', 'route' => 'admin.events.index'],
                         ['icon' => 'briefcase-outline', 'title' => 'Portofolio', 'route' => 'admin.portofolios.index'],
+                        [
+                            'icon' => 'pricetags-outline',
+                            'title' => 'Merchandise',
+                            'route' => 'admin.merchandises.index',
+                        ],
                     ],
                     'Media Assets' => [
                         ['icon' => 'images-outline', 'title' => 'Gallery', 'route' => 'admin.galleries.index'],
