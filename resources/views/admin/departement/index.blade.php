@@ -1,5 +1,16 @@
 <x-app-layout>
-    <x-slot name="header_title">Organization / Departemen</x-slot>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Events - HMIF UKRI',
+            'description' =>
+                'Portal Internal Pengurus HMIF UKRI untuk mengelola konten dan kegiatan organisasi secara efisien.',
+            'keywords' => 'hmif, ukri, himatif, hima, informatika, kegiatan, agenda, seminar, workshop',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
+
+    <x-slot name="header_title">Master Data / Departemen</x-slot>
 
     <div class="space-y-6" x-data="{
         openModal: {{ $errors->any() ? 'true' : 'false' }},
@@ -7,7 +18,7 @@
         formAction: '{{ route('admin.departments.store') }}',
         name: @js(old('name')),
         description: @js(old('description')),
-
+    
         setCreate() {
             this.editMode = false;
             this.formAction = '{{ route('admin.departments.store') }}';
@@ -15,7 +26,7 @@
             this.description = '';
             this.openModal = true;
         },
-
+    
         setEdit(item) {
             this.editMode = true;
             this.formAction = `/admin/departments/${item.id}`;

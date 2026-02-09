@@ -1,5 +1,16 @@
 <x-app-layout>
-    <x-slot name="header_title">Organization / Bidang</x-slot>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Bidang - HMIF UKRI',
+            'description' =>
+                'Portal Internal Pengurus HMIF UKRI untuk mengelola data bidang bidang yang ada di struktur kepengurusan HMIF UKRI.',
+            'keywords' => 'hmif, ukri, himatif, hima, informatika, kegiatan, agenda, seminar, workshop',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
+
+    <x-slot name="header_title">Master Data / Bidang</x-slot>
 
     <div class="space-y-6" x-data="{
         openModal: false,
@@ -8,7 +19,7 @@
         name: '',
         department_id: '',
         description: '',
-
+    
         setCreate() {
             this.editMode = false;
             this.formAction = '{{ route('admin.bidangs.store') }}';
@@ -17,7 +28,7 @@
             this.description = '';
             this.openModal = true;
         },
-
+    
         setEdit(item) {
             this.editMode = true;
             this.formAction = `/admin/bidangs/${item.id}`;
@@ -99,42 +110,43 @@
         </div>
 
         <x-modal-form>
-        @if ($errors->any())
-            <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-[10px] text-red-300">
-                <div class="mb-2 font-black uppercase tracking-widest">Gagal menyimpan</div>
-                <ul class="list-disc pl-5 space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            @if ($errors->any())
+                <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-[10px] text-red-300">
+                    <div class="mb-2 font-black uppercase tracking-widest">Gagal menyimpan</div>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <div class="space-y-4">
-            <div class="space-y-1.5">
-                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Nama Bidang</label>
-                <input type="text" name="name" x-model="name" required
-                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
-            </div>
+            <div class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Nama
+                        Bidang</label>
+                    <input type="text" name="name" x-model="name" required
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
+                </div>
 
-            <div class="space-y-1.5">
-                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Departemen</label>
-                <select name="department_id" x-model="department_id" required
-                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
-                    <option value="" class="bg-gray-950">Pilih Departemen</option>
-                    @foreach ($departments as $d)
-                        <option value="{{ $d->id }}" class="bg-gray-950">{{ $d->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Departemen</label>
+                    <select name="department_id" x-model="department_id" required
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600 appearance-none">
+                        <option value="" class="bg-gray-950">Pilih Departemen</option>
+                        @foreach ($departments as $d)
+                            <option value="{{ $d->id }}" class="bg-gray-950">{{ $d->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <div class="space-y-1.5">
-                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Deskripsi
-                    (Optional)</label>
-                <textarea name="description" rows="3" x-model="description"
-                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600"></textarea>
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Deskripsi
+                        (Optional)</label>
+                    <textarea name="description" rows="3" x-model="description"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600"></textarea>
+                </div>
             </div>
-        </div>
         </x-modal-form>
     </div>
 </x-app-layout>

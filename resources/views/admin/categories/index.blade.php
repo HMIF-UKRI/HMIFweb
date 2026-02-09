@@ -1,4 +1,19 @@
 <x-app-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Categories - HMIF UKRI',
+            'description' =>
+                'Portal Internal Pengurus HMIF UKRI untuk mengelola seluruh kategori kategori yang ada pada data yang dibutuhkan di website HMIF UKRI.',
+            'keywords' => 'hmif, ukri, himatif, hima, informatika, kegiatan, agenda, seminar, workshop',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
+
+    <x-slot name="header_title">
+        Master Data / Categories
+    </x-slot>
+
     <div x-data="{
         openModal: false,
         editMode: false,

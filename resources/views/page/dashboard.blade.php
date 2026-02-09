@@ -1,4 +1,13 @@
 <x-app-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Dashboard - HMIF UKRI',
+            'description' => 'Dashboard HMIF UKRI.',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
+
     <x-slot name="header_title">Dashboard</x-slot>
 
     <div class="space-y-6">

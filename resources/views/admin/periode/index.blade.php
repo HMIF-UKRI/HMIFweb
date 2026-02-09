@@ -1,4 +1,15 @@
 <x-app-layout>
+    <x-slot name="meta">
+        @include('components._meta', [
+            'title' => 'Periode - HMIF UKRI',
+            'description' =>
+                'Portal Internal Pengurus HMIF UKRI untuk mengelola data periode/periode kepengurusan yang ada di HMIF UKRI.',
+            'keywords' => 'hmif, ukri, himatif, hima, informatika, kegiatan, agenda, seminar, workshop',
+            'image' => asset('images/banner-kegiatan.png'),
+            'url' => url()->current(),
+        ])
+    </x-slot>
+
     <x-slot name="header_title">Master Data / Periode</x-slot>
 
     <div class="space-y-8" x-data="{

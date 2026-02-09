@@ -44,7 +44,7 @@ Route::get('/aspirasi', [OrganizationController::class, 'aspirasi'])->name('aspi
 
 Route::get('/merchandise', [PublicMerchandiseController::class, 'index'])->name('merchandise');
 
-Route::get('/cooming-soon', [OrganizationController::class . 'comingsoon'])->name('coming-soon');
+Route::get('/cooming-soon', [OrganizationController::class, 'comingsoon'])->name('coming-soon');
 
 
 /*
