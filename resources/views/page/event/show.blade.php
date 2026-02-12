@@ -204,18 +204,26 @@
                             </div>
 
                             <div class="mt-8 border-t border-white/10 pt-6">
-                                @if ($event->status == 'upcoming')
-                                    <a href="#"
+                                @if ($event->status == 'ongoing' || \Carbon\Carbon::parse($event->event_date)->isToday())
+                                    <a href="{{ route('attendance.scan', $event->slug) }}"
                                         class="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-red-600 px-6 py-3.5 text-center font-bold text-white shadow-lg shadow-red-900/30 transition duration-300 hover:scale-[1.02] hover:bg-red-700">
                                         <span class="relative z-10 flex items-center gap-2">
-                                            Ikuti Kegiatan
+                                            <i class="fa-solid fa-qrcode"></i>
+                                            Absensi Sekarang
                                             <i
                                                 class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
                                         </span>
                                     </a>
+                                    <p class="mt-3 text-center text-[10px] text-gray-400">
+                                        *Silakan scan atau konfirmasi kehadiran melalui tombol di atas
+                                    </p>
+                                @elseif ($event->status == 'upcoming')
+                                    <button disabled
+                                        class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
+                                        Pendaftaran Belum Dibuka
+                                    </button>
                                     <p class="mt-3 text-center text-[10px] text-gray-500">
-                                        *Hubungi narahubung untuk info
-                                        pendaftaran
+                                        *Absensi hanya tersedia saat kegiatan berlangsung
                                     </p>
                                 @else
                                     <button disabled
@@ -231,7 +239,8 @@
                                 Diselenggarakan Oleh
                             </p>
                             <div class="flex items-center gap-3">
-                                <img src="{{ $event->period->preview_url }}" alt="{{ $event->period->cabinet_name }}"
+                                <img src="{{ $event->period->preview_url }}"
+                                    alt="{{ $event->period->cabinet_name }}"
                                     class="h-10 w-10 object-contain brightness-90" />
                                 <div>
                                     <p class="text-sm font-bold text-white">

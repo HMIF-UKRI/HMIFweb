@@ -75,7 +75,7 @@
                                 <div class="flex items-center gap-2">
                                     <i class="fa-regular fa-calendar text-red-500"></i>
                                     <span>
-                                        {{ \Carbon\Carbon::parse($event->event_date)->translatedFormat('l, d F Y') }}
+                                        {{ \Carbon\Carbon::parse($event->event_date)->locale('id')->translatedFormat('l, d F Y') }}
                                     </span>
                                 </div>
                                 <div class="h-4 w-px bg-gray-700"></div>
@@ -192,7 +192,7 @@
                                                 Tanggal Pelaksanaan
                                             </p>
                                             <p class="mt-0.5 font-semibold text-white">
-                                                {{ \Carbon\Carbon::parse($event->event_date)->translatedFormat('l, d F Y') }}
+                                                {{ \Carbon\Carbon::parse($event->event_date)->locale('id')->translatedFormat('l, d F Y') }}
                                             </p>
                                         </div>
                                     </div>
@@ -220,19 +220,11 @@
                                 </div>
 
                                 <div class="mt-8 border-t border-white/10 pt-6">
-                                    @if ($event->status == 'upcoming')
-                                        <a href="#"
-                                            class="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-red-600 px-6 py-3.5 text-center font-bold text-white shadow-lg shadow-red-900/30 transition duration-300 hover:scale-[1.02] hover:bg-red-700">
-                                            <span class="relative z-10 flex items-center gap-2">
-                                                Ikuti Kegiatan
-                                                <i
-                                                    class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
-                                            </span>
+                                    @if ($event->status == 'ongoing')
+                                        <a href="{{ route('admin.attendances.qrcode', $event->slug) }}" target="_blank"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 transition">
+                                            <i class="fa-solid fa-qrcode"></i> Generate QR Code absensi
                                         </a>
-                                        <p class="mt-3 text-center text-[10px] text-gray-500">
-                                            *Hubungi narahubung untuk info
-                                            pendaftaran
-                                        </p>
                                     @else
                                         <button disabled
                                             class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">

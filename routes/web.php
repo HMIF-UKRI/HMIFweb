@@ -31,8 +31,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [OrganizationController::class, 'home'])->name('home');
 Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name('struktur-pengurus');
 
-Route::get('/kegiatan', [PublicEventController::class, 'index'])->name('event.index');
+Route::get('/absensi/kegiatan/{slug}', [AttendanceController::class, 'processScan'])->name('attendance.scan');
+Route::post('/absensi/submit/{slug}', [AttendanceController::class, 'store'])->name('attendance.submit');
+
 Route::get('/kegiatan/{slug}', [PublicEventController::class, 'show'])->name('event.show');
+Route::get('/kegiatan', [PublicEventController::class, 'index'])->name('event.index');
 
 Route::get('/blog', [PublicBlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [PublicBlogController::class, 'show'])->name('blog.show');
@@ -96,9 +99,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Manajemen Absensi
         Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
-        Route::get('events/{event}/attendances', [AttendanceController::class, 'absen'])->name('attendances.absen');
-        Route::post('events/{event}/attendances', [AttendanceController::class, 'store'])->name('attendances.store');
-        Route::get('events/{event}/attendances/report', [AttendanceController::class, 'report'])->name('attendances.report');
+        Route::get('attendances/absensi/{slug}', [AttendanceController::class, 'absensi'])->name('attendances.absensi');
+        Route::get('attendances/qrcode/{slug}', [AttendanceController::class, 'showQrCode'])
+            ->name('attendances.qrcode');
+        Route::post('events/{event_id}/attendance/manual', [AttendanceController::class, 'storeManual'])->name('attendance.manual');
+        Route::get('attendances/{slug}/export-pdf', [AttendanceController::class, 'exportPdf'])
+            ->name('attendances.export_pdf');
     });
 
     /*

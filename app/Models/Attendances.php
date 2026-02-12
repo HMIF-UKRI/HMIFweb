@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Attendances extends Model
 {
+    protected $table = 'attendances';
+
     protected $fillable = [
         'event_id',
         'member_id',
@@ -15,7 +17,8 @@ class Attendances extends Model
         'participant_type',
         'external_name',
         'external_npm',
-        'external_prodi'
+        'external_prodi',
+        'external_angkatan'
     ];
 
     protected $casts = [

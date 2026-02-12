@@ -14,7 +14,20 @@
         Core Content / Event
     </x-slot>
 
-    <div>
+    <div x-data="{
+        openModal: false,
+        editMode: false,
+        formAction: '',
+        eventName: '',
+        exportUrl: '',
+        attendances: []
+    }"
+        @open-attendance-modal.window="
+            eventName = $event.detail.name;
+            exportUrl = $event.detail.exportUrl;
+            attendances = $event.detail.data;
+            openModal = true;
+        ">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-black text-white tracking-tight uppercase">Daftar Kegiatan</h1>
@@ -100,16 +113,30 @@
                             </span>
                         </div>
 
-                        <h3
+                        <a href="{{ route('admin.events.show', $event->slug) }}"
                             class="text-lg font-bold text-white leading-tight mb-2 line-clamp-2 group-hover:text-red-500 transition-colors">
                             {{ $event->title }}
-                        </h3>
+                        </a>
 
                         <div class="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
-                            <a href="{{ route('admin.events.show', $event->slug) }}"
+                            <button type="button"
+                                @click="$dispatch('open-attendance-modal', {
+        name: '{{ $event->title }}',
+        exportUrl: '{{ route('admin.attendances.export_pdf', $event->slug) }}',
+        data: [
+            @foreach ($event->attendances as $att)
+            {
+                id: {{ $att->id }},
+                check_in_time: '{{ $att->check_in_time->format('H:i') }}',
+                name: '{{ $att->participant_type == 'internal' ? $att->member->full_name ?? 'N/A' : $att->external_name }}',
+                identifier: '{{ $att->participant_type == 'internal' ? $att->member->npm ?? '-' : $att->external_npm }}',
+                type: '{{ $att->participant_type }}'
+            }, @endforeach
+        ]
+    })"
                                 class="text-[9px] font-black text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
-                                View Details
-                            </a>
+                                Cek Absensi
+                            </button>
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('admin.events.edit', $event->slug) }}"
                                     class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-yellow-500/50 hover:text-yellow-500 flex items-center justify-center transition-all">
@@ -136,6 +163,94 @@
                     <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">No Events Found</p>
                 </div>
             @endforelse
+
+            <x-modal name="attendance-modal" maxWidth="3xl">
+                <div class="p-8 bg-gray-900 border border-white/10 rounded-4xl overflow-hidden" x-data="{
+                    eventName: '',
+                    exportUrl: '',
+                    attendances: []
+                }"
+                    @open-attendance-modal.window="
+            eventName = $event.detail.name;
+            exportUrl = $event.detail.exportUrl;
+            attendances = $event.detail.data;
+            show = true;
+        ">
+
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white" x-text="eventName"></h2>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-1">Monitoring Data Absensi
+                                Real-time</p>
+                        </div>
+
+                        <a :href="exportUrl"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95">
+                            <i class="fa-solid fa-file-pdf"></i> Generate Laporan PDF
+                        </a>
+                    </div>
+
+                    <div class="overflow-x-auto custom-scrollbar max-h-[50vh] border border-white/5 rounded-2xl">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white/2 border-b border-white/10">
+                                    <th
+                                        class="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        Waktu</th>
+                                    <th
+                                        class="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        Nama Lengkap</th>
+                                    <th
+                                        class="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        Identitas (NPM)</th>
+                                    <th
+                                        class="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
+                                        Tipe</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                <template x-for="item in attendances" :key="item.id">
+                                    <tr class="hover:bg-white/2 transition-colors group">
+                                        <td class="py-4 px-6 text-xs text-gray-400" x-text="item.check_in_time"></td>
+                                        <td class="py-4 px-6 text-xs font-bold text-white group-hover:text-red-500 transition-colors"
+                                            x-text="item.name"></td>
+                                        <td class="py-4 px-6 text-xs text-gray-500 font-mono" x-text="item.identifier">
+                                        </td>
+                                        <td class="py-4 px-6 text-center">
+                                            <span
+                                                class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter"
+                                                :class="item.type === 'internal' ?
+                                                    'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+                                                    'bg-red-500/10 text-red-400 border border-red-500/20'"
+                                                x-text="item.type">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </template>
+                                <template x-if="attendances.length === 0">
+                                    <tr>
+                                        <td colspan="4" class="py-20 text-center">
+                                            <div class="flex flex-col items-center gap-2">
+                                                <ion-icon name="clipboard-outline"
+                                                    class="text-3xl text-gray-700"></ion-icon>
+                                                <p class="text-gray-500 text-xs italic uppercase tracking-widest">Belum
+                                                    ada data absensi masuk</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button @click="show = false"
+                            class="text-[10px] font-black text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
+                            Tutup Jendela
+                        </button>
+                    </div>
+                </div>
+            </x-modal>
         </div>
 
         <div class="my-8">
