@@ -20,7 +20,7 @@ class AngkatanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'year' => 'required|numeric|digits:4|unique:angkatan,year',
+            'year' => 'required|numeric|digits:4|unique:generations,year',
             'description' => 'nullable|string|max:100',
         ]);
 
@@ -28,10 +28,12 @@ class AngkatanController extends Controller
         return redirect()->back()->with('success', "Angkatan {$request->year} berhasil diarsipkan.");
     }
 
-    public function update(Request $request, Angkatan $angkatan)
+    public function update(Request $request, $id)
     {
+        $angkatan = Angkatan::findOrFail($id);
+
         $validated = $request->validate([
-            'year' => 'required|numeric|digits:4|unique:angkatan,year,' . $angkatan->id,
+            'year' => 'required|numeric|digits:4|unique:generations,year,' . $angkatan->id,
             'description' => 'nullable|string|max:100',
         ]);
 
@@ -43,8 +45,10 @@ class AngkatanController extends Controller
         }
     }
 
-    public function destroy(Angkatan $angkatan)
+    public function destroy($id)
     {
+        $angkatan = Angkatan::findOrFail($id);
+
         if ($angkatan->members()->exists()) {
             return redirect()->back()->with('error', "Gagal! Angkatan {$angkatan->year} masih memiliki anggota aktif.");
         }

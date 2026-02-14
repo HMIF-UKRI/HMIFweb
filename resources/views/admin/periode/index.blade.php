@@ -17,7 +17,6 @@
         editMode: false,
         formAction: '',
         imageUrl: null,
-    
         cabinet_name: '',
         period_range: '',
         vision: '',
@@ -33,8 +32,8 @@
             this.period_range = item.period_range;
             this.vision = item.vision;
             this.mission = item.mission;
-            this.start_date = item.start_date;
-            this.end_date = item.end_date;
+            this.start_date = item.start_date ? item.start_date.substring(0, 10) : '';
+            this.end_date = item.end_date ? item.end_date.substring(0, 10) : '';
             this.is_current = item.is_current;
             this.imageUrl = item.preview_url || null;
             this.openModal = true;
@@ -126,13 +125,23 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="p-6 text-right">
+                            <td class="p-6 flex gap-3 justify-end">
                                 <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                     <button @click="setEdit({{ $item->toJson() }})"
                                         class="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 flex items-center justify-center border border-white/10">
                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                     </button>
                                 </div>
+                                <form action="{{ route('admin.periods.destroy', $item->id) }}" method="POST"
+                                    class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all"
+                                    onsubmit="return confirm('Hapus Periode Kepengurusan ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit"
+                                        class="h-10 w-10 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 flex items-center justify-center border border-white/10">
+                                        <i class="fa-solid fa-trash text-xs"></i>
+                                    </button>
+                                </form>
+
                             </td>
                         </tr>
                     @empty
@@ -166,7 +175,6 @@
                             <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Start
                                 Date</label>
                             <input type="date" name="start_date" x-model="start_date"
-                                value="{{ old('start_date', $item->start_date ?? '') }}"
                                 class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-red-600 outline-none transition-all">
                         </div>
                         <div class="space-y-2">
@@ -212,13 +220,13 @@
                     <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Visi</label>
                     <textarea name="vision" x-model="vision" rows="3"
                         class="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm text-gray-300 focus:border-red-600 transition-all outline-none resize-none"
-                        placeholder="Define the future goal..."></textarea>
+                        placeholder="Masukan Visi Kabinet..."></textarea>
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Misi</label>
                     <textarea name="mission" x-model="mission" rows="6"
                         class="w-full bg-white/5 border border-white/10 rounded-3xl py-4 px-6 text-sm text-gray-300 focus:border-red-600 transition-all outline-none resize-none"
-                        placeholder="List the tactical steps..."></textarea>
+                        placeholder="Masukan Misi Kabinet..."></textarea>
                 </div>
             </div>
         </x-modal-form>

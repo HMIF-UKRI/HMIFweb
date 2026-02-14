@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Merchandise;
 use App\Models\MerchandiseCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AdminMerchandiseController extends Controller

@@ -60,6 +60,8 @@ class Event extends Model implements HasMedia
     {
         $this->addMediaCollection('thumbnails')
             ->singleFile();
+        $this->addMediaCollection('proposals')->useDisk('archives');
+        $this->addMediaCollection('lpjs')->useDisk('archives');
     }
 
     public function registerMediaConversions(Media $media = null): void

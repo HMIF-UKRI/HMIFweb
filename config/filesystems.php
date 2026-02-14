@@ -68,6 +68,12 @@ return [
             'throw' => false,
         ],
 
+        'archives' => [
+            'driver' => 'local',
+            'root' => storage_path('app/archives'),
+            'visibility' => 'private',
+        ],
+
     ],
 
     /*

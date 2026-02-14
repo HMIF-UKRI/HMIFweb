@@ -33,13 +33,13 @@
             this.name = '';
             this.merchandise_category_id = '';
             this.price = '';
-            original_price = '';
+            this.original_price = '';
             this.stock = 0;
             this.description = '';
             this.material = '';
             this.size = '';
             this.color = '';
-            this.is_new = 1;
+            this.is_new = true;
             this.foto = null;
             this.openModal = true;
         },
@@ -55,7 +55,7 @@
             this.material = item.material;
             this.size = item.size;
             this.color = item.color;
-            this.is_new = item.is_new ? 1 : 0;
+            this.is_new = item.is_new == 1;;
             this.foto = item.preview_url || null;
             this.openModal = true;
         }
@@ -161,6 +161,25 @@
                     <input type="number" name="stock" x-model="stock" placeholder="Masukan stok product saat ini"
                         class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
                 </div>
+
+                <div class="space-y-1 flex flex-col justify-center">
+                    <label class="text-[9px] font-black text-gray-500 uppercase ml-1">New Product Label</label>
+                    <label class="inline-flex items-center cursor-pointer h-10">
+                        <input type="checkbox" x-model="is_new" class="sr-only peer">
+
+                        <div
+                            class="relative w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer 
+                    peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full 
+                    after:content-[''] after:absolute after:top-0.5 after:start-0.5 
+                    after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all 
+                    peer-checked:bg-red-600">
+                        </div>
+                        <span class="ms-3 text-xs font-bold text-gray-400 uppercase tracking-widest"
+                            x-text="is_new ? 'New' : 'Regular'"></span>
+                    </label>
+                </div>
+
+                <input type="hidden" name="is_new" :value="is_new ? 1 : 0">
             </div>
 
             <div class="space-y-1">

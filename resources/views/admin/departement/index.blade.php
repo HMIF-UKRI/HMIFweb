@@ -64,7 +64,7 @@
                                 <p class="text-[9px] text-gray-400 mt-2 line-clamp-2">{{ $item->description }}</p>
                             @endif
                             <p class="text-[9px] text-red-600 font-bold uppercase tracking-widest mt-2">
-                                {{ $item->members_count }} Anggota
+                                {{ $item->bidang_count }} Bidang - {{ $item->pengurus_count }} Anggota
                             </p>
                         </div>
                         <div class="flex gap-2">
@@ -111,14 +111,14 @@
                 <div class="space-y-1.5">
                     <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Nama
                         Departemen</label>
-                    <input type="text" name="name" x-model="name" required
+                    <input type="text" name="name" x-model="name" placeholder="Masukan Nama Departemen" required
                         class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600">
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Deskripsi
                         (Optional)</label>
-                    <textarea name="description" rows="3" x-model="description"
+                    <textarea name="description" rows="3" x-model="description" placeholder="Masukan Deskripsi Departemen"
                         class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-white outline-none focus:border-red-600"></textarea>
                 </div>
             </div>

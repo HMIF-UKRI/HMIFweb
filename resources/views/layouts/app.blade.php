@@ -204,7 +204,7 @@
                 <div class="pointer-events-none fixed inset-0 z-0 opacity-[0.02]"
                     style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
 
-                <div class="relative z-10">
+                <div class="relative z-10 max-w-7xl mx-auto">
                     {{ $slot }}
                 </div>
             </div>

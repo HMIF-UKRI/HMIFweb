@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('period_id')->constrained('periods')->onDelete('cascade');
             $table->enum('type_document', ['proposal', 'lpj']);
             $table->string('name');
-            $table->string('file_path');
-            $table->string('file_extension');
             $table->timestamps();
+
+            $table->index(['event_id', 'type_document']);
         });
     }
 

@@ -162,41 +162,6 @@
                     class="w-full bg-black/50 border border-white/5 rounded-2xl py-4 px-6 text-white focus:border-red-600 transition-all outline-none"
                     placeholder="Contoh: 2025">
             </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tahun
-                    Angkatan</label>
-                <input type="number" name="year" x-model="year" required
-                    class="w-full bg-black/50 border border-white/5 rounded-2xl py-4 px-6 text-white focus:border-red-600 transition-all outline-none"
-                    placeholder="Contoh: 2025">
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tahun
-                    Angkatan</label>
-                <input type="number" name="year" x-model="year" required
-                    class="w-full bg-black/50 border border-white/5 rounded-2xl py-4 px-6 text-white focus:border-red-600 transition-all outline-none"
-                    placeholder="Contoh: 2025">
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tahun
-                    Angkatan</label>
-                <input type="number" name="year" x-model="year" required
-                    class="w-full bg-black/50 border border-white/5 rounded-2xl py-4 px-6 text-white focus:border-red-600 transition-all outline-none"
-                    placeholder="Contoh: 2025">
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tahun
-                    Angkatan</label>
-                <input type="number" name="year" x-model="year" required
-                    class="w-full bg-black/50 border border-white/5 rounded-2xl py-4 px-6 text-white focus:border-red-600 transition-all outline-none"
-                    placeholder="Contoh: 2025">
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tahun
-                    Angkatan</label>
-                <input type="number" name="year" x-model="year" required
-                    class="w-full bg-black/50 border border-white/5 rounded-2xl py-4 px-6 text-white focus:border-red-600 transition-all outline-none"
-                    placeholder="Contoh: 2025">
-            </div>
         </x-modal-form>
     </div>
 </x-app-layout>

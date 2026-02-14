@@ -76,7 +76,7 @@
             <div class="flex items-center gap-3">
                 <form action="{{ route('admin.members.index') }}" method="GET" class="relative group">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama/NPM..."
-                        class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-[10px] text-white focus:ring-2 focus:ring-red-600/50 outline-none w-48 transition-all group-hover:w-64 uppercase tracking-widest font-bold">
+                        class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pl-10 text-[10px] text-white focus:ring-2 focus:ring-red-600/50 outline-none w-48 transition-all group-hover:w-64 tracking-widest">
                     <ion-icon name="search-outline"
                         class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></ion-icon>
                 </form>

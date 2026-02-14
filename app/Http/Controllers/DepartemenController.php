@@ -12,12 +12,11 @@ class DepartemenController extends Controller
     {
         $query = Departemen::query();
 
-        // Fitur Search
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $departments = $query->withCount('members')->paginate(10);
+        $departments = $query->withCount('pengurus', 'bidang')->paginate(10);
 
         return view('admin.departement.index', compact('departments'));
     }
@@ -34,8 +33,10 @@ class DepartemenController extends Controller
         return redirect()->back()->with('success', 'Departemen berhasil dibuat.');
     }
 
-    public function update(Request $request, Departemen $departemen)
+    public function update(Request $request, $id)
     {
+        $departemen = Departemen::findOrFail($id);
+
         $validated = $request->validate([
             'name' => 'required|string|max:100|unique:departments,name,' . $departemen->id,
             'description' => 'nullable|string',
@@ -46,9 +47,14 @@ class DepartemenController extends Controller
         return redirect()->back()->with('success', 'Departemen diperbarui.');
     }
 
-    public function destroy(Departemen $departemen)
+    public function destroy($id)
     {
-        // Cascade ditangani oleh database level onDelete('cascade')
+        $departemen = Departemen::findOrFail($id);
+
+        if ($departemen->members || $departemen->pengurus || $departemen->bidang) {
+            return redirect()->back()->with('warning', 'Masih terdapat data yang berelasi dengan Departemen ini.');
+        }
+
         $departemen->delete();
 
         return redirect()->back()->with('success', 'Departemen dihapus.');

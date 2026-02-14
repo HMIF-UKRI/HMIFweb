@@ -105,6 +105,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('events/{event_id}/attendance/manual', [AttendanceController::class, 'storeManual'])->name('attendance.manual');
         Route::get('attendances/{slug}/export-pdf', [AttendanceController::class, 'exportPdf'])
             ->name('attendances.export_pdf');
+
+        // Archive Data
+        Route::get('archive/{document}/view', [DocEventController::class, 'view'])->name('archive.view');
+        Route::get('archive/download/{id}', [DocEventController::class, 'download'])->name('archive.download');
     });
 
     /*
