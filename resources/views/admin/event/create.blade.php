@@ -111,9 +111,9 @@
                                     <div class="space-y-1.5">
                                         <label
                                             class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Tanggal</label>
-                                        <input type="date" name="event_date" value="{{ old('event_date') }}"
-                                            required
-                                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-[10px] text-white outline-none">
+                                        <input type="text" name="event_date" id="flatpickr-date"
+                                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-[10px] text-white outline-none input max-w-sm"
+                                            placeholder="YYYY-MM-DD" required />
                                     </div>
                                     <div class="space-y-1.5">
                                         <label

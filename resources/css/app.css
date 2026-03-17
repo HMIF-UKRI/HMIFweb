@@ -177,6 +177,12 @@
     font-style: italic;
 }
 
+a {
+    color: inherit;
+    text-decoration: inherit;
+    word-break: break-word;
+}
+
 .cdx-input.image-tool__caption,
 .hmif-rendered-caption {
     @apply mt-4 text-center text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase;

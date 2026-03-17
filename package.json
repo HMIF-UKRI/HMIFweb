@@ -29,6 +29,7 @@
         "@editorjs/simple-image": "^1.6.0",
         "@preline/theme-switch": "^3.2.3",
         "alpinejs": "^3.15.0",
+        "flatpickr": "^4.6.13",
         "flyonui": "^2.4.0",
         "preline": "^3.2.3"
     }

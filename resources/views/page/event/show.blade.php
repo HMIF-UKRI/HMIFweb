@@ -334,7 +334,8 @@
                             case 'list':
                                 const isOrdered = block.data.style === 'ordered';
                                 el = document.createElement(isOrdered ? 'ol' : 'ul');
-                                el.className = 'space-y-4 text-white text-sm md:text-lg ' + (isOrdered ?
+                                el.className = 'space-y-4 text-white text-sm md:text-lg break-all' + (
+                                    isOrdered ?
                                     'list-decimal ml-6' : 'list-disc ml-6');
                                 block.data.items.forEach(item => {
                                     const li = document.createElement('li');
