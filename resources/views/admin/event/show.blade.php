@@ -145,10 +145,10 @@
                                     Detail Acara
                                 </h3>
 
-                                <div class="space-y-6">
-                                    <div>
-                                        <p class="mb-2 text-xs font-bold text-gray-500 uppercase">
-                                            Status
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="mb-2 text-xs font-bold text-gray-500 uppercase">
+                                        Status
                                         </p>
                                         @if ($event->status == 'upcoming')
                                             <span
@@ -178,13 +178,32 @@
                                                 class="inline-flex w-full items-center gap-2 rounded-lg border border-gray-500/20 bg-gray-500/10 px-3 py-2 text-sm font-bold text-gray-400">
                                                 <i class="fa-solid fa-rotate"></i>
                                                 Sedang Berjalan
-                                            </span>
-                                        @endif
-                                    </div>
+                                        </span>
+                                    @endif
+                                </div>
 
-                                    <div class="flex items-start gap-4">
-                                        <div
-                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-red-500">
+                                <div>
+                                    <p class="mb-2 text-xs font-bold text-gray-500 uppercase">
+                                        Mode Event
+                                    </p>
+                                    @if ($event->event_mode === 'registration')
+                                        <span
+                                            class="inline-flex w-full items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm font-bold text-emerald-400">
+                                            <i class="fa-solid fa-user-plus"></i>
+                                            Pendaftaran Aktif
+                                        </span>
+                                    @else
+                                        <span
+                                            class="inline-flex w-full items-center gap-2 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-sm font-bold text-cyan-400">
+                                            <i class="fa-solid fa-qrcode"></i>
+                                            Absensi Aktif
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-red-500">
                                             <i class="fa-regular fa-calendar-check text-lg"></i>
                                         </div>
                                         <div>
@@ -214,21 +233,44 @@
                                                 class="mt-2 inline-flex items-center gap-1 text-xs text-red-400 hover:text-red-300 hover:underline">
                                                 Buka di Google Maps
                                                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                                            </a>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
 
+                                @if ($event->event_mode === 'registration' && $event->whatsapp_group_link)
+                                    <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                                        <p class="mb-3 text-xs font-bold text-gray-500 uppercase">
+                                            Link Grup WhatsApp
+                                        </p>
+                                        <a href="{{ $event->whatsapp_group_link }}" target="_blank"
+                                            rel="noopener"
+                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 text-xs font-bold text-white transition hover:bg-green-700">
+                                            <i class="fa-brands fa-whatsapp"></i>
+                                            Buka Link Grup
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+
                                 <div class="mt-8 border-t border-white/10 pt-6">
-                                    @if ($event->status == 'ongoing')
+                                    @if ($event->event_mode === 'attendance' && $event->status == 'ongoing')
                                         <a href="{{ route('admin.attendances.qrcode', $event->slug) }}" target="_blank"
                                             class="bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 transition">
                                             <i class="fa-solid fa-qrcode"></i> Generate QR Code absensi
                                         </a>
+                                    @elseif ($event->event_mode === 'registration' && $event->whatsapp_group_link)
+                                        <a href="{{ $event->whatsapp_group_link }}" target="_blank" rel="noopener"
+                                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 transition">
+                                            <i class="fa-brands fa-whatsapp"></i> Buka Link Grup WhatsApp
+                                        </a>
                                     @else
                                         <button disabled
                                             class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
-                                            Kegiatan Berakhir
+                                            @if ($event->event_mode === 'registration')
+                                                Link Grup Belum Disiapkan
+                                            @else
+                                                Kegiatan Berakhir
+                                            @endif
                                         </button>
                                     @endif
                                 </div>

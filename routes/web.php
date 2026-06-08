@@ -35,6 +35,7 @@ Route::get('/absensi/kegiatan/{slug}', [AttendanceController::class, 'processSca
 Route::post('/absensi/submit/{slug}', [AttendanceController::class, 'store'])->name('attendance.submit');
 
 Route::get('/kegiatan/{slug}', [PublicEventController::class, 'show'])->name('event.show');
+Route::post('/kegiatan/{slug}/register', [PublicEventController::class, 'register'])->name('event.register');
 Route::get('/kegiatan', [PublicEventController::class, 'index'])->name('event.index');
 
 Route::get('/blog', [PublicBlogController::class, 'index'])->name('blog.index');

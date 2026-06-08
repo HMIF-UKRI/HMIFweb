@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AdminEventController extends Controller
 {
@@ -53,6 +54,13 @@ class AdminEventController extends Controller
             'description'       => 'required|string',
             'event_date'        => 'required|date',
             'location'          => 'required|string|max:255',
+            'event_mode'        => ['required', Rule::in(['attendance', 'registration'])],
+            'whatsapp_group_link' => [
+                Rule::requiredIf(fn () => $request->input('event_mode') === 'registration'),
+                'nullable',
+                'url',
+                'max:500',
+            ],
             'status'            => 'required|in:upcoming,ongoing,completed,cancelled',
             'thumbnail'         => 'required|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ]);
@@ -65,12 +73,12 @@ class AdminEventController extends Controller
 
             $validated['member_id'] = $member->id;
             $validated['slug'] = $this->generateUniqueSlug($validated['title']);
+            unset($validated['thumbnail']);
+            $this->normalizeEventModePayload($validated);
 
             $event = Event::create($validated);
 
-            if ($request->hasFile('thumbnail')) {
-                $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
-            }
+            $this->syncEventMedia($event, $request);
 
             return redirect()->route('admin.events.index')->with('success', 'Event berjaya diterbitkan.');
         });
@@ -102,7 +110,15 @@ class AdminEventController extends Controller
             'description'       => 'required|string',
             'event_date'        => 'required|date',
             'location'          => 'required|string|max:255',
+            'event_mode'        => ['required', Rule::in(['attendance', 'registration'])],
+            'whatsapp_group_link' => [
+                Rule::requiredIf(fn () => $request->input('event_mode') === 'registration'),
+                'nullable',
+                'url',
+                'max:500',
+            ],
             'status'            => 'required|in:upcoming,ongoing,completed,cancelled',
+            'thumbnail'         => 'nullable|image|mimes:jpeg,png,jpg,webp,heic|max:5120',
         ]);
 
         return DB::transaction(function () use ($request, $event, $validated) {
@@ -110,12 +126,12 @@ class AdminEventController extends Controller
                 $validated['slug'] = $this->generateUniqueSlug($request->title, $event->id);
             }
 
+            unset($validated['thumbnail']);
+            $this->normalizeEventModePayload($validated);
+
             $event->update($validated);
 
-            if ($request->hasFile('thumbnail')) {
-                $event->clearMediaCollection('thumbnails');
-                $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
-            }
+            $this->syncEventMedia($event, $request);
 
             return redirect()->route('admin.events.index')->with('success', 'Data event berjaya dikemaskini.');
         });
@@ -164,5 +180,20 @@ class AdminEventController extends Controller
             $slug = $originalSlug . '-' . $count++;
         }
         return $slug;
+    }
+
+    private function syncEventMedia(Event $event, Request $request): void
+    {
+        if ($request->hasFile('thumbnail')) {
+            $event->clearMediaCollection('thumbnails');
+            $event->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
+        }
+    }
+
+    private function normalizeEventModePayload(array &$validated): void
+    {
+        if (($validated['event_mode'] ?? null) !== 'registration') {
+            $validated['whatsapp_group_link'] = null;
+        }
     }
 }

@@ -10,6 +10,13 @@
         ])
     </x-slot>
 
+    @php
+        $canAttend = $event->event_mode === 'attendance' &&
+            ($event->status === 'ongoing' || \Carbon\Carbon::parse($event->event_date)->isToday());
+        $canRegister = $event->event_mode === 'registration' && in_array($event->status, ['upcoming', 'ongoing'], true);
+        $registrationFlash = session('registration_success');
+    @endphp
+
     <div class="min-h-screen bg-gray-950 font-sans text-white selection:bg-red-500 selection:text-white">
         <div class="pointer-events-none fixed inset-0 z-0 opacity-[0.03]"
             style="
@@ -75,6 +82,27 @@
         </div>
 
         <div class="relative z-10 container mx-auto -mt-8 px-4 pb-20 sm:px-6 lg:px-8">
+            @if (session('success') || session('warning') || session('error') || $errors->any())
+                <div class="mb-6 rounded-2xl border border-white/10 bg-gray-900/95 p-4 shadow-xl backdrop-blur-xl">
+                    @if (session('success'))
+                        <p class="text-sm font-semibold text-green-400">{{ session('success') }}</p>
+                    @endif
+                    @if (session('warning'))
+                        <p class="text-sm font-semibold text-yellow-400">{{ session('warning') }}</p>
+                    @endif
+                    @if (session('error'))
+                        <p class="text-sm font-semibold text-red-400">{{ session('error') }}</p>
+                    @endif
+                    @if ($errors->any())
+                        <ul class="list-disc space-y-1 pl-5 text-sm text-red-400">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
                 <div class="space-y-8 lg:col-span-8">
                     <div class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:p-10">
@@ -204,35 +232,123 @@
                             </div>
 
                             <div class="mt-8 border-t border-white/10 pt-6">
-                                @if ($event->status == 'ongoing' || \Carbon\Carbon::parse($event->event_date)->isToday())
-                                    <a href="{{ route('attendance.scan', $event->slug) }}"
-                                        class="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-red-600 px-6 py-3.5 text-center font-bold text-white shadow-lg shadow-red-900/30 transition duration-300 hover:scale-[1.02] hover:bg-red-700">
-                                        <span class="relative z-10 flex items-center gap-2">
-                                            <i class="fa-solid fa-qrcode"></i>
-                                            Absensi Sekarang
-                                            <i
-                                                class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
-                                        </span>
-                                    </a>
-                                    <p class="mt-3 text-center text-[10px] text-gray-400">
-                                        *Silakan scan atau konfirmasi kehadiran melalui tombol di atas
-                                    </p>
-                                @elseif ($event->status == 'upcoming')
-                                    <button disabled
-                                        class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
-                                        Pendaftaran Belum Dibuka
-                                    </button>
-                                    <p class="mt-3 text-center text-[10px] text-gray-500">
-                                        *Absensi hanya tersedia saat kegiatan berlangsung
-                                    </p>
+                                @if ($event->event_mode === 'attendance')
+                                    @if ($canAttend)
+                                        <a href="{{ route('attendance.scan', $event->slug) }}"
+                                            class="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-red-600 px-6 py-3.5 text-center font-bold text-white shadow-lg shadow-red-900/30 transition duration-300 hover:scale-[1.02] hover:bg-red-700">
+                                            <span class="relative z-10 flex items-center gap-2">
+                                                <i class="fa-solid fa-qrcode"></i>
+                                                Absensi Sekarang
+                                                <i
+                                                    class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                                            </span>
+                                        </a>
+                                        <p class="mt-3 text-center text-[10px] text-gray-400">
+                                            *Silakan scan atau konfirmasi kehadiran melalui tombol di atas
+                                        </p>
+                                    @elseif ($event->status == 'upcoming')
+                                        <button disabled
+                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
+                                            Absensi Belum Dibuka
+                                        </button>
+                                        <p class="mt-3 text-center text-[10px] text-gray-500">
+                                            *Absensi hanya tersedia saat kegiatan berlangsung
+                                        </p>
+                                    @else
+                                        <button disabled
+                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
+                                            Kegiatan Berakhir
+                                        </button>
+                                    @endif
                                 @else
-                                    <button disabled
-                                        class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
-                                        Kegiatan Berakhir
-                                    </button>
+                                    @if ($canRegister)
+                                        <form action="{{ route('event.register', $event->slug) }}" method="POST"
+                                            class="space-y-4">
+                                            @csrf
+                                            <div>
+                                                <label for="full_name"
+                                                    class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Nama
+                                                    Lengkap</label>
+                                                <input type="text" id="full_name" name="full_name"
+                                                    value="{{ old('full_name') }}" required
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    placeholder="Nama peserta">
+                                            </div>
+
+                                            <div>
+                                                <label for="email"
+                                                    class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Email</label>
+                                                <input type="email" id="email" name="email"
+                                                    value="{{ old('email') }}" required
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    placeholder="nama@email.com">
+                                            </div>
+
+                                            <div>
+                                                <label for="phone"
+                                                    class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">No.
+                                                    WhatsApp</label>
+                                                <input type="text" id="phone" name="phone"
+                                                    value="{{ old('phone') }}" required
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    placeholder="08xxxxxxxxxx">
+                                            </div>
+
+                                            <div>
+                                                <label for="institution"
+                                                    class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Instansi</label>
+                                                <input type="text" id="institution" name="institution"
+                                                    value="{{ old('institution') }}" required
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    placeholder="Kampus / organisasi / umum">
+                                            </div>
+
+                                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                <div>
+                                                    <label for="major"
+                                                        class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Prodi</label>
+                                                    <input type="text" id="major" name="major"
+                                                        value="{{ old('major') }}"
+                                                        class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                        placeholder="Opsional">
+                                                </div>
+                                                <div>
+                                                    <label for="batch"
+                                                        class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Angkatan</label>
+                                                    <input type="text" id="batch" name="batch"
+                                                        value="{{ old('batch') }}"
+                                                        class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                        placeholder="Opsional">
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="notes"
+                                                    class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Catatan</label>
+                                                <textarea id="notes" name="notes" rows="3"
+                                                    class="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    placeholder="Opsional">{{ old('notes') }}</textarea>
+                                            </div>
+
+                                            <button type="submit"
+                                                class="group flex w-full items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-red-900/30 transition hover:bg-red-700 active:scale-95">
+                                                Daftar Event
+                                                <i class="fa-solid fa-paper-plane text-xs transition group-hover:translate-x-1"></i>
+                                            </button>
+
+                                            <p class="text-center text-[10px] leading-relaxed text-gray-500">
+                                                Informasi pendaftaran akan dikirim otomatis ke email peserta.
+                                            </p>
+                                        </form>
+                                    @else
+                                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
+                                            <p class="text-sm font-bold text-gray-400">
+                                                Pendaftaran event sedang tidak dibuka.
+                                            </p>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
-                        </div>
 
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
                             <p class="mb-3 text-xs font-bold text-gray-500 uppercase">
@@ -307,6 +423,53 @@
                 </div>
             </section>
         @endif
+
+        <x-modal name="registration-success" :show="session()->has('registration_success')" maxWidth="3xl">
+            <div class="p-6 md:p-8">
+                <div class="mb-6 flex items-start justify-between gap-4">
+                    <div>
+                        <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-red-500">
+                            Pendaftaran Berhasil
+                        </p>
+                        <h2 class="text-2xl font-black text-white">
+                            Detail sudah masuk ke sistem.
+                        </h2>
+                        @if ($registrationFlash)
+                            <p class="mt-3 text-sm leading-relaxed text-gray-400">
+                                Data atas nama <span class="font-bold text-white">{{ $registrationFlash['full_name'] }}</span>
+                                sudah terdaftar. {{ $registrationFlash['email_sent'] ? 'Email konfirmasi sudah dikirim ke ' . $registrationFlash['email'] . '.' : 'Email belum terkirim karena konfigurasi mail belum siap.' }}
+                            </p>
+                        @endif
+                    </div>
+                    <button type="button" x-on:click="$dispatch('close-modal', 'registration-success')"
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-400 transition hover:bg-red-600 hover:text-white">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                @if ($event->whatsapp_group_link)
+                    <div class="rounded-2xl border border-white/10 bg-black/30 p-4">
+                        <p class="mb-3 text-xs font-bold uppercase tracking-widest text-gray-500">
+                            Grup WhatsApp
+                        </p>
+                        <p class="mb-5 text-sm leading-relaxed text-gray-400">
+                            Masuk ke grup agar tidak ketinggalan informasi teknis dari panitia.
+                        </p>
+                        <a href="{{ $event->whatsapp_group_link }}" target="_blank" rel="noopener"
+                            class="flex w-full items-center justify-center gap-3 rounded-xl bg-green-600 px-5 py-4 text-sm font-black uppercase tracking-widest text-white transition hover:bg-green-700">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            Buka Link Grup WhatsApp
+                        </a>
+                    </div>
+                @else
+                    <div class="rounded-2xl border border-white/10 bg-black/30 p-5 text-center">
+                        <p class="text-sm text-gray-400">
+                            Panitia belum menambahkan link grup WhatsApp untuk event ini.
+                        </p>
+                    </div>
+                @endif
+            </div>
+        </x-modal>
     </div>
 
     @push('script')

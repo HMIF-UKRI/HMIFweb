@@ -16,6 +16,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $events = Event::withCount('attendances')
+            ->where('event_mode', 'attendance')
             ->paginate(10);
 
         return view('admin.attendances.index', compact('events'));
@@ -24,6 +25,11 @@ class AttendanceController extends Controller
     public function absensi($slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->event_mode !== 'attendance') {
+            return redirect()->route('event.show', $event->slug)
+                ->with('error', 'Absensi tidak diaktifkan untuk event ini.');
+        }
 
         $attendances = Attendances::with('member.generation')
             ->where('event_id', $event->id)
@@ -36,6 +42,11 @@ class AttendanceController extends Controller
     public function store(Request $request, $slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->event_mode !== 'attendance') {
+            return redirect()->route('event.show', $event->slug)
+                ->with('error', 'Absensi tidak diaktifkan untuk event ini.');
+        }
 
         if (!Carbon::parse($event->event_date)->isToday()) {
             return redirect()->back()->with('error', 'Absensi hanya tersedia pada hari kegiatan.');
@@ -104,6 +115,12 @@ class AttendanceController extends Controller
 
     public function storeManual(Request $request, $eventId)
     {
+        $event = Event::findOrFail($eventId);
+
+        if ($event->event_mode !== 'attendance') {
+            return back()->with('error', 'Absensi manual hanya tersedia untuk event mode absensi.');
+        }
+
         $request->validate([
             'participant_type' => 'required|in:internal,external',
             'member_id'        => 'required_if:participant_type,internal',
@@ -129,6 +146,11 @@ class AttendanceController extends Controller
     {
         $event = Event::where('slug', $slug)->firstOrFail();
 
+        if ($event->event_mode !== 'attendance') {
+            return redirect()->route('event.show', $event->slug)
+                ->with('error', 'QR absensi tidak diaktifkan untuk event ini.');
+        }
+
         $attendanceUrl = route('attendance.scan', ['slug' => $event->slug]);
 
         $qrcode = QrCode::size(250)
@@ -143,6 +165,11 @@ class AttendanceController extends Controller
     {
         try {
             $event = Event::where('slug', $slug)->firstOrFail();
+
+            if ($event->event_mode !== 'attendance') {
+                return redirect()->route('event.show', $slug)
+                    ->with('error', 'Absensi tidak diaktifkan untuk event ini.');
+            }
 
             if (!Carbon::parse($event->event_date)->isToday()) {
                 return redirect()->route('event.show', $slug)
@@ -162,6 +189,12 @@ class AttendanceController extends Controller
     public function exportPdf($slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->event_mode !== 'attendance') {
+            return redirect()->route('event.show', $event->slug)
+                ->with('error', 'Export absensi tidak tersedia untuk event mode pendaftaran.');
+        }
+
         $attendances = Attendances::with('member')->where('event_id', $event->id)->orderBy('check_in_time', 'asc')->get();
 
         $pdf = Pdf::loadView('admin.attendances.pdf', compact('event', 'attendances'));

@@ -23,6 +23,8 @@ class Event extends Model implements HasMedia
         'description',
         'event_date',
         'location',
+        'event_mode',
+        'whatsapp_group_link',
         'status',
         'event_category_id',
         'period_id',
@@ -49,6 +51,11 @@ class Event extends Model implements HasMedia
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendances::class);
+    }
+
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
     }
 
     public function documents(): HasMany
