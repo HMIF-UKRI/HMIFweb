@@ -86,7 +86,13 @@ class AdminEventController extends Controller
 
     public function show($slug)
     {
-        $event = Event::where('slug', $slug)->with(['category', 'period', 'media'])->firstOrFail();
+        $event = Event::where('slug', $slug)
+            ->with(['category', 'period', 'media'])
+            ->withCount(['attendances', 'registrations'])
+            ->with([
+                'registrations' => fn ($query) => $query->latest()->limit(10),
+            ])
+            ->firstOrFail();
         return view('admin.event.show', compact('event'));
     }
 

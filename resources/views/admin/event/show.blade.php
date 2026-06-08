@@ -201,6 +201,52 @@
                                     @endif
                                 </div>
 
+                                @if ($event->event_mode === 'registration')
+                                    <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                        <div class="mb-4 flex items-center justify-between gap-3">
+                                            <p class="text-xs font-bold uppercase text-gray-500">
+                                                Data Pendaftaran
+                                            </p>
+                                            <span class="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-bold text-gray-300">
+                                                {{ $event->registrations_count }} orang
+                                            </span>
+                                        </div>
+
+                                        @if ($event->registrations->isNotEmpty())
+                                            <div class="space-y-3">
+                                                @foreach ($event->registrations as $registration)
+                                                    <div class="rounded-lg border border-white/10 bg-white/5 p-3">
+                                                        <div class="flex items-start justify-between gap-3">
+                                                            <div>
+                                                                <p class="text-sm font-bold text-white">
+                                                                    {{ $registration->full_name }}
+                                                                </p>
+                                                                <p class="text-[11px] text-gray-400">
+                                                                    {{ $registration->email }}
+                                                                </p>
+                                                            </div>
+                                                            <span class="text-[10px] text-gray-500">
+                                                                {{ $registration->created_at?->diffForHumans() }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="mt-2 text-[11px] text-gray-400">
+                                                            {{ $registration->phone }}
+                                                            @if ($registration->institution)
+                                                                <span class="mx-1 text-gray-600">•</span>
+                                                                {{ $registration->institution }}
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-sm text-gray-500">
+                                                Belum ada peserta yang mendaftar.
+                                            </p>
+                                        @endif
+                                    </div>
+                                @endif
+
                                 <div class="flex items-start gap-4">
                                     <div
                                         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-red-500">
