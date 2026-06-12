@@ -666,7 +666,7 @@
                         </x-modal>
 
                         @foreach ($registrations as $registration)
-                            <x-modal name="edit-registration-{{ $registration->id }}" maxWidth="2xl">
+                            <x-modal name="edit-registration-{{ $registration->id }}" maxWidth="xl">
                                 <form action="{{ route('admin.events.registrations.update', [$event->slug, $registration]) }}"
                                     method="POST" class="p-5 md:p-6">
                                     @csrf
@@ -743,7 +743,7 @@
                                 </form>
                             </x-modal>
 
-                            <x-modal name="certificate-registration-{{ $registration->id }}" maxWidth="2xl">
+                            <x-modal name="certificate-registration-{{ $registration->id }}" maxWidth="xl">
                                 <form action="{{ route('admin.events.registrations.certificate', [$event->slug, $registration]) }}"
                                     method="POST" enctype="multipart/form-data" class="p-5 md:p-6">
                                     @csrf
