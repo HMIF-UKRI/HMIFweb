@@ -14,7 +14,7 @@
         Content / Events / Event Overview
     </x-slot>
 
-    <div class="max-w-5xl mx-auto space-y-3">
+    <div class="mx-auto max-w-7xl space-y-3 px-4 sm:px-6 lg:px-8">
         <a href="{{ route('admin.events.index') }}"
             class="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] hover:text-red-600 transition-colors">
             <ion-icon name="arrow-back-outline"></ion-icon>
@@ -111,9 +111,9 @@
                 </div>
             </div>
 
-            <div class="relative z-10 container mx-auto -mt-8 px-4 pb-20 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-                    <div class="space-y-8 lg:col-span-8">
+            <div class="relative z-10 mx-auto -mt-8 max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 gap-8 xl:grid-cols-12">
+                    <div class="space-y-8 xl:col-span-8">
                         <div
                             class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:p-10">
                             <div class="mb-8 rounded-xl border-l-4 border-red-600 bg-red-900/10 p-5">
@@ -157,8 +157,8 @@
                         </div>
                     </div>
 
-                    <div class="lg:col-span-4">
-                        <div class="sticky top-24 space-y-6">
+                    <div class="xl:col-span-4">
+                        <div class="space-y-6 xl:sticky xl:top-24">
                             <div
                                 class="rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
                                 <h3
@@ -453,7 +453,7 @@
 
                         <div class="overflow-hidden rounded-xl border border-white/10">
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-white/10 text-left">
+                                <table class="min-w-[1180px] divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
                                         <tr>
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Waktu</th>
@@ -464,8 +464,8 @@
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Prodi</th>
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Angkatan</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
+                                            <th class="min-w-40 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
+                                            <th class="min-w-36 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/10 bg-black/20">
@@ -497,28 +497,28 @@
                                                 <td class="px-4 py-4 text-sm text-gray-300">
                                                     {{ $registration->batch ?: '-' }}
                                                 </td>
-                                                <td class="px-4 py-4">
+                                                <td class="px-4 py-4 whitespace-nowrap">
                                                     @if ($registration->certificate_sent_at)
-                                                        <span class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
+                                                        <span class="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
                                                             {{ $registration->certificate_sent_at->format('d M Y H:i') }}
                                                         </span>
                                                     @else
-                                                        <span class="rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-[10px] font-bold text-yellow-300">
+                                                        <span class="inline-flex items-center rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-[10px] font-bold text-yellow-300">
                                                             Belum dikirim
                                                         </span>
                                                     @endif
                                                 </td>
                                                 <td class="px-4 py-4">
-                                                    <div class="flex flex-wrap gap-2">
+                                                    <div class="flex items-center gap-2 whitespace-nowrap">
                                                         <button type="button"
                                                             x-on:click="$dispatch('open-modal', 'edit-registration-{{ $registration->id }}')"
-                                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-blue-600 hover:text-white"
+                                                            class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-blue-600 hover:text-white"
                                                             title="Edit pendaftar">
                                                             <i class="fa-solid fa-pen text-xs"></i>
                                                         </button>
                                                         <button type="button"
                                                             x-on:click="$dispatch('open-modal', 'certificate-registration-{{ $registration->id }}')"
-                                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-emerald-600 hover:text-white"
+                                                            class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-emerald-600 hover:text-white"
                                                             title="Kirim sertifikat">
                                                             <i class="fa-solid fa-paper-plane text-xs"></i>
                                                         </button>
@@ -528,7 +528,7 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
-                                                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-red-600 hover:text-white"
+                                                                class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-red-600 hover:text-white"
                                                                 title="Hapus pendaftar">
                                                                 <i class="fa-solid fa-trash text-xs"></i>
                                                             </button>
