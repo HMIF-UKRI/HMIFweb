@@ -17,6 +17,11 @@ class EventRegistration extends Model
         'major',
         'batch',
         'notes',
+        'certificate_sent_at',
+    ];
+
+    protected $casts = [
+        'certificate_sent_at' => 'datetime',
     ];
 
     public function event(): BelongsTo

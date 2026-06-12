@@ -94,6 +94,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('events', AdminEventController::class);
         Route::get('events/{slug}/registrations/export', [AdminEventController::class, 'exportRegistrations'])
             ->name('events.registrations.export');
+        Route::put('events/{slug}/registrations/{registration}', [AdminEventController::class, 'updateRegistration'])
+            ->name('events.registrations.update');
+        Route::delete('events/{slug}/registrations/{registration}', [AdminEventController::class, 'destroyRegistration'])
+            ->name('events.registrations.destroy');
+        Route::post('events/{slug}/registrations/{registration}/certificate', [AdminEventController::class, 'sendRegistrationCertificate'])
+            ->name('events.registrations.certificate');
+        Route::post('events/{slug}/registrations/certificates', [AdminEventController::class, 'sendAllRegistrationCertificates'])
+            ->name('events.registrations.certificates');
         Route::post('/events/upload-image', [AdminEventController::class, 'uploadImage'])->name('events.upload-image');
         Route::resource('galleries', GalleriesController::class);
         Route::resource('blogs', AdminBlogController::class);

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\EventCertificateMail;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventCategory;
+use App\Models\EventRegistration;
 use App\Models\PeriodeKepengurusan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -132,6 +135,7 @@ class AdminEventController extends Controller
                 'Prodi/Jurusan',
                 'Angkatan',
                 'Angkatan Terdeteksi',
+                'Sertifikat Dikirim',
                 'Catatan',
             ]);
 
@@ -149,6 +153,7 @@ class AdminEventController extends Controller
                             $registration->major,
                             $this->formatCsvTextCell($registration->batch),
                             $this->normalizeBatchYear($registration->batch) ?: '',
+                            optional($registration->certificate_sent_at)->format('Y-m-d H:i:s'),
                             $registration->notes,
                         ]);
                     }
@@ -158,6 +163,90 @@ class AdminEventController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    public function updateRegistration(Request $request, $slug, EventRegistration $registration)
+    {
+        $event = $this->findRegistrationEvent($slug, $registration);
+
+        $validated = $request->validate($this->registrationValidationRules($event, $registration));
+
+        $registration->update($validated);
+
+        return redirect()
+            ->route('admin.events.show', $event->slug)
+            ->with('success', 'Data pendaftar berhasil diperbarui.');
+    }
+
+    public function destroyRegistration($slug, EventRegistration $registration)
+    {
+        $event = $this->findRegistrationEvent($slug, $registration);
+
+        $registration->delete();
+
+        return redirect()
+            ->route('admin.events.show', $event->slug)
+            ->with('success', 'Data pendaftar berhasil dihapus.');
+    }
+
+    public function sendRegistrationCertificate(Request $request, $slug, EventRegistration $registration)
+    {
+        $event = $this->findRegistrationEvent($slug, $registration);
+        $validated = $this->validateCertificateRequest($request);
+
+        try {
+            $this->sendCertificateMail($event, $registration, $validated);
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return redirect()
+                ->route('admin.events.show', $event->slug)
+                ->with('error', 'Sertifikat gagal dikirim. Cek konfigurasi email atau file sertifikat.');
+        }
+
+        return redirect()
+            ->route('admin.events.show', $event->slug)
+            ->with('success', 'Sertifikat berhasil dikirim ke ' . $registration->full_name . '.');
+    }
+
+    public function sendAllRegistrationCertificates(Request $request, $slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->event_mode !== 'registration') {
+            return redirect()
+                ->route('admin.events.show', $event->slug)
+                ->with('error', 'Sertifikat hanya bisa dikirim untuk event mode pendaftaran.');
+        }
+
+        $validated = $this->validateCertificateRequest($request);
+        $sent = 0;
+        $failed = 0;
+
+        $event->registrations()
+            ->whereNotNull('email')
+            ->orderBy('id')
+            ->chunk(50, function ($registrations) use ($event, $validated, &$sent, &$failed) {
+                foreach ($registrations as $registration) {
+                    try {
+                        $this->sendCertificateMail($event, $registration, $validated);
+                        $sent++;
+                    } catch (\Throwable $exception) {
+                        report($exception);
+                        $failed++;
+                    }
+                }
+            });
+
+        if ($failed > 0) {
+            return redirect()
+                ->route('admin.events.show', $event->slug)
+                ->with('warning', "Sertifikat terkirim ke {$sent} peserta, gagal {$failed} peserta.");
+        }
+
+        return redirect()
+            ->route('admin.events.show', $event->slug)
+            ->with('success', "Sertifikat berhasil dikirim ke {$sent} peserta.");
     }
 
     public function edit($slug)
@@ -265,6 +354,63 @@ class AdminEventController extends Controller
         if (($validated['event_mode'] ?? null) !== 'registration') {
             $validated['whatsapp_group_link'] = null;
         }
+    }
+
+    private function findRegistrationEvent(string $slug, EventRegistration $registration): Event
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        abort_unless((int) $registration->event_id === (int) $event->id, 404);
+
+        return $event;
+    }
+
+    private function registrationValidationRules(Event $event, ?EventRegistration $registration = null): array
+    {
+        return [
+            'full_name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('event_registrations')
+                    ->where(fn ($query) => $query->where('event_id', $event->id))
+                    ->ignore($registration?->id),
+            ],
+            'phone' => ['required', 'string', 'max:30'],
+            'participant_category' => ['required', Rule::in(['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'])],
+            'institution' => ['required', 'string', 'max:255'],
+            'major' => ['nullable', 'string', 'max:255'],
+            'batch' => ['nullable', 'string', 'max:30'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ];
+    }
+
+    private function validateCertificateRequest(Request $request): array
+    {
+        return $request->validate([
+            'certificate_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'certificate_subject' => ['nullable', 'string', 'max:255'],
+            'certificate_message' => ['required', 'string', 'max:3000'],
+        ]);
+    }
+
+    private function sendCertificateMail(Event $event, EventRegistration $registration, array $validated): void
+    {
+        $file = request()->file('certificate_file');
+
+        Mail::to($registration->email)->send(new EventCertificateMail(
+            event: $event,
+            registration: $registration,
+            messageBody: $validated['certificate_message'],
+            certificatePath: $file->getRealPath(),
+            certificateName: $file->getClientOriginalName(),
+            customSubject: $validated['certificate_subject'] ?? null,
+        ));
+
+        $registration->forceFill([
+            'certificate_sent_at' => now(),
+        ])->save();
     }
 
     private function summarizeRegistrationBatches(Event $event): array

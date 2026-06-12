@@ -20,6 +20,28 @@
             <ion-icon name="arrow-back-outline"></ion-icon>
             Back to Events
         </a>
+
+        @if (session('success') || session('warning') || session('error') || $errors->any())
+            <div class="rounded-2xl border border-white/10 bg-gray-900 p-4">
+                @if (session('success'))
+                    <p class="text-sm font-bold text-emerald-400">{{ session('success') }}</p>
+                @endif
+                @if (session('warning'))
+                    <p class="text-sm font-bold text-yellow-400">{{ session('warning') }}</p>
+                @endif
+                @if (session('error'))
+                    <p class="text-sm font-bold text-red-400">{{ session('error') }}</p>
+                @endif
+                @if ($errors->any())
+                    <ul class="list-disc space-y-1 pl-5 text-sm text-red-400">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @endif
+
         <div class="min-h-screen bg-gray-950 font-sans text-white selection:bg-red-500 selection:text-white">
             <div class="pointer-events-none fixed inset-0 z-0 opacity-[0.03]"
                 style="
@@ -354,11 +376,18 @@
                                     {{ $event->registrations_count }} Peserta Terdaftar
                                 </h2>
                             </div>
-                            <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-emerald-700">
-                                <i class="fa-solid fa-file-excel"></i>
-                                Download Excel
-                            </a>
+                            <div class="flex flex-wrap gap-3">
+                                <button type="button" x-on:click="$dispatch('open-modal', 'certificate-all')"
+                                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-blue-700">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    Kirim Sertifikat Semua
+                                </button>
+                                <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
+                                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-emerald-700">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                    Download Excel
+                                </a>
+                            </div>
                         </div>
 
                         <div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
@@ -435,6 +464,8 @@
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Prodi</th>
                                             <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Angkatan</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/10 bg-black/20">
@@ -466,10 +497,48 @@
                                                 <td class="px-4 py-4 text-sm text-gray-300">
                                                     {{ $registration->batch ?: '-' }}
                                                 </td>
+                                                <td class="px-4 py-4">
+                                                    @if ($registration->certificate_sent_at)
+                                                        <span class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
+                                                            {{ $registration->certificate_sent_at->format('d M Y H:i') }}
+                                                        </span>
+                                                    @else
+                                                        <span class="rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-[10px] font-bold text-yellow-300">
+                                                            Belum dikirim
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td class="px-4 py-4">
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <button type="button"
+                                                            x-on:click="$dispatch('open-modal', 'edit-registration-{{ $registration->id }}')"
+                                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-blue-600 hover:text-white"
+                                                            title="Edit pendaftar">
+                                                            <i class="fa-solid fa-pen text-xs"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                            x-on:click="$dispatch('open-modal', 'certificate-registration-{{ $registration->id }}')"
+                                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-emerald-600 hover:text-white"
+                                                            title="Kirim sertifikat">
+                                                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                                                        </button>
+                                                        <form action="{{ route('admin.events.registrations.destroy', [$event->slug, $registration]) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Hapus data pendaftar ini?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-red-600 hover:text-white"
+                                                                title="Hapus pendaftar">
+                                                                <i class="fa-solid fa-trash text-xs"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="8" class="px-4 py-12 text-center text-sm text-gray-500">
+                                                <td colspan="10" class="px-4 py-12 text-center text-sm text-gray-500">
                                                     Belum ada peserta yang mendaftar.
                                                 </td>
                                             </tr>
@@ -523,6 +592,183 @@
                                 </div>
                             </nav>
                         @endif
+
+                        <x-modal name="certificate-all" maxWidth="3xl">
+                            <form action="{{ route('admin.events.registrations.certificates', $event->slug) }}"
+                                method="POST" enctype="multipart/form-data" class="p-6 md:p-8">
+                                @csrf
+                                <div class="mb-6">
+                                    <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">
+                                        Kirim Global
+                                    </p>
+                                    <h2 class="text-2xl font-black text-white">
+                                        Kirim Sertifikat ke Semua Peserta
+                                    </h2>
+                                    <p class="mt-2 text-sm text-gray-400">
+                                        File yang sama akan dikirim ke semua peserta terdaftar.
+                                    </p>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Subject Email</label>
+                                        <input type="text" name="certificate_subject"
+                                            value="Sertifikat Kegiatan - {{ $event->title }}"
+                                            class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                    </div>
+                                    <div>
+                                        <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Ucapan / Pesan</label>
+                                        <textarea name="certificate_message" rows="5" required
+                                            class="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">Terima kasih sudah mengikuti {{ $event->title }}. Semoga ilmu dan pengalaman dari kegiatan ini bermanfaat. Sertifikat peserta kami lampirkan pada email ini.</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">File Sertifikat</label>
+                                        <input type="file" name="certificate_file" required accept=".pdf,.jpg,.jpeg,.png"
+                                            class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-gray-300 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-xs file:font-bold file:text-white focus:border-blue-600">
+                                        <p class="mt-2 text-[10px] text-gray-500">PDF/JPG/PNG, maksimal 10MB.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-8 flex justify-end gap-3">
+                                    <button type="button" x-on:click="$dispatch('close-modal', 'certificate-all')"
+                                        class="rounded-xl border border-white/10 px-5 py-3 text-xs font-bold text-gray-400 transition hover:bg-white/5">
+                                        Batal
+                                    </button>
+                                    <button type="submit"
+                                        class="rounded-xl bg-blue-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition hover:bg-blue-700">
+                                        Kirim Semua
+                                    </button>
+                                </div>
+                            </form>
+                        </x-modal>
+
+                        @foreach ($registrations as $registration)
+                            <x-modal name="edit-registration-{{ $registration->id }}" maxWidth="3xl">
+                                <form action="{{ route('admin.events.registrations.update', [$event->slug, $registration]) }}"
+                                    method="POST" class="p-6 md:p-8">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-6">
+                                        <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">
+                                            Edit Pendaftar
+                                        </p>
+                                        <h2 class="text-2xl font-black text-white">
+                                            {{ $registration->full_name }}
+                                        </h2>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Nama Lengkap</label>
+                                            <input type="text" name="full_name" value="{{ $registration->full_name }}" required
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Email</label>
+                                            <input type="email" name="email" value="{{ $registration->email }}" required
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">No. WhatsApp</label>
+                                            <input type="text" name="phone" value="{{ $registration->phone }}" required
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Kategori Peserta</label>
+                                            <select name="participant_category" required
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                                @foreach (['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'] as $category)
+                                                    <option value="{{ $category }}" class="bg-gray-950"
+                                                        {{ $registration->participant_category === $category ? 'selected' : '' }}>
+                                                        {{ $category }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Instansi</label>
+                                            <input type="text" name="institution" value="{{ $registration->institution }}" required
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Prodi/Jurusan</label>
+                                            <input type="text" name="major" value="{{ $registration->major }}"
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Angkatan</label>
+                                            <input type="text" name="batch" value="{{ $registration->batch }}"
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">
+                                        </div>
+                                        <div class="md:col-span-2">
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Catatan</label>
+                                            <textarea name="notes" rows="3"
+                                                class="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-600">{{ $registration->notes }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-8 flex justify-end gap-3">
+                                        <button type="button" x-on:click="$dispatch('close-modal', 'edit-registration-{{ $registration->id }}')"
+                                            class="rounded-xl border border-white/10 px-5 py-3 text-xs font-bold text-gray-400 transition hover:bg-white/5">
+                                            Batal
+                                        </button>
+                                        <button type="submit"
+                                            class="rounded-xl bg-blue-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition hover:bg-blue-700">
+                                            Simpan
+                                        </button>
+                                    </div>
+                                </form>
+                            </x-modal>
+
+                            <x-modal name="certificate-registration-{{ $registration->id }}" maxWidth="3xl">
+                                <form action="{{ route('admin.events.registrations.certificate', [$event->slug, $registration]) }}"
+                                    method="POST" enctype="multipart/form-data" class="p-6 md:p-8">
+                                    @csrf
+                                    <div class="mb-6">
+                                        <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">
+                                            Kirim Sertifikat
+                                        </p>
+                                        <h2 class="text-2xl font-black text-white">
+                                            {{ $registration->full_name }}
+                                        </h2>
+                                        <p class="mt-2 text-sm text-gray-400">
+                                            Email tujuan: {{ $registration->email }}
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Subject Email</label>
+                                            <input type="text" name="certificate_subject"
+                                                value="Sertifikat Kegiatan - {{ $event->title }}"
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-600">
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Ucapan / Pesan</label>
+                                            <textarea name="certificate_message" rows="5" required
+                                                class="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-600">Terima kasih sudah mengikuti {{ $event->title }}. Semoga ilmu dan pengalaman dari kegiatan ini bermanfaat. Sertifikat peserta kami lampirkan pada email ini.</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">File Sertifikat</label>
+                                            <input type="file" name="certificate_file" required accept=".pdf,.jpg,.jpeg,.png"
+                                                class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-gray-300 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-600 file:px-3 file:py-2 file:text-xs file:font-bold file:text-white focus:border-emerald-600">
+                                            <p class="mt-2 text-[10px] text-gray-500">PDF/JPG/PNG, maksimal 10MB.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-8 flex justify-end gap-3">
+                                        <button type="button" x-on:click="$dispatch('close-modal', 'certificate-registration-{{ $registration->id }}')"
+                                            class="rounded-xl border border-white/10 px-5 py-3 text-xs font-bold text-gray-400 transition hover:bg-white/5">
+                                            Batal
+                                        </button>
+                                        <button type="submit"
+                                            class="rounded-xl bg-emerald-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition hover:bg-emerald-700">
+                                            Kirim
+                                        </button>
+                                    </div>
+                                </form>
+                            </x-modal>
+                        @endforeach
                     </div>
                 @endif
             </div>
