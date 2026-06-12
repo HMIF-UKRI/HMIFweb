@@ -453,63 +453,61 @@
 
                         <div class="overflow-hidden rounded-xl border border-white/10">
                             <div class="overflow-x-auto">
-                                <table class="min-w-[1180px] divide-y divide-white/10 text-left">
+                                <table class="min-w-full divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
                                         <tr>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Waktu</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Nama</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Email</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">WhatsApp</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Prodi</th>
-                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Angkatan</th>
-                                            <th class="min-w-40 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
-                                            <th class="min-w-36 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
+                                            <th class="w-[30%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Peserta</th>
+                                            <th class="w-[18%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</th>
+                                            <th class="w-[22%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
+                                            <th class="w-[15%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Akademik</th>
+                                            <th class="w-[10%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
+                                            <th class="w-[5%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/10 bg-black/20">
                                         @forelse ($registrations as $registration)
                                             <tr class="transition hover:bg-white/5">
-                                                <td class="px-4 py-4 text-xs text-gray-400">
-                                                    {{ $registration->created_at?->format('d M Y H:i') }}
+                                                <td class="px-4 py-4 align-top">
+                                                    <p class="text-sm font-bold leading-snug text-white">
+                                                        {{ $registration->full_name }}
+                                                    </p>
+                                                    <p class="mt-1 break-all text-xs text-gray-400">
+                                                        {{ $registration->email }}
+                                                    </p>
+                                                    <p class="mt-1 text-xs text-gray-500">
+                                                        {{ $registration->phone }}
+                                                    </p>
+                                                    <p class="mt-2 text-[10px] font-bold uppercase tracking-widest text-gray-600">
+                                                        {{ $registration->created_at?->format('d M Y H:i') }}
+                                                    </p>
                                                 </td>
-                                                <td class="px-4 py-4 text-sm font-bold text-white">
-                                                    {{ $registration->full_name }}
-                                                </td>
-                                                <td class="px-4 py-4 text-sm text-gray-300">
-                                                    {{ $registration->email }}
-                                                </td>
-                                                <td class="px-4 py-4 text-sm text-gray-300">
-                                                    {{ $registration->phone }}
-                                                </td>
-                                                <td class="px-4 py-4">
+                                                <td class="px-4 py-4 align-top">
                                                     <span class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
                                                         {{ $registration->participant_category ?: 'Tidak Diisi' }}
                                                     </span>
                                                 </td>
-                                                <td class="px-4 py-4 text-sm text-gray-300">
+                                                <td class="px-4 py-4 align-top text-sm leading-relaxed text-gray-300">
                                                     {{ $registration->institution ?: '-' }}
                                                 </td>
-                                                <td class="px-4 py-4 text-sm text-gray-300">
-                                                    {{ $registration->major ?: '-' }}
+                                                <td class="px-4 py-4 align-top text-sm leading-relaxed text-gray-300">
+                                                    <p>{{ $registration->major ?: '-' }}</p>
+                                                    <p class="mt-1 text-xs text-gray-500">
+                                                        Angkatan {{ $registration->batch ?: '-' }}
+                                                    </p>
                                                 </td>
-                                                <td class="px-4 py-4 text-sm text-gray-300">
-                                                    {{ $registration->batch ?: '-' }}
-                                                </td>
-                                                <td class="px-4 py-4 whitespace-nowrap">
+                                                <td class="px-4 py-4 align-top">
                                                     @if ($registration->certificate_sent_at)
-                                                        <span class="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
+                                                        <span class="inline-flex whitespace-nowrap rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
                                                             {{ $registration->certificate_sent_at->format('d M Y H:i') }}
                                                         </span>
                                                     @else
-                                                        <span class="inline-flex items-center rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-[10px] font-bold text-yellow-300">
+                                                        <span class="inline-flex whitespace-nowrap rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-[10px] font-bold text-yellow-300">
                                                             Belum dikirim
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td class="px-4 py-4">
-                                                    <div class="flex items-center gap-2 whitespace-nowrap">
+                                                <td class="px-4 py-4 align-top">
+                                                    <div class="flex items-center justify-end gap-2">
                                                         <button type="button"
                                                             x-on:click="$dispatch('open-modal', 'edit-registration-{{ $registration->id }}')"
                                                             class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-blue-600 hover:text-white"
