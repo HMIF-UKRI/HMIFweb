@@ -39,7 +39,7 @@
     x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null" x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-10 backdrop-blur-md" x-cloak
+    class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-3 backdrop-blur-md sm:p-5 md:p-6" x-cloak
     style="display: {{ $show ? 'flex' : 'none' }};">
 
     <div x-show="show" class="fixed inset-0 transform transition-all" x-on:click="show = false"
@@ -50,7 +50,7 @@
     </div>
 
     <div x-show="show"
-        class="relative w-full {{ $maxWidth }} bg-gray-950 border border-white/10 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-y-auto transform transition-all max-h-[95%] mt-14"
+        class="relative my-4 w-full {{ $maxWidth }} bg-gray-950 border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] transform transition-all"
         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
