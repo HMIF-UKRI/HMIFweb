@@ -94,7 +94,17 @@ class AdminEventController extends Controller
             ->withCount(['attendances', 'registrations'])
             ->firstOrFail();
 
+        $registrationSearch = trim((string) request('registration_search'));
+
         $registrations = $event->registrations()
+            ->when($registrationSearch !== '', function ($query) use ($registrationSearch) {
+                $query->where(function ($subQuery) use ($registrationSearch) {
+                    $subQuery->where('full_name', 'like', "%{$registrationSearch}%")
+                        ->orWhere('email', 'like', "%{$registrationSearch}%")
+                        ->orWhere('phone', 'like', "%{$registrationSearch}%")
+                        ->orWhere('institution', 'like', "%{$registrationSearch}%");
+                });
+            })
             ->latest()
             ->paginate(20, ['*'], 'registrations_page')
             ->withQueryString();
@@ -107,7 +117,13 @@ class AdminEventController extends Controller
 
         $batchSummary = $this->summarizeRegistrationBatches($event);
 
-        return view('admin.event.show', compact('event', 'registrations', 'registrationCategories', 'batchSummary'));
+        return view('admin.event.show', compact(
+            'event',
+            'registrations',
+            'registrationCategories',
+            'batchSummary',
+            'registrationSearch'
+        ));
     }
 
     public function exportRegistrations($slug)

@@ -374,18 +374,44 @@
                                 <h2 class="text-2xl font-black text-white">
                                     {{ $event->registrations_count }} Peserta Terdaftar
                                 </h2>
+                                @if ($registrationSearch !== '')
+                                    <p class="mt-2 text-xs text-gray-400">
+                                        Menampilkan {{ $registrations->total() }} hasil untuk "{{ $registrationSearch }}".
+                                    </p>
+                                @endif
                             </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <button type="button" x-on:click="$dispatch('open-modal', 'certificate-all')"
-                                    class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-blue-700">
-                                    <i class="fa-solid fa-paper-plane text-[11px]"></i>
-                                    Kirim Sertifikat
-                                </button>
-                                <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
-                                    class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-emerald-700">
-                                    <i class="fa-solid fa-file-excel text-[11px]"></i>
-                                    Download Excel
-                                </a>
+                            <div class="flex flex-col gap-2 lg:items-end">
+                                <form method="GET" action="{{ route('admin.events.show', $event->slug) }}"
+                                    class="flex w-full gap-2 sm:w-80">
+                                    <input type="text" name="registration_search" value="{{ $registrationSearch }}"
+                                        placeholder="Cari nama pendaftar..."
+                                        class="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3 text-xs text-white outline-none transition placeholder:text-gray-600 focus:border-emerald-600">
+                                    <button type="submit"
+                                        class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
+                                        title="Cari pendaftar">
+                                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                                    </button>
+                                    @if ($registrationSearch !== '')
+                                        <a href="{{ route('admin.events.show', $event->slug) }}"
+                                            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-400 transition hover:bg-red-600 hover:text-white"
+                                            title="Reset pencarian">
+                                            <i class="fa-solid fa-xmark text-xs"></i>
+                                        </a>
+                                    @endif
+                                </form>
+
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <button type="button" x-on:click="$dispatch('open-modal', 'certificate-all')"
+                                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-blue-700">
+                                        <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                                        Kirim Sertifikat
+                                    </button>
+                                    <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
+                                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-emerald-700">
+                                        <i class="fa-solid fa-file-excel text-[11px]"></i>
+                                        Download Excel
+                                    </a>
+                                </div>
                             </div>
                         </div>
 
