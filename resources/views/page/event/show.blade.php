@@ -334,7 +334,7 @@
                                                     <input type="text" id="batch" name="batch"
                                                         value="{{ old('batch') }}"
                                                         class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
-                                                        placeholder="Opsional">
+                                                        placeholder="2023 / 23 / Angkatan 23">
                                                 </div>
                                             </div>
 

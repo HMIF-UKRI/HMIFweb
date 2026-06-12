@@ -385,6 +385,43 @@
                             @endforelse
                         </div>
 
+                        <div class="mb-6 rounded-xl border border-white/10 bg-black/30 p-5">
+                            <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                        Rata-rata Angkatan Mahasiswa
+                                    </p>
+                                    <p class="mt-2 text-3xl font-black text-white">
+                                        {{ $batchSummary['average'] ? 'Angkatan ' . $batchSummary['average'] : '-' }}
+                                    </p>
+                                </div>
+                                <div class="text-left md:text-right">
+                                    <p class="text-xs font-bold text-emerald-400">
+                                        {{ $batchSummary['count'] }} data valid
+                                    </p>
+                                    @if ($batchSummary['invalid_count'] > 0)
+                                        <p class="mt-1 text-xs text-yellow-400">
+                                            {{ $batchSummary['invalid_count'] }} data angkatan belum terbaca formatnya
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            @if ($batchSummary['distribution']->isNotEmpty())
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach ($batchSummary['distribution'] as $batch)
+                                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-gray-300">
+                                            {{ $batch['year'] }}: {{ $batch['total'] }} orang
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500">
+                                    Belum ada data angkatan mahasiswa yang bisa dihitung.
+                                </p>
+                            @endif
+                        </div>
+
                         <div class="overflow-hidden rounded-xl border border-white/10">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-white/10 text-left">
@@ -443,9 +480,48 @@
                         </div>
 
                         @if ($registrations->hasPages())
-                            <div class="mt-5">
-                                {{ $registrations->links() }}
-                            </div>
+                            <nav class="mt-5 flex flex-wrap items-center justify-between gap-3">
+                                <p class="text-xs text-gray-500">
+                                    Menampilkan {{ $registrations->firstItem() }}-{{ $registrations->lastItem() }}
+                                    dari {{ $registrations->total() }} data
+                                </p>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    @if ($registrations->onFirstPage())
+                                        <span class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-gray-600">
+                                            Sebelumnya
+                                        </span>
+                                    @else
+                                        <a href="{{ $registrations->previousPageUrl() }}"
+                                            class="rounded-lg border border-white/10 bg-gray-800 px-3 py-2 text-xs font-bold text-gray-200 transition hover:border-emerald-500/50 hover:bg-emerald-600 hover:text-white">
+                                            Sebelumnya
+                                        </a>
+                                    @endif
+
+                                    @foreach ($registrations->getUrlRange(1, $registrations->lastPage()) as $page => $url)
+                                        @if ($page === $registrations->currentPage())
+                                            <span class="rounded-lg border border-emerald-500 bg-emerald-600 px-3 py-2 text-xs font-black text-white">
+                                                {{ $page }}
+                                            </span>
+                                        @else
+                                            <a href="{{ $url }}"
+                                                class="rounded-lg border border-white/10 bg-gray-800 px-3 py-2 text-xs font-bold text-gray-200 transition hover:border-emerald-500/50 hover:bg-emerald-600 hover:text-white">
+                                                {{ $page }}
+                                            </a>
+                                        @endif
+                                    @endforeach
+
+                                    @if ($registrations->hasMorePages())
+                                        <a href="{{ $registrations->nextPageUrl() }}"
+                                            class="rounded-lg border border-white/10 bg-gray-800 px-3 py-2 text-xs font-bold text-gray-200 transition hover:border-emerald-500/50 hover:bg-emerald-600 hover:text-white">
+                                            Berikutnya
+                                        </a>
+                                    @else
+                                        <span class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-gray-600">
+                                            Berikutnya
+                                        </span>
+                                    @endif
+                                </div>
+                            </nav>
                         @endif
                     </div>
                 @endif

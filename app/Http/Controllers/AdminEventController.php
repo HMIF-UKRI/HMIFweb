@@ -102,7 +102,9 @@ class AdminEventController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        return view('admin.event.show', compact('event', 'registrations', 'registrationCategories'));
+        $batchSummary = $this->summarizeRegistrationBatches($event);
+
+        return view('admin.event.show', compact('event', 'registrations', 'registrationCategories', 'batchSummary'));
     }
 
     public function exportRegistrations($slug)
@@ -129,6 +131,7 @@ class AdminEventController extends Controller
                 'Instansi',
                 'Prodi/Jurusan',
                 'Angkatan',
+                'Angkatan Terdeteksi',
                 'Catatan',
             ]);
 
@@ -140,11 +143,12 @@ class AdminEventController extends Controller
                             optional($registration->created_at)->format('Y-m-d H:i:s'),
                             $registration->full_name,
                             $registration->email,
-                            $registration->phone,
+                            $this->formatCsvTextCell($registration->phone),
                             $registration->participant_category ?: 'Tidak Diisi',
                             $registration->institution,
                             $registration->major,
-                            $registration->batch,
+                            $this->formatCsvTextCell($registration->batch),
+                            $this->normalizeBatchYear($registration->batch) ?: '',
                             $registration->notes,
                         ]);
                     }
@@ -261,5 +265,71 @@ class AdminEventController extends Controller
         if (($validated['event_mode'] ?? null) !== 'registration') {
             $validated['whatsapp_group_link'] = null;
         }
+    }
+
+    private function summarizeRegistrationBatches(Event $event): array
+    {
+        $years = $event->registrations()
+            ->where('participant_category', 'Mahasiswa')
+            ->whereNotNull('batch')
+            ->pluck('batch')
+            ->map(fn ($batch) => $this->normalizeBatchYear($batch))
+            ->filter()
+            ->values();
+
+        $distribution = $years
+            ->countBy()
+            ->sortKeysDesc()
+            ->map(fn ($total, $year) => [
+                'year' => (int) $year,
+                'total' => $total,
+            ])
+            ->values();
+
+        return [
+            'average' => $years->isNotEmpty() ? round($years->average()) : null,
+            'count' => $years->count(),
+            'invalid_count' => $event->registrations()
+                ->where('participant_category', 'Mahasiswa')
+                ->whereNotNull('batch')
+                ->get()
+                ->filter(fn ($registration) => !$this->normalizeBatchYear($registration->batch))
+                ->count(),
+            'distribution' => $distribution,
+        ];
+    }
+
+    private function normalizeBatchYear(?string $batch): ?int
+    {
+        if (!$batch) {
+            return null;
+        }
+
+        preg_match_all('/\d{2,4}/', $batch, $matches);
+
+        foreach ($matches[0] as $candidate) {
+            $number = (int) $candidate;
+
+            if (strlen($candidate) === 4 && $number >= 1990 && $number <= now()->year + 1) {
+                return $number;
+            }
+
+            if (strlen($candidate) === 2) {
+                $year = $number <= (now()->year + 1) % 100 ? 2000 + $number : 1900 + $number;
+
+                if ($year >= 1990 && $year <= now()->year + 1) {
+                    return $year;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function formatCsvTextCell(?string $value): string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? '' : "\t" . $value;
     }
 }
