@@ -39,21 +39,23 @@
     x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null"
     x-on:keydown.escape.window="show = false">
     <template x-teleport="body">
-        <div x-show="show" class="fixed inset-0 z-[9999] overflow-y-auto p-3 sm:p-5 md:p-6" x-cloak
-            style="display: {{ $show ? 'block' : 'none' }};">
-            <div x-show="show" class="fixed inset-0 transform transition-all" x-on:click="show = false"
+        <div x-show="show" class="fixed inset-0 overflow-y-auto p-3 sm:p-5 md:p-6" x-cloak
+            style="z-index: 999999; display: {{ $show ? 'block' : 'none' }};">
+            <div x-show="show" class="fixed inset-0 transform transition-all" style="z-index: 999999;"
+                x-on:click="show = false"
                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                 <div class="absolute inset-0 bg-gray-950/70 backdrop-blur-md"></div>
             </div>
 
-            <div class="relative z-10 flex min-h-full items-start justify-center py-4">
+            <div class="relative flex min-h-full items-start justify-center py-4" style="z-index: 1000000;">
                 <div x-show="show" x-ref="panel"
                     x-on:close.stop="show = false"
                     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable()?.focus()"
                     x-on:keydown.shift.tab.prevent="prevFocusable()?.focus()"
                     class="relative w-full {{ $maxWidth }} max-h-[calc(100vh-2rem)] overflow-y-auto overscroll-contain rounded-3xl border border-white/10 bg-gray-950 shadow-[0_0_50px_rgba(0,0,0,0.5)] transform transition-all"
+                    style="z-index: 1000001;"
                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95"
                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                     x-transition:leave="ease-in duration-200"
