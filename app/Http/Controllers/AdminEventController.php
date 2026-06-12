@@ -89,11 +89,71 @@ class AdminEventController extends Controller
         $event = Event::where('slug', $slug)
             ->with(['category', 'period', 'media'])
             ->withCount(['attendances', 'registrations'])
-            ->with([
-                'registrations' => fn ($query) => $query->latest()->limit(10),
-            ])
             ->firstOrFail();
-        return view('admin.event.show', compact('event'));
+
+        $registrations = $event->registrations()
+            ->latest()
+            ->paginate(20, ['*'], 'registrations_page')
+            ->withQueryString();
+
+        $registrationCategories = $event->registrations()
+            ->selectRaw("COALESCE(NULLIF(participant_category, ''), 'Tidak Diisi') as label, COUNT(*) as total")
+            ->groupByRaw("COALESCE(NULLIF(participant_category, ''), 'Tidak Diisi')")
+            ->orderByDesc('total')
+            ->get();
+
+        return view('admin.event.show', compact('event', 'registrations', 'registrationCategories'));
+    }
+
+    public function exportRegistrations($slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->event_mode !== 'registration') {
+            return redirect()->route('admin.events.show', $event->slug)
+                ->with('error', 'Export pendaftaran hanya tersedia untuk event mode pendaftaran.');
+        }
+
+        $filename = Str::slug($event->title) . '-data-pendaftaran-' . now()->format('Ymd-His') . '.csv';
+
+        return response()->streamDownload(function () use ($event) {
+            $handle = fopen('php://output', 'w');
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            fputcsv($handle, [
+                'Waktu Daftar',
+                'Nama Lengkap',
+                'Email',
+                'No. WhatsApp',
+                'Kategori Peserta',
+                'Instansi',
+                'Prodi/Jurusan',
+                'Angkatan',
+                'Catatan',
+            ]);
+
+            $event->registrations()
+                ->oldest()
+                ->chunk(200, function ($registrations) use ($handle) {
+                    foreach ($registrations as $registration) {
+                        fputcsv($handle, [
+                            optional($registration->created_at)->format('Y-m-d H:i:s'),
+                            $registration->full_name,
+                            $registration->email,
+                            $registration->phone,
+                            $registration->participant_category ?: 'Tidak Diisi',
+                            $registration->institution,
+                            $registration->major,
+                            $registration->batch,
+                            $registration->notes,
+                        ]);
+                    }
+                });
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     public function edit($slug)

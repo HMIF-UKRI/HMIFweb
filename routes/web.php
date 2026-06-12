@@ -92,6 +92,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Manajemen Organisasi & Konten
         Route::resource('managements', PengurusController::class);
         Route::resource('events', AdminEventController::class);
+        Route::get('events/{slug}/registrations/export', [AdminEventController::class, 'exportRegistrations'])
+            ->name('events.registrations.export');
         Route::post('/events/upload-image', [AdminEventController::class, 'uploadImage'])->name('events.upload-image');
         Route::resource('galleries', GalleriesController::class);
         Route::resource('blogs', AdminBlogController::class);

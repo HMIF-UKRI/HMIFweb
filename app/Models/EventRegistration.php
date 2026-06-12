@@ -13,6 +13,7 @@ class EventRegistration extends Model
         'email',
         'phone',
         'institution',
+        'participant_category',
         'major',
         'batch',
         'notes',

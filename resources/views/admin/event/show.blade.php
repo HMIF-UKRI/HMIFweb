@@ -201,7 +201,7 @@
                                     @endif
                                 </div>
 
-                                @if ($event->event_mode === 'registration')
+                                @if (false && $event->event_mode === 'registration')
                                     <div class="rounded-xl border border-white/10 bg-black/30 p-4">
                                         <div class="mb-4 flex items-center justify-between gap-3">
                                             <p class="text-xs font-bold uppercase text-gray-500">
@@ -342,6 +342,113 @@
                         </div>
                     </div>
                 </div>
+
+                @if ($event->event_mode === 'registration')
+                    <div class="mt-8 rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
+                        <div class="mb-6 flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">
+                                    Data Pendaftaran
+                                </p>
+                                <h2 class="text-2xl font-black text-white">
+                                    {{ $event->registrations_count }} Peserta Terdaftar
+                                </h2>
+                            </div>
+                            <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-emerald-700">
+                                <i class="fa-solid fa-file-excel"></i>
+                                Download Excel
+                            </a>
+                        </div>
+
+                        <div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+                            @forelse ($registrationCategories as $category)
+                                <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                        {{ $category->label }}
+                                    </p>
+                                    <div class="mt-3 flex items-end justify-between gap-3">
+                                        <p class="text-2xl font-black text-white">
+                                            {{ $category->total }}
+                                        </p>
+                                        <p class="text-xs font-bold text-emerald-400">
+                                            {{ number_format(($category->total / max($event->registrations_count, 1)) * 100, 1) }}%
+                                        </p>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                                    <p class="text-sm text-gray-500">
+                                        Belum ada kategori peserta.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        <div class="overflow-hidden rounded-xl border border-white/10">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-white/10 text-left">
+                                    <thead class="bg-white/5">
+                                        <tr>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Waktu</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Nama</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Email</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">WhatsApp</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Prodi</th>
+                                            <th class="px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Angkatan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-white/10 bg-black/20">
+                                        @forelse ($registrations as $registration)
+                                            <tr class="transition hover:bg-white/5">
+                                                <td class="px-4 py-4 text-xs text-gray-400">
+                                                    {{ $registration->created_at?->format('d M Y H:i') }}
+                                                </td>
+                                                <td class="px-4 py-4 text-sm font-bold text-white">
+                                                    {{ $registration->full_name }}
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-300">
+                                                    {{ $registration->email }}
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-300">
+                                                    {{ $registration->phone }}
+                                                </td>
+                                                <td class="px-4 py-4">
+                                                    <span class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300">
+                                                        {{ $registration->participant_category ?: 'Tidak Diisi' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-300">
+                                                    {{ $registration->institution ?: '-' }}
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-300">
+                                                    {{ $registration->major ?: '-' }}
+                                                </td>
+                                                <td class="px-4 py-4 text-sm text-gray-300">
+                                                    {{ $registration->batch ?: '-' }}
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="px-4 py-12 text-center text-sm text-gray-500">
+                                                    Belum ada peserta yang mendaftar.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        @if ($registrations->hasPages())
+                            <div class="mt-5">
+                                {{ $registrations->links() }}
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>

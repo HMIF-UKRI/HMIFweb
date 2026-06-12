@@ -73,6 +73,7 @@ class PublicEventController extends Controller
             ],
             'phone' => ['required', 'string', 'max:30'],
             'institution' => ['required', 'string', 'max:255'],
+            'participant_category' => ['required', Rule::in(['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'])],
             'major' => ['nullable', 'string', 'max:255'],
             'batch' => ['nullable', 'string', 'max:30'],
             'notes' => ['nullable', 'string', 'max:1000'],

@@ -295,6 +295,22 @@
                                             </div>
 
                                             <div>
+                                                <label for="participant_category"
+                                                    class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Kategori
+                                                    Peserta</label>
+                                                <select id="participant_category" name="participant_category" required
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600">
+                                                    <option value="" class="bg-gray-950">Pilih kategori</option>
+                                                    @foreach (['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'] as $category)
+                                                        <option value="{{ $category }}" class="bg-gray-950"
+                                                            {{ old('participant_category') === $category ? 'selected' : '' }}>
+                                                            {{ $category }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div>
                                                 <label for="institution"
                                                     class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Instansi</label>
                                                 <input type="text" id="institution" name="institution"

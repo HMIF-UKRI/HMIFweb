@@ -36,6 +36,9 @@
                 <p style="margin:0 0 8px;color:#d1d5db;"><strong>Nama:</strong> {{ $registration->full_name }}</p>
                 <p style="margin:0 0 8px;color:#d1d5db;"><strong>Email:</strong> {{ $registration->email }}</p>
                 <p style="margin:0 0 8px;color:#d1d5db;"><strong>No. WhatsApp:</strong> {{ $registration->phone }}</p>
+                @if ($registration->participant_category)
+                    <p style="margin:0 0 8px;color:#d1d5db;"><strong>Kategori Peserta:</strong> {{ $registration->participant_category }}</p>
+                @endif
                 @if ($registration->institution)
                     <p style="margin:0 0 8px;color:#d1d5db;"><strong>Instansi:</strong> {{ $registration->institution }}</p>
                 @endif
