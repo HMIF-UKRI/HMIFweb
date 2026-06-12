@@ -448,8 +448,13 @@ class AdminEventController extends Controller
             ])
             ->values();
 
+        $mostCommon = $distribution
+            ->sortByDesc('total')
+            ->first();
+
         return [
-            'average' => $years->isNotEmpty() ? round($years->average()) : null,
+            'most_common' => $mostCommon['year'] ?? null,
+            'most_common_total' => $mostCommon['total'] ?? 0,
             'count' => $years->count(),
             'invalid_count' => $event->registrations()
                 ->where('participant_category', 'Mahasiswa')

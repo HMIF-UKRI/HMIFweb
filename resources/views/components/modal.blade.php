@@ -39,7 +39,7 @@
     x-on:close-modal.window="$event.detail == '{{ $name }}' ? show = false : null" x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show"
-    class="fixed inset-0 z-50 flex items-start justify-center overflow-hidden p-3 backdrop-blur-md sm:p-5 md:p-6" x-cloak
+    class="fixed inset-0 z-[9999] overflow-y-auto backdrop-blur-md" x-cloak
     style="display: {{ $show ? 'flex' : 'none' }};">
 
     <div x-show="show" class="fixed inset-0 transform transition-all" x-on:click="show = false"
@@ -49,18 +49,20 @@
         <div class="absolute inset-0 bg-gray-950/60"></div>
     </div>
 
-    <div x-show="show"
-        class="relative my-3 max-h-[calc(100vh-1.5rem)] w-full {{ $maxWidth }} overflow-y-auto overscroll-contain bg-gray-950 border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] transform transition-all sm:my-4 sm:max-h-[calc(100vh-2rem)]"
-        x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-        x-transition:leave-end="opacity-0 translate-y-8 scale-95">
+    <div class="relative z-10 flex min-h-full items-start justify-center p-3 sm:p-5 md:p-6">
+        <div x-show="show"
+            class="relative my-2 w-full {{ $maxWidth }} bg-gray-950 border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] transform transition-all sm:my-4"
+            x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-8 scale-95">
 
-        <div class="pointer-events-none absolute inset-0 z-0 opacity-[0.03]"
-            style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
+            <div class="pointer-events-none absolute inset-0 z-0 opacity-[0.03]"
+                style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
 
-        <div class="relative z-10">
-            {{ $slot }}
+            <div class="relative z-10">
+                {{ $slot }}
+            </div>
         </div>
     </div>
 </div>

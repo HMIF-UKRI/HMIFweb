@@ -366,7 +366,7 @@
 
                 @if ($event->event_mode === 'registration')
                     <div class="mt-8 rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
-                        <div class="mb-6 flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
+                        <div class="mb-6 space-y-4 border-b border-white/10 pb-5">
                             <div>
                                 <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">
                                     Data Pendaftaran
@@ -374,48 +374,56 @@
                                 <h2 class="text-2xl font-black text-white">
                                     {{ $event->registrations_count }} Peserta Terdaftar
                                 </h2>
+                            </div>
+
+                            <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
                                 @if ($registrationSearch !== '')
-                                    <p class="mt-2 text-xs text-gray-400">
+                                    <p class="text-sm text-gray-400">
                                         Menampilkan {{ $registrations->total() }} hasil untuk "{{ $registrationSearch }}".
                                     </p>
+                                @else
+                                    <p class="text-sm text-gray-500">
+                                        Kelola pendaftar, sertifikat, dan export data peserta.
+                                    </p>
                                 @endif
-                            </div>
-                            <div class="flex flex-col gap-2 lg:items-end">
-                                <form method="GET" action="{{ route('admin.events.show', $event->slug) }}"
-                                    class="flex w-full gap-2 sm:w-80">
-                                    <input type="text" name="registration_search" value="{{ $registrationSearch }}"
-                                        placeholder="Cari nama pendaftar..."
-                                        class="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3 text-xs text-white outline-none transition placeholder:text-gray-600 focus:border-emerald-600">
-                                    <button type="submit"
-                                        class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
-                                        title="Cari pendaftar">
-                                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                                    </button>
-                                    @if ($registrationSearch !== '')
-                                        <a href="{{ route('admin.events.show', $event->slug) }}"
-                                            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-400 transition hover:bg-red-600 hover:text-white"
-                                            title="Reset pencarian">
-                                            <i class="fa-solid fa-xmark text-xs"></i>
-                                        </a>
-                                    @endif
-                                </form>
 
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <button type="button" x-on:click="$dispatch('open-modal', 'certificate-all')"
-                                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-blue-700">
-                                        <i class="fa-solid fa-paper-plane text-[11px]"></i>
-                                        Kirim Sertifikat
-                                    </button>
-                                    <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
-                                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-emerald-700">
-                                        <i class="fa-solid fa-file-excel text-[11px]"></i>
-                                        Download Excel
-                                    </a>
+                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                                    <form method="GET" action="{{ route('admin.events.show', $event->slug) }}"
+                                        class="flex w-full gap-2 sm:w-72">
+                                        <input type="text" name="registration_search" value="{{ $registrationSearch }}"
+                                            placeholder="Cari pendaftar..."
+                                            class="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3 text-xs text-white outline-none transition placeholder:text-gray-600 focus:border-emerald-600">
+                                        <button type="submit"
+                                            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
+                                            title="Cari pendaftar">
+                                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                                        </button>
+                                        @if ($registrationSearch !== '')
+                                            <a href="{{ route('admin.events.show', $event->slug) }}"
+                                                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-400 transition hover:bg-red-600 hover:text-white"
+                                                title="Reset pencarian">
+                                                <i class="fa-solid fa-xmark text-xs"></i>
+                                            </a>
+                                        @endif
+                                    </form>
+
+                                    <div class="flex shrink-0 flex-wrap items-center gap-2">
+                                        <button type="button" x-on:click="$dispatch('open-modal', 'certificate-all')"
+                                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-blue-700">
+                                            <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                                            Kirim Sertifikat
+                                        </button>
+                                        <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
+                                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-emerald-700">
+                                            <i class="fa-solid fa-file-excel text-[11px]"></i>
+                                            Download Excel
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+                        <div class="mb-6 grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
                             @forelse ($registrationCategories as $category)
                                 <div class="rounded-xl border border-white/10 bg-white/5 p-4">
                                     <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">
@@ -443,11 +451,16 @@
                             <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                 <div>
                                     <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                                        Rata-rata Angkatan Mahasiswa
+                                        Angkatan Mahasiswa Terbanyak
                                     </p>
                                     <p class="mt-2 text-3xl font-black text-white">
-                                        {{ $batchSummary['average'] ? 'Angkatan ' . $batchSummary['average'] : '-' }}
+                                        {{ $batchSummary['most_common'] ? 'Angkatan ' . $batchSummary['most_common'] : '-' }}
                                     </p>
+                                    @if ($batchSummary['most_common'])
+                                        <p class="mt-1 text-xs font-bold text-gray-400">
+                                            {{ $batchSummary['most_common_total'] }} peserta
+                                        </p>
+                                    @endif
                                 </div>
                                 <div class="text-left md:text-right">
                                     <p class="text-xs font-bold text-emerald-400">
@@ -478,15 +491,15 @@
 
                         <div class="overflow-hidden rounded-xl border border-white/10">
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-white/10 text-left">
+                                <table class="min-w-full table-fixed divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
                                         <tr>
-                                            <th class="w-[30%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Peserta</th>
-                                            <th class="w-[18%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</th>
-                                            <th class="w-[22%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
+                                            <th class="w-[27%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Peserta</th>
+                                            <th class="w-[13%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</th>
+                                            <th class="w-[19%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Instansi</th>
                                             <th class="w-[15%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Akademik</th>
-                                            <th class="w-[10%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
-                                            <th class="w-[5%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
+                                            <th class="w-[13%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Sertifikat</th>
+                                            <th class="w-[13%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/10 bg-black/20">
@@ -511,10 +524,10 @@
                                                         {{ $registration->participant_category ?: 'Tidak Diisi' }}
                                                     </span>
                                                 </td>
-                                                <td class="px-4 py-4 align-top text-sm leading-relaxed text-gray-300">
+                                                <td class="break-words px-4 py-4 align-top text-sm leading-relaxed text-gray-300">
                                                     {{ $registration->institution ?: '-' }}
                                                 </td>
-                                                <td class="px-4 py-4 align-top text-sm leading-relaxed text-gray-300">
+                                                <td class="break-words px-4 py-4 align-top text-sm leading-relaxed text-gray-300">
                                                     <p>{{ $registration->major ?: '-' }}</p>
                                                     <p class="mt-1 text-xs text-gray-500">
                                                         Angkatan {{ $registration->batch ?: '-' }}
@@ -532,7 +545,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="px-4 py-4 align-top">
-                                                    <div class="flex items-center justify-end gap-2">
+                                                    <div class="flex items-center gap-2">
                                                         <button type="button"
                                                             x-on:click="$dispatch('open-modal', 'edit-registration-{{ $registration->id }}')"
                                                             class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 transition hover:bg-blue-600 hover:text-white"
