@@ -491,7 +491,7 @@
 
                         <div class="overflow-hidden rounded-xl border border-white/10">
                             <div class="overflow-x-auto">
-                                <table class="min-w-full table-fixed divide-y divide-white/10 text-left">
+                                <table class="w-full table-fixed divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
                                         <tr>
                                             <th class="w-[27%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Peserta</th>
