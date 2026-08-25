@@ -101,13 +101,13 @@
                                 </div>
 
                                 <div class="mt-10 w-full space-y-4">
-                                    <a href="{{ env('QR_KOTAK_ASPIRASI_URL') }}" target="_blank"
-                                        class="group relative flex items-center justify-center w-full bg-white text-black hover:bg-red-600 hover:text-white py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] transition-all duration-300 overflow-hidden">
-                                        <span class="relative z-10">Kirim Aspirasi Sekarang</span>
+                                    <div
+                                        class="group relative flex items-center justify-center w-full bg-white text-black hover:bg-red-600 hover:text-white py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] transition-all duration-300 overflow-hidden cursor-pointer">
+                                        <a href="{{ env('QR_KOTAK_ASPIRASI_URL') }}" target="_blank" class="relative z-10">Kirim Aspirasi Sekarang</a>
                                         <div
                                             class="absolute inset-0 h-full w-0 bg-red-600 transition-all duration-300 group-hover:w-full">
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

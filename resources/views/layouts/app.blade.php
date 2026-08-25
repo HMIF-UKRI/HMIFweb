@@ -74,11 +74,6 @@
                             'title' => 'Pengurus',
                             'route' => 'admin.managements.index',
                         ],
-                        [
-                            'icon' => 'calendar-number-outline',
-                            'title' => 'Attendances',
-                            'route' => 'admin.attendances.index',
-                        ],
                     ],
                     'Core Content' => [
                         ['icon' => 'newspaper-outline', 'title' => 'Blog Posts', 'route' => 'admin.blogs.index'],

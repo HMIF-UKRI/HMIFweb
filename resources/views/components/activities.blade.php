@@ -79,8 +79,8 @@
         </div>
 
         <div class="mt-8 text-center">
-            <a class="group relative inline-flex items-center overflow-hidden rounded-lg border-2 border-current bg-red-900 px-8 py-3 text-white transition-colors duration-300 hover:text-red-500 focus:ring-3 focus:outline-none"
-                href="{{ route('event.index') }}">
+            <div class="group relative inline-flex items-center overflow-hidden rounded-lg border-2 border-current bg-red-900 px-8 py-3 text-white transition-colors duration-300 hover:text-red-500 focus:ring-3 focus:outline-none cursor-pointer"
+                >
                 <span
                     class="absolute top-0 left-0 z-0 h-full w-0 bg-white transition-all duration-300 group-hover:w-full"></span>
                 <span class="absolute -end-full transition-all group-hover:end-4">
@@ -91,10 +91,10 @@
                     </svg>
                 </span>
 
-                <span class="z-10 text-sm font-medium transition-all group-hover:me-4">
+                <a class="z-10 text-sm font-medium transition-all group-hover:me-4" href="{{ route('event.index') }}">
                     Lihat Semua Kegiatan
-                </span>
-            </a>
+                </a>
+            </div>
         </div>
     </div>
 </section>

@@ -23,7 +23,6 @@ class Event extends Model implements HasMedia
         'description',
         'event_date',
         'location',
-        'event_mode',
         'whatsapp_group_link',
         'status',
         'event_category_id',
@@ -46,11 +45,6 @@ class Event extends Model implements HasMedia
     public function period(): BelongsTo
     {
         return $this->belongsTo(PeriodeKepengurusan::class, 'period_id');
-    }
-
-    public function attendances(): HasMany
-    {
-        return $this->hasMany(Attendances::class);
     }
 
     public function registrations(): HasMany
@@ -79,3 +73,4 @@ class Event extends Model implements HasMedia
             ->sharpen(10);
     }
 }
+

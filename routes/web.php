@@ -5,7 +5,6 @@ use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminMerchandiseController;
 use App\Http\Controllers\AdminPortofolioController;
 use App\Http\Controllers\AngkatanController;
-use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BidangController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DepartemenController;
@@ -31,11 +30,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [OrganizationController::class, 'home'])->name('home');
 Route::get('/struktur-pengurus', [OrganizationController::class, 'index'])->name('struktur-pengurus');
 
-Route::get('/absensi/kegiatan/{slug}', [AttendanceController::class, 'processScan'])->name('attendance.scan');
-Route::post('/absensi/submit/{slug}', [AttendanceController::class, 'store'])->name('attendance.submit');
+Route::get('/absensi/kegiatan/{slug}', function ($slug) {
+    return redirect()->route('event.show', $slug);
+})->name('attendance.scan');
 
 Route::get('/kegiatan/{slug}', [PublicEventController::class, 'show'])->name('event.show');
-Route::post('/kegiatan/{slug}/register', [PublicEventController::class, 'register'])->name('event.register');
+Route::post('/kegiatan/{slug}/register', [PublicEventController::class, 'register'])
+    ->middleware('throttle:10,1')
+    ->name('event.register');
 Route::get('/kegiatan', [PublicEventController::class, 'index'])->name('event.index');
 
 Route::get('/blog', [PublicBlogController::class, 'index'])->name('blog.index');
@@ -75,23 +77,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     */
     Route::middleware(['role:super-admin|pengurus'])->prefix('admin')->name('admin.')->group(function () {
 
-        // Master Data (Hanya Super Admin)
-        Route::middleware(['role:super-admin|pengurus'])->group(function () {
-            Route::resource('departments', DepartemenController::class);
-            Route::resource('bidangs', BidangController::class);
-            Route::resource('periods', PeriodeKepengurusanController::class);
-            Route::resource('members', MemberController::class);
-            Route::resource('generations', AngkatanController::class);
-            Route::resource('categories', CategoriesController::class);
-            Route::resource('merchandises', AdminMerchandiseController::class);
+        // Master Data (Hanya Super Admin & Pengurus)
+        Route::resource('departments', DepartemenController::class);
+        Route::resource('bidangs', BidangController::class);
+        Route::resource('periods', PeriodeKepengurusanController::class);
+        Route::resource('members', MemberController::class);
+        Route::resource('generations', AngkatanController::class);
+        Route::resource('categories', CategoriesController::class);
+        Route::resource('merchandises', AdminMerchandiseController::class);
 
-            Route::patch('merchandises/{merchandise}/increment', [AdminMerchandiseController::class, 'incrementStock'])->name('merchandises.increment');
-            Route::patch('merchandises/{merchandise}/decrement', [AdminMerchandiseController::class, 'decrementStock'])->name('merchandises.decrement');
-        });
+        Route::patch('merchandises/{merchandise}/increment', [AdminMerchandiseController::class, 'incrementStock'])->name('merchandises.increment');
+        Route::patch('merchandises/{merchandise}/decrement', [AdminMerchandiseController::class, 'decrementStock'])->name('merchandises.decrement');
 
         // Manajemen Organisasi & Konten
         Route::resource('managements', PengurusController::class);
         Route::resource('events', AdminEventController::class);
+        Route::get('events/{slug}/qrcode', [AdminEventController::class, 'qrcode'])
+            ->name('events.qrcode');
         Route::get('events/{slug}/registrations/export', [AdminEventController::class, 'exportRegistrations'])
             ->name('events.registrations.export');
         Route::put('events/{slug}/registrations/{registration}', [AdminEventController::class, 'updateRegistration'])
@@ -107,15 +109,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('blogs', AdminBlogController::class);
         Route::post('/blogs/upload-image', [AdminBlogController::class, 'uploadImage'])->name('blogs.upload-image');
         Route::resource('doc-event', DocEventController::class);
-
-        // Manajemen Absensi
-        Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
-        Route::get('attendances/absensi/{slug}', [AttendanceController::class, 'absensi'])->name('attendances.absensi');
-        Route::get('attendances/qrcode/{slug}', [AttendanceController::class, 'showQrCode'])
-            ->name('attendances.qrcode');
-        Route::post('events/{event_id}/attendance/manual', [AttendanceController::class, 'storeManual'])->name('attendance.manual');
-        Route::get('attendances/{slug}/export-pdf', [AttendanceController::class, 'exportPdf'])
-            ->name('attendances.export_pdf');
 
         // Archive Data
         Route::get('archive/{document}/view', [DocEventController::class, 'view'])->name('archive.view');

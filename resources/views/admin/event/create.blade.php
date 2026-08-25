@@ -12,7 +12,7 @@
 
     <x-slot name="header_title">Content / Events / Create</x-slot>
 
-    <div x-data="{ imageUrl: null, status: 'upcoming', mode: @js(old('event_mode', 'attendance')) }" class="relative pb-24">
+    <div x-data="{ imageUrl: null, status: 'upcoming' }" class="relative pb-24">
         <a href="{{ route('admin.events.index') }}"
             class="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] hover:text-red-600 transition-colors">
             <ion-icon name="arrow-back-outline"></ion-icon>
@@ -83,8 +83,7 @@
 
                                 <div class="space-y-1.5">
                                     <label
-                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Kabinet
-                                        penyelenggara</label>
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Kabinet</label>
                                     <select name="period_id" required
                                         class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white focus:border-red-600 outline-none transition-all appearance-none">
                                         @foreach ($periods as $period)
@@ -97,8 +96,7 @@
 
                                 <div class="space-y-1.5">
                                     <label
-                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Status
-                                        Publikasi</label>
+                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Status</label>
                                     <select name="status" x-model="status" required
                                         class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-6 text-xs text-white outline-none appearance-none focus:border-red-600">
                                         <option value="upcoming" class="bg-gray-950">UPCOMING</option>
@@ -126,47 +124,14 @@
 
                                 <div class="space-y-1.5">
                                     <label
-                                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Mode
-                                        Event</label>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <label
-                                            class="flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition"
-                                            :class="mode === 'attendance' ? 'border-red-500 bg-red-950/30 text-white' : 'border-white/10 bg-white/5 text-gray-400'">
-                                            <input type="radio" name="event_mode" value="attendance"
-                                                class="sr-only" x-model="mode"
-                                                {{ old('event_mode', 'attendance') === 'attendance' ? 'checked' : '' }}>
-                                            <i class="fa-solid fa-qrcode text-sm"></i>
-                                            <span class="text-[10px] font-black uppercase tracking-widest">Aktifkan
-                                                Absensi</span>
-                                        </label>
-                                        <label
-                                            class="flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition"
-                                            :class="mode === 'registration' ? 'border-red-500 bg-red-950/30 text-white' : 'border-white/10 bg-white/5 text-gray-400'">
-                                            <input type="radio" name="event_mode" value="registration"
-                                                class="sr-only" x-model="mode"
-                                                {{ old('event_mode') === 'registration' ? 'checked' : '' }}>
-                                            <i class="fa-solid fa-user-plus text-sm"></i>
-                                            <span class="text-[10px] font-black uppercase tracking-widest">Aktifkan
-                                                Pendaftaran</span>
-                                        </label>
-                                    </div>
-                                    <p class="text-[9px] text-gray-600 leading-relaxed">
-                                        Pilih salah satu fitur yang aktif untuk event ini.
-                                    </p>
-                                </div>
-
-                                <div x-show="mode === 'registration'" x-cloak class="space-y-1.5">
-                                    <label
                                         class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Link
-                                        Grup WhatsApp</label>
+                                        Grup WhatsApp (Opsional)</label>
                                     <input type="url" name="whatsapp_group_link"
                                         value="{{ old('whatsapp_group_link') }}"
-                                        x-bind:required="mode === 'registration'"
-                                        x-bind:disabled="mode !== 'registration'"
                                         placeholder="https://chat.whatsapp.com/..."
                                         class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-[10px] text-white outline-none">
                                     <p class="text-[9px] text-gray-600 leading-relaxed">
-                                        Link ini akan dipakai sebagai tombol pendaftaran dan dikirim ke peserta lewat email.
+                                        Link ini akan dipakai sebagai tombol masuk grup bagi pendaftar dan dikirim otomatis lewat email konfirmasi resmi.
                                     </p>
                                 </div>
                             </div>

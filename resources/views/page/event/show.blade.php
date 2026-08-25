@@ -11,10 +11,14 @@
     </x-slot>
 
     @php
-        $canAttend = $event->event_mode === 'attendance' &&
-            ($event->status === 'ongoing' || \Carbon\Carbon::parse($event->event_date)->isToday());
-        $canRegister = $event->event_mode === 'registration' && in_array($event->status, ['upcoming', 'ongoing'], true);
         $registrationFlash = session('registration_success');
+
+        $alreadyRegistered = false;
+        if (auth()->check()) {
+            $alreadyRegistered = $event->registrations()
+                ->where('email', auth()->user()->email)
+                ->exists();
+        }
     @endphp
 
     <div class="min-h-screen bg-gray-950 font-sans text-white selection:bg-red-500 selection:text-white">
@@ -231,39 +235,65 @@
                                 </div>
                             </div>
 
-                            <div class="mt-8 border-t border-white/10 pt-6">
-                                @if ($event->event_mode === 'attendance')
-                                    @if ($canAttend)
-                                        <a href="{{ route('attendance.scan', $event->slug) }}"
-                                            class="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-red-600 px-6 py-3.5 text-center font-bold text-white shadow-lg shadow-red-900/30 transition duration-300 hover:scale-[1.02] hover:bg-red-700">
-                                            <span class="relative z-10 flex items-center gap-2">
-                                                <i class="fa-solid fa-qrcode"></i>
-                                                Absensi Sekarang
-                                                <i
-                                                    class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
-                                            </span>
-                                        </a>
-                                        <p class="mt-3 text-center text-[10px] text-gray-400">
-                                            *Silakan scan atau konfirmasi kehadiran melalui tombol di atas
-                                        </p>
-                                    @elseif ($event->status == 'upcoming')
-                                        <button disabled
-                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
-                                            Absensi Belum Dibuka
-                                        </button>
-                                        <p class="mt-3 text-center text-[10px] text-gray-500">
-                                            *Absensi hanya tersedia saat kegiatan berlangsung
-                                        </p>
+                            <div class="mt-8 border-t border-white/10 py-4">
+                                @if (auth()->check())
+                                    {{-- JIKA USER SUDAH LOGIN: Hanya 1 tombol Absen/Daftar Sekarang --}}
+                                    @if ($alreadyRegistered)
+                                        <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-center">
+                                            <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 mb-2">
+                                                <i class="fa-solid fa-check text-lg"></i>
+                                            </div>
+                                            <p class="text-sm font-bold text-emerald-400">
+                                                Kehadiran / Pendaftaran Tercatat
+                                            </p>
+                                            <p class="mt-1 text-[10px] text-gray-400">
+                                                Data keikutsertaan Anda telah tersimpan di sistem kegiatan.
+                                            </p>
+                                        </div>
                                     @else
-                                        <button disabled
-                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
-                                            Kegiatan Berakhir
-                                        </button>
+                                        <div class="space-y-3">
+                                            <div class="rounded-xl border border-white/10 bg-white/5 p-3.5 flex items-center gap-3">
+                                                <div class="h-9 w-9 rounded-lg bg-red-600/20 flex items-center justify-center text-red-400 text-sm shrink-0">
+                                                    <i class="fa-solid fa-user-check"></i>
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Identitas Anggota</p>
+                                                    <p class="text-xs font-bold text-white truncate">{{ auth()->user()->member?->full_name ?? auth()->user()->email }}</p>
+                                                    <p class="text-[10px] text-gray-400 font-mono">NPM: {{ auth()->user()->member?->npm ?? auth()->user()->no_hp ?? '-' }}</p>
+                                                </div>
+                                            </div>
+
+                                            <form action="{{ route('event.register', $event->slug) }}" method="POST">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-red-600 px-6 py-4 text-center font-bold text-white shadow-lg shadow-red-900/30 transition duration-300 hover:scale-[1.02] hover:bg-red-700 active:scale-98">
+                                                    <span class="relative z-10 flex items-center gap-2">
+                                                        <i class="fa-solid fa-check-circle"></i>
+                                                        Absensi Sekarang
+                                                        <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                                                    </span>
+                                                </button>
+                                            </form>
+                                            <p class="text-center text-[10px] text-gray-400">
+                                                *Klik tombol di atas untuk langsung mencatat kehadiran / partisipasi Anda
+                                            </p>
+                                        </div>
                                     @endif
                                 @else
-                                    @if ($canRegister)
+                                    {{-- JIKA USER BELUM LOGIN: Munculkan form pendaftaran --}}
+                                    @if ($event->status === 'completed')
+                                        <button disabled
+                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
+                                            Kegiatan Telah Selesai
+                                        </button>
+                                    @elseif ($event->status === 'cancelled')
+                                        <button disabled
+                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
+                                            Kegiatan Dibatalkan
+                                        </button>
+                                    @else
                                         <form action="{{ route('event.register', $event->slug) }}" method="POST"
-                                            class="space-y-4">
+                                            class="py-2 space-y-4">
                                             @csrf
                                             <div>
                                                 <label for="full_name"
@@ -271,7 +301,7 @@
                                                     Lengkap</label>
                                                 <input type="text" id="full_name" name="full_name"
                                                     value="{{ old('full_name') }}" required
-                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
                                                     placeholder="Nama peserta">
                                             </div>
 
@@ -280,7 +310,7 @@
                                                     class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Email</label>
                                                 <input type="email" id="email" name="email"
                                                     value="{{ old('email') }}" required
-                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
                                                     placeholder="nama@email.com">
                                             </div>
 
@@ -290,7 +320,7 @@
                                                     WhatsApp</label>
                                                 <input type="text" id="phone" name="phone"
                                                     value="{{ old('phone') }}" required
-                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
                                                     placeholder="08xxxxxxxxxx">
                                             </div>
 
@@ -299,7 +329,7 @@
                                                     class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Kategori
                                                     Peserta</label>
                                                 <select id="participant_category" name="participant_category" required
-                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600">
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500 appearance-none">
                                                     <option value="" class="bg-gray-950">Pilih kategori</option>
                                                     @foreach (['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'] as $category)
                                                         <option value="{{ $category }}" class="bg-gray-950"
@@ -315,26 +345,26 @@
                                                     class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Instansi</label>
                                                 <input type="text" id="institution" name="institution"
                                                     value="{{ old('institution') }}" required
-                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
                                                     placeholder="Kampus / organisasi / umum">
                                             </div>
 
                                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                                 <div>
                                                     <label for="major"
-                                                        class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Prodi</label>
+                                                        class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Program Studi</label>
                                                     <input type="text" id="major" name="major"
                                                         value="{{ old('major') }}"
-                                                        class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
-                                                        placeholder="Opsional">
+                                                        class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
+                                                        placeholder="Opsional or '-'">
                                                 </div>
                                                 <div>
                                                     <label for="batch"
                                                         class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Angkatan</label>
                                                     <input type="text" id="batch" name="batch"
                                                         value="{{ old('batch') }}"
-                                                        class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
-                                                        placeholder="2023 / 23 / Angkatan 23">
+                                                        class="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
+                                                        placeholder="2024 / 24">
                                                 </div>
                                             </div>
 
@@ -342,12 +372,12 @@
                                                 <label for="notes"
                                                     class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Catatan</label>
                                                 <textarea id="notes" name="notes" rows="3"
-                                                    class="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none transition focus:border-red-600"
+                                                    class="w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-xs text-white outline-none transition focus:border-red-600 placeholder:text-gray-500"
                                                     placeholder="Opsional">{{ old('notes') }}</textarea>
                                             </div>
 
                                             <button type="submit"
-                                                class="group flex w-full items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-red-900/30 transition hover:bg-red-700 active:scale-95">
+                                                class="group flex w-full items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-red-900/30 transition hover:bg-red-700 active:scale-95">
                                                 Daftar Event
                                                 <i class="fa-solid fa-paper-plane text-xs transition group-hover:translate-x-1"></i>
                                             </button>
@@ -356,12 +386,6 @@
                                                 Informasi pendaftaran akan dikirim otomatis ke email peserta.
                                             </p>
                                         </form>
-                                    @else
-                                        <div class="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
-                                            <p class="text-sm font-bold text-gray-400">
-                                                Pendaftaran event sedang tidak dibuka.
-                                            </p>
-                                        </div>
                                     @endif
                                 @endif
                             </div>
@@ -390,11 +414,11 @@
         </div>
 
         @if ($relatedEvents->isNotEmpty())
-            <section class="border-t border-white/10 bg-black/40 py-16">
+            <section class="border-t border-white/10 bg-black/40 rounded-2xl py-6 my-12 shadow-2xl backdrop-blur-xl">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="mb-10 flex items-center justify-between">
                         <div>
-                            <h2 class="text-2xl font-bold text-white">
+                            <h2 class="text-base md:text-2xl font-bold text-white">
                                 Kegiatan Lainnya
                             </h2>
                             <div class="mt-2 h-1 w-16 rounded-full bg-red-600"></div>

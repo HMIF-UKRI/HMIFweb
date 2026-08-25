@@ -10,91 +10,166 @@ use Illuminate\Support\Str;
 
 class BlogSeeder extends Seeder
 {
-    /**
-     * Jalankan database seeder.
-     */
     public function run(): void
     {
-        $categoryData = ['Tutorial', 'Security', 'Web Development', 'Tech News', 'Campus Life'];
-        foreach ($categoryData as $cat) {
-            BlogCategory::updateOrCreate(
-                ['slug' => Str::slug($cat)],
-                ['name' => $cat]
-            );
-        }
+        $categories = BlogCategory::all()->keyBy('name');
 
-        $categories = BlogCategory::all();
-        $members = Member::all();
-
-        if ($members->isEmpty()) {
-            $this->command->warn('Tidak ada Member ditemukan. Silakan jalankan MemberSeeder terlebih dahulu atau buat member manual.');
-            return;
-        }
-
-        $jsonBlogs = [
+        $blogsData = [
             [
-                "blog_category_id" => 1,
-                "title" => "Masa Depan Kecerdasan Buatan di Tahun 2026",
-                "summary" => "Menjelajahi bagaimana AI akan mengubah cara mahasiswa informatika belajar dan bekerja di era transformasi digital yang semakin cepat.",
-                "content" => '{"blocks":[{"type":"header","data":{"text":"Revolusi AI dalam Pendidikan","level":2}},{"type":"paragraph","data":{"text":"Pada tahun 2026, kita melihat pergeseran besar di mana AI bukan lagi sekadar alat bantu, melainkan mitra kolaborasi dalam penulisan kode dan analisis data."}},{"type":"quote","data":{"text":"Teknologi tidak menggantikan peran manusia, tetapi memperkuat potensi yang kita miliki.","caption":"Dekan Fakultas Teknik"}},{"type":"list","data":{"style":"unordered","items":["Automated code review","Personalized learning paths","Real-time data visualization"]}},{"type":"image","data":{"file":{"url":"https://images.unsplash.com/photo-1677442136019-21780ecad995"},"caption":"Visualisasi Jaringan Saraf Tiruan"}}]}',
-                "views_count" => 150,
-                "status" => "published"
+                'category'    => 'Artificial Intelligence',
+                'title'       => 'Masa Depan Kecerdasan Buatan & Software Engineering di Tahun 2026',
+                'summary'     => 'Menjelajahi bagaimana AI agents dan multimodal LLM mentransformasi cara developer membangun perangkat lunak serta adaptasi mahasiswa informatika.',
+                'status'      => 'published',
+                'views_count' => 450,
+                'image_url'   => 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Evolusi AI dalam Dunia Rekayasa Perangkat Lunak', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Memasuki tahun 2026, AI bukan lagi sekadar pelengkap atau autocomplete kode sederhana. Pergeseran paradigma kini mengarah ke autonomous coding agents yang mampu merancang arsitektur, merefaktor codebase besar, hingga menguji sistem secara komprehensif.']],
+                    ['type' => 'header', 'data' => ['text' => 'Keterampilan Kunci Mahasiswa Informatika', 'level' => 3]],
+                    ['type' => 'list', 'data' => ['style' => 'unordered', 'items' => [
+                        'System Architecture & Domain Knowledge: Memahami konteks bisnis dan perancangan sistem menyeluruh.',
+                        'AI-Assisted Pair Programming: Efektivitas berkomunikasi dan mengarahkan AI untuk memecahkan masalah kompleks.',
+                        'Cybersecurity & Ethical AI: Memastikan kode yang dihasilkan aman dari celah kerentanan dan mematuhi privasi data.'
+                    ]]],
+                    ['type' => 'quote', 'data' => ['text' => 'Teknologi tidak menggantikan programmer yang berpikir kritis, tetapi programmer yang memanfaatkan AI akan melangkah jauh lebih cepat.', 'caption' => 'Riset & Teknologi HMIF UKRI']]
+                ]])
             ],
             [
-                "blog_category_id" => 2,
-                "title" => "Tips Sukses Menghadapi Coding Bootcamp HMIF",
-                "summary" => "Panduan lengkap bagi mahasiswa tingkat awal untuk menguasai dasar-dasar pemrograman melalui program intensif himpunan.",
-                "content" => '{"blocks":[{"type":"header","data":{"text":"Persiapan Mental dan Teknis","level":2}},{"type":"paragraph","data":{"text":"Coding bootcamp menuntut fokus yang tinggi. Anda perlu memahami logika dasar sebelum terjun ke framework yang kompleks."}},{"type":"list","data":{"style":"ordered","items":["Pahami algoritma dasar","Kuasai Git version control","Bangun networking dengan senior"]}},{"type":"quote","data":{"text":"Konsistensi lebih penting daripada intensitas yang sesaat.","caption":"Ketua HMIF"}}]}',
-                "views_count" => 85,
-                "status" => "published"
+                'category'    => 'Web Development',
+                'title'       => 'Roadmap Full-Stack Web Developer Modern: Dari Fundamental hingga Cloud Native',
+                'summary'     => 'Panduan terstruktur langkah demi langkah bagi mahasiswa untuk menguasai stack web development yang paling diminati industri.',
+                'status'      => 'published',
+                'views_count' => 380,
+                'image_url'   => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Pondasi Utama Full-Stack Engineering', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Banyak pemula terjebak dalam tutorial hell karena melompati konsep dasar. Sebelum menyentuh framework modern, pastikan Anda menguasai fundamental web: HTTP/HTTPS protokol, JavaScript ES6+, DOM manipulation, dan relasi database SQL.']],
+                    ['type' => 'header', 'data' => ['text' => 'Tahapan Roadmap', 'level' => 3]],
+                    ['type' => 'list', 'data' => ['style' => 'ordered', 'items' => [
+                        'Fase 1: HTML Semantic, Responsive CSS Modern (Flexbox, Grid, Tailwind CSS), dan Vanilla JavaScript',
+                        'Fase 2: Backend Framework (Laravel 12 / Node.js Express), RESTful API, dan Relational DB (MySQL / PostgreSQL)',
+                        'Fase 3: Modern Frontend Framework (Vue 3 / React) dengan State Management & SPA Routing',
+                        'Fase 4: Docker Containerization, CI/CD GitHub Actions, dan Deployment ke Cloud Provider (VPS / AWS)'
+                    ]]]
+                ]])
             ],
             [
-                "blog_category_id" => 3,
-                "title" => "Keamanan Siber: Melindungi Data di Era Cloud",
-                "summary" => "Mengapa enkripsi dan kesadaran akan privasi data menjadi mata kuliah paling relevan saat ini.",
-                "content" => '{"blocks":[{"type":"header","data":{"text":"Tantangan Cloud Security","level":2}},{"type":"paragraph","data":{"text":"Dengan migrasi besar-besaran ke cloud, celah keamanan baru muncul setiap harinya. Mahasiswa informatika harus melek protokol keamanan."}},{"type":"image","data":{"file":{"url":"https://images.unsplash.com/photo-1550751827-4bd374c3f58b"},"caption":"Ilustrasi Enkripsi Data Modern"}},{"type":"paragraph","data":{"text":"Penerapan multi-factor authentication (MFA) adalah langkah awal yang paling krusial."}}]}',
-                "views_count" => 42,
-                "status" => "draft"
+                'category'    => 'Cyber Security',
+                'title'       => 'Panduan Praktis Keamanan Siber: Mengamankan REST API & Pencegahan Serangan Web',
+                'summary'     => 'Mengenal teknik mitigasi kerentanan OWASP Top 10 pada aplikasi web modern dan tips audit keamanan dasar.',
+                'status'      => 'published',
+                'views_count' => 290,
+                'image_url'   => 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Mengapa Keamanan API Sangat Krusial?', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Sebagian besar celah kebocoran data di aplikasi modern berakar pada kesalahan konfigurasi endpoint API. Mulai dari Broken Object Level Authorization (BOLA) hingga kebocoran token otentikasi.']],
+                    ['type' => 'header', 'data' => ['text' => 'Langkah Pengamanan Esensial', 'level' => 3]],
+                    ['type' => 'list', 'data' => ['style' => 'unordered', 'items' => [
+                        'Terapkan Rate Limiting dan Throttling untuk menangkal serangan Brute Force.',
+                        'Validasi dan sanitasi seluruh input request secara ketat di sisi server.',
+                        'Gunakan token otentikasi dengan masa berlaku singkat dan enkripsi HTTPS/TLS 1.3.',
+                        'Terapkan principle of least privilege pada hak akses database dan API keys.'
+                    ]]]
+                ]])
             ],
             [
-                "blog_category_id" => 1,
-                "title" => "Laravel 12: Fitur Baru yang Harus Kamu Coba",
-                "summary" => "Ulasan mendalam mengenai rilis terbaru Laravel dan bagaimana ia mempermudah pengembangan web full-stack.",
-                "content" => '{"blocks":[{"type":"header","data":{"text":"Optimalisasi Performa di Laravel 12","level":2}},{"type":"paragraph","data":{"text":"Versi terbaru ini membawa pembaruan pada engine routing dan integrasi Vite yang lebih seamless."}},{"type":"list","data":{"style":"unordered","items":["Improved database sharding","Built-in AI helper tools","Enhanced testing suite"]}},{"type":"quote","data":{"text":"The best PHP framework just got better.","caption":"Taylor Otwell"}}]}',
-                "views_count" => 210,
-                "status" => "published"
+                'category'    => 'Tutorial',
+                'title'       => 'Mengenal Laravel 12: Fitur Baru, Optimasi Performa, dan Best Practices',
+                'summary'     => 'Bedah fitur terbaru framework PHP terpopuler di dunia dan cara memanfaatkannya untuk efisiensi koding tim pengembang.',
+                'status'      => 'published',
+                'views_count' => 520,
+                'image_url'   => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Pembaruan Signifikan di Laravel 12', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Laravel 12 menghadirkan peningkatan engine routing yang lebih hemat memori, struktur konfigurasi yang semakin ramping, serta dukungan penuh untuk fitur-fitur modern PHP 8.3+.']],
+                    ['type' => 'quote', 'data' => ['text' => 'Ekosistem Laravel terus membuktikan bahwa pengembangan web berbasis PHP dapat terasa sangat modern, elegan, dan berkinerja tinggi.', 'caption' => 'Divisi Software Dev HMIF UKRI']]
+                ]])
             ],
             [
-                "blog_category_id" => 2,
-                "title" => "Dokumentasi Kegiatan: Malam Keakraban Informatika",
-                "summary" => "Melihat kembali keseruan acara tahunan HMIF untuk mempererat solidaritas antar angkatan.",
-                "content" => '{"blocks":[{"type":"header","data":{"text":"Membangun Solidaritas Tanpa Batas","level":2}},{"type":"paragraph","data":{"text":"Acara ini dihadiri oleh lebih dari 200 mahasiswa dari berbagai angkatan di basecamp UKRI."}},{"type":"image","data":{"file":{"url":"https://images.unsplash.com/photo-1511795409834-ef04bbd61622"},"caption":"Keseruan Malam Puncak MAKRAB"}},{"type":"paragraph","data":{"text":"Terima kasih kepada seluruh panitia yang telah bekerja keras menyukseskan agenda ini."}}]}',
-                "views_count" => 305,
-                "status" => "published"
-            ]
+                'category'    => 'Tech News',
+                'title'       => 'Membangun Portofolio Tech yang Dilirik Recruiter: Tips Mahasiswa Informatika',
+                'summary'     => 'Bagaimana cara menyusun showcase proyek, profil GitHub, dan CV teknis agar menarik perhatian perusahaan teknologi impian.',
+                'status'      => 'published',
+                'views_count' => 310,
+                'image_url'   => 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Fokus pada Kualitas dan Dampak Proyek', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Satu proyek kompleks dengan testing, arsitektur rapi, dokumentasi README yang jelas, dan live demo yang dapat diuji jauh lebih bernilai di mata recruiter dibanding puluhan proyek kloning tutorial yang belum selesai.']]
+                ]])
+            ],
+            [
+                'category'    => 'Campus Life',
+                'title'       => 'Dokumentasi & Keseruan Malam Keakraban (MAKRAB) Informatika UKRI 2025',
+                'summary'     => 'Melihat kembali momen hangat kebersamaan dan pengakraban seluruh mahasiswa informatika di Villa Istana Bunga Lembang.',
+                'status'      => 'published',
+                'views_count' => 640,
+                'image_url'   => 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Membangun Solidaritas Tanpa Sekat', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Kegiatan MAKRAB 2025 sukses mempertemukan ratusan mahasiswa aktif dan alumni lintas angkatan. Terima kasih kepada seluruh panitia dan partisipan yang telah menyukseskan acara ini!']]
+                ]])
+            ],
+            [
+                'category'    => 'Tutorial',
+                'title'       => 'Eksplorasi UI/UX Design System: Membangun Antarmuka Web yang Estetik dan Aksesibel',
+                'summary'     => 'Prinsip desain antarmuka modern, typography scale, color tokens, dan perancangan komponen UI yang ramah pengguna.',
+                'status'      => 'published',
+                'views_count' => 210,
+                'image_url'   => 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Pentingnya Konsistensi Desain', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Design system bukan hanya tentang keindahan visual, tetapi juga efisiensi kolaborasi antara desainer UI/UX dan frontend developer melalui komponen yang reusable dan terdokumentasi rapi.']]
+                ]])
+            ],
+            [
+                'category'    => 'Campus Life',
+                'title'       => 'Pengalaman Magang & Studi Independen Bersertifikat (MSIB) di Tech Unicorn',
+                'summary'     => 'Kisah inspiratif mahasiswa Informatika UKRI yang berhasil menembus seleksi ketat program magang nasional dan tips persiapannya.',
+                'status'      => 'draft',
+                'views_count' => 75,
+                'image_url'   => 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200',
+                'content'     => json_encode(['blocks' => [
+                    ['type' => 'header', 'data' => ['text' => 'Menghadapi Tantangan di Dunia Nyata', 'level' => 2]],
+                    ['type' => 'paragraph', 'data' => ['text' => 'Bekerja secara agile di lingkungan software engineering skala besar memberikan pengalaman berharga mengenai code review, monitoring metric, dan kolaborasi lintas disiplin ilmu.']]
+                ]])
+            ],
         ];
 
-        foreach ($jsonBlogs as $data) {
-            $category = $categories->firstWhere('id', $data['blog_category_id']) ?? $categories->random();
+        foreach ($blogsData as $data) {
+            $category = $categories->get($data['category']) ?? BlogCategory::firstOrCreate(
+                ['slug' => Str::slug($data['category'])],
+                ['name' => $data['category']]
+            );
 
-            $blog = Blog::create([
-                'blog_category_id' => $category->id,
-                'title'            => $data['title'],
-                'slug'             => Str::slug($data['title']),
-                'summary'          => $data['summary'],
-                'content'          => $data['content'],
-                'views_count'      => $data['views_count'],
-                'status'           => $data['status'],
-            ]);
+            $blog = Blog::updateOrCreate(
+                ['slug' => Str::slug($data['title'])],
+                [
+                    'blog_category_id' => $category->id,
+                    'title'            => $data['title'],
+                    'summary'          => $data['summary'],
+                    'content'          => $data['content'],
+                    'views_count'      => $data['views_count'],
+                    'status'           => $data['status'],
+                ]
+            );
 
-            try {
-                $blog->addMediaFromUrl('https://picsum.photos/seed/' . Str::random(10) . '/1200/800')
-                    ->toMediaCollection('blog_thumbnails');
-            } catch (\Exception $e) {
-                $this->command->error("Gagal mendownload gambar untuk blog: " . $blog->title . " | Error: " . $e->getMessage());
+            // Attach media image
+            if (!$blog->hasMedia('blog_thumbnails')) {
+                try {
+                    $blog->addMediaFromUrl($data['image_url'])
+                        ->toMediaCollection('blog_thumbnails');
+                } catch (\Throwable $e) {
+                    $fallback = database_path('seeders/images/dummy.png');
+                    if (file_exists($fallback)) {
+                        $blog->addMedia($fallback)
+                            ->preservingOriginal()
+                            ->toMediaCollection('blog_thumbnails');
+                    }
+                }
             }
         }
 
-        $this->command->info('BlogSeeder berhasil dijalankan dengan data JSON.');
+        $this->command->info('8 Blog semi-real berhasil dibuat beserta gambar thumbnail!');
     }
 }
+

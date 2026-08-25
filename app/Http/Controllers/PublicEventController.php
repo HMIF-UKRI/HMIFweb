@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\EventRegistrationMail;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Event\RegisterEventRequest;
 use App\Models\Event;
 use App\Models\EventCategory;
-use App\Models\EventRegistration;
+use App\Services\Event\EventRegistrationService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Validation\Rule;
 
 class PublicEventController extends Controller
 {
+    public function __construct(
+        protected EventRegistrationService $registrationService
+    ) {
+    }
+
     public function index(Request $request)
     {
         $events = Event::with('category', 'media')->latest()->get()->map(function ($event) {
@@ -28,6 +31,7 @@ class PublicEventController extends Controller
     public function show($slug)
     {
         $event = Event::with(['category', 'period', 'media'])
+            ->withCount('registrations')
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -42,66 +46,43 @@ class PublicEventController extends Controller
         return view('page.event.show', compact('event', 'relatedEvents'));
     }
 
-    public function register(Request $request, $slug)
+    public function register(RegisterEventRequest $request, $slug)
     {
         $event = Event::with(['category', 'media'])
             ->where('slug', $slug)
             ->firstOrFail();
 
-        if ($event->event_mode !== 'registration') {
-            return redirect()->route('event.show', $event->slug)
-                ->with('error', 'Pendaftaran tidak diaktifkan untuk event ini.');
+        $result = $this->registrationService->register(
+            event: $event,
+            data: $request->validated(),
+            user: $request->user()
+        );
+
+        if ($result['status'] === 'closed') {
+            return redirect()
+                ->route('event.show', $event->slug)
+                ->with('error', $result['message']);
         }
 
-        if (!in_array($event->status, ['upcoming', 'ongoing'], true)) {
-            return redirect()->route('event.show', $event->slug)
-                ->with('error', 'Pendaftaran event ini sudah ditutup.');
+        if ($result['status'] === 'already_registered') {
+            return redirect()
+                ->route('event.show', $event->slug)
+                ->with('info', $result['message']);
         }
 
-        if (!$event->whatsapp_group_link) {
-            return redirect()->route('event.show', $event->slug)
-                ->with('error', 'Link grup WhatsApp belum disiapkan oleh panitia.');
-        }
-
-        $validated = $request->validate([
-            'full_name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                Rule::unique('event_registrations')->where(fn($query) => $query->where('event_id', $event->id)),
-            ],
-            'phone' => ['required', 'string', 'max:30'],
-            'institution' => ['required', 'string', 'max:255'],
-            'participant_category' => ['required', Rule::in(['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'])],
-            'major' => ['nullable', 'string', 'max:255'],
-            'batch' => ['nullable', 'string', 'max:30'],
-            'notes' => ['nullable', 'string', 'max:1000'],
-        ], [
-            'email.unique' => 'Email ini sudah terdaftar untuk event ini.',
-        ]);
-
-        $registration = $event->registrations()->create($validated);
-        $emailSent = true;
-
-        try {
-            Mail::to($registration->email)->send(new EventRegistrationMail($event, $registration));
-        } catch (\Throwable $exception) {
-            report($exception);
-            $emailSent = false;
-        }
-
+        $registration = $result['registration'];
         $redirect = redirect()->route('event.show', $event->slug)
             ->with('registration_success', [
-                'full_name' => $registration->full_name,
-                'email' => $registration->email,
-                'email_sent' => $emailSent,
+                'full_name'           => $registration->full_name,
+                'email'               => $registration->email,
+                'email_sent'          => $result['email_sent'],
+                'whatsapp_group_link' => $result['whatsapp_group_link'],
             ]);
 
-        if ($emailSent) {
-            return $redirect->with('success', 'Pendaftaran berhasil. Informasi pendaftaran sudah dikirim ke email peserta.');
+        if ($result['email_sent']) {
+            return $redirect->with('success', 'Pendaftaran / absensi berhasil dicatat. Informasi resmi sudah dikirim ke email.');
         }
 
-        return $redirect->with('warning', 'Pendaftaran berhasil disimpan, tetapi email belum terkirim. Cek konfigurasi Brevo.');
+        return $redirect->with('warning', 'Pendaftaran / absensi berhasil disimpan. (Konfigurasi pengiriman email sedang diproses)');
     }
 }

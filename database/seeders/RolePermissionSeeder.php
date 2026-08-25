@@ -17,7 +17,6 @@ class RolePermissionSeeder extends Seeder
             'manage users',
             'manage events',
             'manage blogs',
-            'validate attendance',
         ];
 
         foreach ($permissions as $permission) {
@@ -28,7 +27,7 @@ class RolePermissionSeeder extends Seeder
         $superAdmin->givePermissionTo(Permission::all());
 
         $kadep = Role::create(['name' => 'pengurus']);
-        $kadep->givePermissionTo(['manage events', 'validate attendance']);
+        $kadep->givePermissionTo(['manage events']);
 
         $staff = Role::create(['name' => 'anggota']);
         $staff->givePermissionTo(['manage blogs']);

@@ -119,24 +119,8 @@
                         </a>
 
                         <div class="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
-                            <button type="button"
-                                @click="$dispatch('open-attendance-modal', {
-        name: '{{ $event->title }}',
-        exportUrl: '{{ route('admin.attendances.export_pdf', $event->slug) }}',
-        data: [
-            @foreach ($event->attendances as $att)
-            {
-                id: {{ $att->id }},
-                check_in_time: '{{ $att->check_in_time->format('H:i') }}',
-                name: '{{ $att->participant_type == 'internal' ? $att->member->full_name ?? 'N/A' : $att->external_name }}',
-                identifier: '{{ $att->participant_type == 'internal' ? $att->member->npm ?? '-' : $att->external_npm }}',
-                type: '{{ $att->participant_type }}'
-            }, @endforeach
-        ]
-    })"
-                                class="text-[9px] font-black text-gray-500 hover:text-white uppercase tracking-widest transition-colors">
-                                Cek Absensi
-                            </button>
+                            {{-- //button cek presensi --}}
+                            
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('admin.events.edit', $event->slug) }}"
                                     class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-yellow-500/50 hover:text-yellow-500 flex items-center justify-center transition-all">

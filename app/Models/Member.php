@@ -54,11 +54,6 @@ class Member extends Model implements HasMedia
         return $this->hasMany(Pengurus::class, 'member_id');
     }
 
-    public function attendances(): HasMany
-    {
-        return $this->hasMany(Attendances::class, 'member_id');
-    }
-
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')

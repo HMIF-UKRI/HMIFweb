@@ -15,11 +15,13 @@
     </x-slot>
 
     <div class="mx-auto max-w-7xl space-y-3 px-4 sm:px-6 lg:px-8">
-        <a href="{{ route('admin.events.index') }}"
-            class="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] hover:text-red-600 transition-colors">
-            <ion-icon name="arrow-back-outline"></ion-icon>
-            Back to Events
-        </a>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <a href="{{ route('admin.events.index') }}"
+                class="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] hover:text-red-600 transition-colors">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+                Back to Events
+            </a>
+        </div>
 
         @if (session('success') || session('warning') || session('error') || $errors->any())
             <div class="rounded-2xl border border-white/10 bg-gray-900 p-4">
@@ -204,71 +206,6 @@
                                     @endif
                                 </div>
 
-                                <div>
-                                    <p class="mb-2 text-xs font-bold text-gray-500 uppercase">
-                                        Mode Event
-                                    </p>
-                                    @if ($event->event_mode === 'registration')
-                                        <span
-                                            class="inline-flex w-full items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm font-bold text-emerald-400">
-                                            <i class="fa-solid fa-user-plus"></i>
-                                            Pendaftaran Aktif
-                                        </span>
-                                    @else
-                                        <span
-                                            class="inline-flex w-full items-center gap-2 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-sm font-bold text-cyan-400">
-                                            <i class="fa-solid fa-qrcode"></i>
-                                            Absensi Aktif
-                                        </span>
-                                    @endif
-                                </div>
-
-                                @if (false && $event->event_mode === 'registration')
-                                    <div class="rounded-xl border border-white/10 bg-black/30 p-4">
-                                        <div class="mb-4 flex items-center justify-between gap-3">
-                                            <p class="text-xs font-bold uppercase text-gray-500">
-                                                Data Pendaftaran
-                                            </p>
-                                            <span class="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-bold text-gray-300">
-                                                {{ $event->registrations_count }} orang
-                                            </span>
-                                        </div>
-
-                                        @if ($event->registrations->isNotEmpty())
-                                            <div class="space-y-3">
-                                                @foreach ($event->registrations as $registration)
-                                                    <div class="rounded-lg border border-white/10 bg-white/5 p-3">
-                                                        <div class="flex items-start justify-between gap-3">
-                                                            <div>
-                                                                <p class="text-sm font-bold text-white">
-                                                                    {{ $registration->full_name }}
-                                                                </p>
-                                                                <p class="text-[11px] text-gray-400">
-                                                                    {{ $registration->email }}
-                                                                </p>
-                                                            </div>
-                                                            <span class="text-[10px] text-gray-500">
-                                                                {{ $registration->created_at?->diffForHumans() }}
-                                                            </span>
-                                                        </div>
-                                                        <div class="mt-2 text-[11px] text-gray-400">
-                                                            {{ $registration->phone }}
-                                                            @if ($registration->institution)
-                                                                <span class="mx-1 text-gray-600">•</span>
-                                                                {{ $registration->institution }}
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <p class="text-sm text-gray-500">
-                                                Belum ada peserta yang mendaftar.
-                                            </p>
-                                        @endif
-                                    </div>
-                                @endif
-
                                 <div class="flex items-start gap-4">
                                     <div
                                         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-red-500">
@@ -278,7 +215,7 @@
                                             <p class="text-xs font-bold text-gray-500 uppercase">
                                                 Tanggal Pelaksanaan
                                             </p>
-                                            <p class="mt-0.5 font-semibold text-white">
+                                            <p class="mt-0.5 text-xs font-semibold text-white">
                                                 {{ \Carbon\Carbon::parse($event->event_date)->locale('id')->translatedFormat('l, d F Y') }}
                                             </p>
                                         </div>
@@ -293,7 +230,7 @@
                                             <p class="text-xs font-bold text-gray-500 uppercase">
                                                 Lokasi
                                             </p>
-                                            <p class="mt-0.5 leading-snug font-semibold text-white">
+                                            <p class="mt-0.5 text-xs leading-snug font-semibold text-white">
                                                 {{ $event->location }}
                                             </p>
                                             <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($event->location) }}"
@@ -305,14 +242,14 @@
                                     </div>
                                 </div>
 
-                                @if ($event->event_mode === 'registration' && $event->whatsapp_group_link)
+                                @if ($event->whatsapp_group_link)
                                     <div class="rounded-xl border border-white/10 bg-white/5 p-4">
                                         <p class="mb-3 text-xs font-bold text-gray-500 uppercase">
                                             Link Grup WhatsApp
                                         </p>
                                         <a href="{{ $event->whatsapp_group_link }}" target="_blank"
                                             rel="noopener"
-                                            class="inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-green-700">
+                                            class="items-center justify-center flex gap-2 rounded-lg bg-green-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-green-700">
                                             <i class="fa-brands fa-whatsapp"></i>
                                             Buka Link Grup
                                         </a>
@@ -320,24 +257,35 @@
                                 @endif
                             </div>
 
-                                <div class="mt-8 border-t border-white/10 pt-6">
-                                    @if ($event->event_mode === 'attendance' && $event->status == 'ongoing')
-                                        <a href="{{ route('admin.attendances.qrcode', $event->slug) }}" target="_blank"
-                                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 transition">
-                                            <i class="fa-solid fa-qrcode"></i> Generate QR Code absensi
+                                <div class="mt-8 border-t border-white/10 py-4 space-y-3">
+                                    @if ($event->status === 'ongoing' || \Carbon\Carbon::parse($event->event_date)->isToday())
+                                        <a href="{{ route('admin.events.qrcode', $event->slug) }}" target="_blank"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition w-full shadow-lg shadow-red-600/30">
+                                            <i class="fa-solid fa-qrcode text-sm"></i> Generate QR
                                         </a>
-                                    @elseif ($event->event_mode === 'registration' && $event->whatsapp_group_link)
-                                        <p class="text-xs font-medium text-gray-500">
-                                            Link grup tersedia pada kartu di atas.
-                                        </p>
+                                        <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-center">
+                                            <p class="text-xs font-bold text-emerald-400">Kegiatan Sedang Berlangsung</p>
+                                        </div>
+                                    @elseif ($event->status === 'upcoming')
+                                        <a href="{{ route('admin.events.qrcode', $event->slug) }}" target="_blank"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition w-full shadow-lg shadow-red-600/20">
+                                            <i class="fa-solid fa-qrcode text-sm"></i> QR Code Presensi
+                                        </a>
+                                        <div class="rounded-xl border border-blue-500/20 bg-blue-500/10 p-3 text-center">
+                                            <p class="text-xs font-bold text-blue-400">Pendaftaran Event Aktif</p>
+                                        </div>
+                                    @elseif ($event->status === 'completed')
+                                        <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
+                                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition w-full shadow-lg shadow-emerald-600/20">
+                                            <i class="fa-solid fa-file-excel text-sm"></i> Unduh Rekap Pendaftar
+                                        </a>
+                                        <div class="rounded-xl border border-gray-500/20 bg-gray-500/10 p-3 text-center">
+                                            <p class="text-xs font-bold text-gray-400">Kegiatan Telah Selesai</p>
+                                        </div>
                                     @else
                                         <button disabled
-                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500">
-                                            @if ($event->event_mode === 'registration')
-                                                Link Grup Belum Disiapkan
-                                            @else
-                                                Kegiatan Berakhir
-                                            @endif
+                                            class="w-full cursor-not-allowed rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-center font-bold text-gray-500 text-xs">
+                                            Kegiatan Berakhir / Dibatalkan
                                         </button>
                                     @endif
                                 </div>
@@ -364,7 +312,7 @@
                     </div>
                 </div>
 
-                @if ($event->event_mode === 'registration')
+                @if ($event->registrations_count > 0 || in_array($event->status, ['upcoming', 'ongoing'], true))
                     <div class="mt-8 rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
                         <div class="mb-6 space-y-4 border-b border-white/10 pb-5">
                             <div>
