@@ -47,14 +47,22 @@ class DocEventController extends Controller
      */
     public function store(StoreDocEventRequest $request): RedirectResponse
     {
-        $this->docEventService->storeDocument(
-            $request->validated(),
-            $request->file('file'),
-            auth()->id()
-        );
+        try {
+            $this->docEventService->storeDocument(
+                $request->validated(),
+                $request->file('file'),
+                auth()->id()
+            );
 
-        return redirect()->route('admin.doc-event.index')
-            ->with('success', 'Dokumen berhasil diarsipkan secara aman.');
+            return redirect()->route('admin.doc-event.index')
+                ->with('success', 'Dokumen berhasil diarsipkan secara aman.');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal mengarsipkan dokumen: ' . $e->getMessage());
+        }
     }
 
     /**

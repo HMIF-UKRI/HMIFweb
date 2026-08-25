@@ -42,20 +42,31 @@ class DocumentEvents extends Model implements HasMedia
         $this->addMediaCollection('doc_archives')
             ->useDisk('archives')
             ->singleFile()
-            ->acceptsMimeTypes([
-                'application/pdf',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/vnd.ms-excel',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'text/csv',
-                'text/plain',
-            ]);
+            ->acceptsFile(function ($file) {
+                $allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt'];
+                $ext = strtolower(pathinfo($file->name ?? $file->filename ?? '', PATHINFO_EXTENSION));
+                if ($ext && in_array($ext, $allowedExtensions)) {
+                    return true;
+                }
+                $mime = strtolower($file->mimeType ?? '');
+                $allowedMimes = [
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'text/csv',
+                    'text/plain',
+                    'application/zip',
+                    'application/x-zip-compressed',
+                    'application/octet-stream',
+                ];
+                return in_array($mime, $allowedMimes);
+            });
 
         $this->addMediaCollection('pdf_archive')
             ->useDisk('archives')
-            ->singleFile()
-            ->acceptsMimeTypes(['application/pdf']);
+            ->singleFile();
     }
 
     public function getArchiveMedia(): ?Media
