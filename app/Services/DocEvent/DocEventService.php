@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use ZipArchive;
@@ -84,7 +85,10 @@ class DocEventService
                 $docName = "Arsip_{$prefix}_{$suffix}";
             }
 
-            $document = DocumentEvents::create([
+            $sanitizedName = Str::slug($docName);
+            $finalFileName = "{$sanitizedName}-" . now()->format('YmdHis') . ".{$extension}";
+
+            $insertPayload = [
                 'event_id'       => $event?->id,
                 'period_id'      => $periodId,
                 'user_id'        => $userId,
@@ -94,11 +98,13 @@ class DocEventService
                 'access_level'   => $data['access_level'] ?? 'internal',
                 'file_extension' => $extension,
                 'file_size'      => $fileSize,
-            ]);
+            ];
 
-            // Standardize physical file name
-            $sanitizedName = Str::slug($document->name);
-            $finalFileName = "{$sanitizedName}-" . now()->format('YmdHis') . ".{$extension}";
+            if (Schema::hasColumn('document_events', 'file_path')) {
+                $insertPayload['file_path'] = "archives/{$finalFileName}";
+            }
+
+            $document = DocumentEvents::create($insertPayload);
 
             $document->addMedia($file)
                 ->usingFileName($finalFileName)

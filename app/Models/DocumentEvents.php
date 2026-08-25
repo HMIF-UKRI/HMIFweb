@@ -23,6 +23,7 @@ class DocumentEvents extends Model implements HasMedia
         'access_level',
         'file_extension',
         'file_size',
+        'file_path',
     ];
 
     protected $casts = [

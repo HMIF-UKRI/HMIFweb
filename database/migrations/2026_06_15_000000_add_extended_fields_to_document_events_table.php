@@ -12,6 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('document_events', function (Blueprint $table) {
+            if (Schema::hasColumn('document_events', 'file_path')) {
+                $table->dropColumn('file_path');
+            }
             if (!Schema::hasColumn('document_events', 'user_id')) {
                 $table->foreignId('user_id')->nullable()->after('period_id')->constrained('users')->nullOnDelete();
             }
