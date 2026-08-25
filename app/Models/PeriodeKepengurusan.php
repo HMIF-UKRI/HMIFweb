@@ -42,7 +42,7 @@ class PeriodeKepengurusan extends Model implements HasMedia
 
     public function documentEvents(): HasMany
     {
-        return $this->hasMany(DocumentEvents::class, 'periods_id');
+        return $this->hasMany(DocumentEvents::class, 'period_id');
     }
 
     public function registerMediaConversions(Media $media = null): void

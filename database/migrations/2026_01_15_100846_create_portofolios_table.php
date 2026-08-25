@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('portofolios', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_id')->constrained('members')->onDelete('cascade');
-            $table->foreignId('portofolio_category_id')->constrained('portofolio_categories')->onDelete('cascade');
+            $table->foreignId('member_id')->constrained('members')->cascadeOnDelete();
+            $table->foreignId('portofolio_category_id')->nullable()->constrained('portofolio_categories')->nullOnDelete();
             $table->string('title');
-            $table->string('slug', 100);
+            $table->string('slug', 150)->unique();
             $table->text('description');
-            $table->string('thumbnail');
-            $table->boolean('is_featured', false);
+            $table->string('thumbnail')->nullable();
+            $table->boolean('is_featured')->default(false);
             $table->string('url_github')->nullable();
             $table->string('url_linkedin')->nullable();
-            $table->enum('status', ['Draft', 'Published']);
+            $table->enum('status', ['Draft', 'Published'])->default('Draft');
             $table->timestamps();
         });
     }

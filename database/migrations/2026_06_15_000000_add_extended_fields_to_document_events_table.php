@@ -12,12 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('document_events', function (Blueprint $table) {
-            $table->foreignId('event_id')->nullable()->change();
-            $table->foreignId('user_id')->nullable()->after('period_id')->constrained('users')->nullOnDelete();
-            $table->text('description')->nullable()->after('name');
-            $table->string('access_level', 20)->default('internal')->after('description');
-            $table->string('file_extension', 10)->nullable()->after('access_level');
-            $table->unsignedBigInteger('file_size')->nullable()->after('file_extension');
+            if (!Schema::hasColumn('document_events', 'user_id')) {
+                $table->foreignId('user_id')->nullable()->after('period_id')->constrained('users')->nullOnDelete();
+            }
+            if (!Schema::hasColumn('document_events', 'description')) {
+                $table->text('description')->nullable()->after('name');
+            }
+            if (!Schema::hasColumn('document_events', 'access_level')) {
+                $table->string('access_level', 20)->default('internal')->after('description');
+            }
+            if (!Schema::hasColumn('document_events', 'file_extension')) {
+                $table->string('file_extension', 10)->nullable()->after('access_level');
+            }
+            if (!Schema::hasColumn('document_events', 'file_size')) {
+                $table->unsignedBigInteger('file_size')->nullable()->after('file_extension');
+            }
         });
     }
 
@@ -27,14 +36,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('document_events', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn([
-                'user_id',
-                'description',
-                'access_level',
-                'file_extension',
-                'file_size',
-            ]);
+            if (Schema::hasColumn('document_events', 'user_id')) {
+                $table->dropForeign(['user_id']);
+                $table->dropColumn('user_id');
+            }
+            $columnsToDrop = array_filter(['description', 'access_level', 'file_extension', 'file_size'], function ($col) {
+                return Schema::hasColumn('document_events', $col);
+            });
+            if (!empty($columnsToDrop)) {
+                $table->dropColumn($columnsToDrop);
+            }
         });
     }
 };

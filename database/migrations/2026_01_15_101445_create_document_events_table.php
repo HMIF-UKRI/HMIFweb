@@ -13,13 +13,19 @@ return new class extends Migration
     {
         Schema::create('document_events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->foreignId('period_id')->constrained('periods')->onDelete('cascade');
-            $table->enum('type_document', ['proposal', 'lpj']);
+            $table->foreignId('event_id')->nullable()->constrained('events')->nullOnDelete();
+            $table->foreignId('period_id')->constrained('periods')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('type_document', 50)->index();
             $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('access_level', 20)->default('internal');
+            $table->string('file_extension', 10)->nullable();
+            $table->unsignedBigInteger('file_size')->nullable();
             $table->timestamps();
 
             $table->index(['event_id', 'type_document']);
+            $table->index(['period_id', 'type_document']);
         });
     }
 

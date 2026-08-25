@@ -20,16 +20,16 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        $superAdmin = Role::create(['name' => 'super-admin']);
-        $superAdmin->givePermissionTo(Permission::all());
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+        $superAdmin->syncPermissions(Permission::all());
 
-        $kadep = Role::create(['name' => 'pengurus']);
-        $kadep->givePermissionTo(['manage events']);
+        $kadep = Role::firstOrCreate(['name' => 'pengurus', 'guard_name' => 'web']);
+        $kadep->syncPermissions(['manage events']);
 
-        $staff = Role::create(['name' => 'anggota']);
-        $staff->givePermissionTo(['manage blogs']);
+        $staff = Role::firstOrCreate(['name' => 'anggota', 'guard_name' => 'web']);
+        $staff->syncPermissions(['manage blogs']);
     }
 }

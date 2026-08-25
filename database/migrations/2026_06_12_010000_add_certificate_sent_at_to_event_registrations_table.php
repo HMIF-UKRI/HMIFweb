@@ -9,14 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('event_registrations', function (Blueprint $table) {
-            $table->timestamp('certificate_sent_at')->nullable()->after('notes');
+            if (!Schema::hasColumn('event_registrations', 'certificate_sent_at')) {
+                $table->timestamp('certificate_sent_at')->nullable()->after('notes');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('event_registrations', function (Blueprint $table) {
-            $table->dropColumn('certificate_sent_at');
+            if (Schema::hasColumn('event_registrations', 'certificate_sent_at')) {
+                $table->dropColumn('certificate_sent_at');
+            }
         });
     }
 };
