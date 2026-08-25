@@ -35,6 +35,11 @@ class PeriodeKepengurusan extends Model implements HasMedia
         return $this->hasMany(Pengurus::class, 'period_id');
     }
 
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class, 'period_id');
+    }
+
     public function documentEvents(): HasMany
     {
         return $this->hasMany(DocumentEvents::class, 'periods_id');

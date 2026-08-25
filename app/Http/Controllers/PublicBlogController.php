@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Services\Blog\BlogService;
 use Illuminate\Http\Request;
 
 class PublicBlogController extends Controller
 {
+    public function __construct(
+        protected BlogService $blogService
+    ) {
+    }
+
     public function index(Request $request)
     {
         $categories = BlogCategory::all();
@@ -30,7 +36,7 @@ class PublicBlogController extends Controller
             });
         }
 
-        $blogs = $query->latest()->paginate(6);
+        $blogs = $query->latest()->paginate(6)->withQueryString();
 
         return view('page.blog.index', compact('blogs', 'categories'));
     }
@@ -42,6 +48,10 @@ class PublicBlogController extends Controller
             ->where('status', 'published')
             ->firstOrFail();
 
+        $this->blogService->incrementViews($blog);
+
+        $readingTime = $this->blogService->calculateReadingTime($blog->content);
+
         $relatedBlogs = Blog::with(['category', 'media'])
             ->where('blog_category_id', $blog->blog_category_id)
             ->where('id', '!=', $blog->id)
@@ -50,6 +60,6 @@ class PublicBlogController extends Controller
             ->limit(3)
             ->get();
 
-        return view('page.blog.show', compact('blog', 'relatedBlogs'));
+        return view('page.blog.show', compact('blog', 'relatedBlogs', 'readingTime'));
     }
 }

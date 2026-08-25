@@ -39,6 +39,16 @@ class Member extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class, 'member_id');
+    }
+
+    public function picEvents(): HasMany
+    {
+        return $this->hasMany(Event::class, 'member_id');
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Departemen::class, 'department_id');

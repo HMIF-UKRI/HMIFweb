@@ -1,4 +1,5 @@
 import "./bootstrap";
+import "./dashboard-charts";
 import "flatpickr/dist/flatpickr.min.css";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/themes/dark.css";

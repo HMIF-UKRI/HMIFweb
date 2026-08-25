@@ -20,6 +20,7 @@ HMIF Project adalah Sistem Informasi Manajemen Himpunan Mahasiswa Teknik Informa
     - Authorization: `spatie/laravel-permission`
     - Media Management: `spatie/laravel-medialibrary`
 - **Database:** sqlite
+- **Libraries tambahan:** diperbolehkan jika ada rekomendasi library untuk mendukung spesifikasi fitur, namun tetap mematuhi pedoman dan convention yang telah ditetapkan dan memiliki izin khusus dari saya.
 
 ## 3. Development Commands & Environment
 

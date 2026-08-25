@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminPortofolioController;
 use App\Http\Controllers\AngkatanController;
 use App\Http\Controllers\BidangController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\DocEventController;
 use App\Http\Controllers\GalleriesController;
@@ -60,10 +61,8 @@ Route::get('/cooming-soon', [OrganizationController::class, 'comingsoon'])->name
 */
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Halaman Dashboard Umum
-    Route::get('/dashboard', function () {
-        return view('page.dashboard');
-    })->name('dashboard');
+    // Halaman Dashboard Utama & Analitik
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile Management (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -76,6 +75,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware(['role:super-admin|pengurus'])->prefix('admin')->name('admin.')->group(function () {
+
+        // Analitik & API Dashboard Asinkron
+        Route::get('dashboard/analytics', [DashboardController::class, 'analyticsData'])->name('dashboard.analytics');
+        Route::get('dashboard/gantt', [DashboardController::class, 'ganttData'])->name('dashboard.gantt');
 
         // Master Data (Hanya Super Admin & Pengurus)
         Route::resource('departments', DepartemenController::class);
@@ -113,6 +116,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Archive Data
         Route::get('archive/{document}/view', [DocEventController::class, 'view'])->name('archive.view');
         Route::get('archive/download/{id}', [DocEventController::class, 'download'])->name('archive.download');
+        Route::get('doc-event/export-zip/{event}', [DocEventController::class, 'exportZip'])->name('archive.export-zip');
     });
 
     /*

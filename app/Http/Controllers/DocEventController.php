@@ -3,109 +3,106 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DocEvent\StoreDocEventRequest;
 use App\Models\DocumentEvents;
 use App\Models\Event;
 use App\Models\PeriodeKepengurusan;
+use App\Services\DocEvent\DocEventService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DocEventController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(
+        protected DocEventService $docEventService
+    ) {}
+
+    /**
+     * Display a listing of archive documents with filter & metrics.
+     */
+    public function index(Request $request): View
     {
-        $query = DocumentEvents::with(['event', 'period']);
+        $filters = $request->only(['search', 'period_id', 'type', 'format', 'event_id']);
+        $documents = $this->docEventService->getAllDocuments($filters, 10);
 
-        // Filter berdasarkan Pencarian Nama
-        if ($request->has('search') && $request->search != '') {
-            $query->where('name', 'ilike', '%' . $request->search . '%')
-                ->orWhereHas('event', function ($q) use ($request) {
-                    $q->where('title', 'ilike', '%' . $request->search . '%');
-                });
-        }
+        $selectedPeriodId = $request->filled('period_id') ? (int) $request->period_id : null;
+        $metrics = $this->docEventService->getArchiveMetrics($selectedPeriodId);
 
-        // Filter berdasarkan Periode
-        if ($request->has('period_id') && $request->period_id != '') {
-            $query->where('period_id', $request->period_id);
-        }
-
-        // Filter berdasarkan Tipe Dokumen
-        if ($request->has('type') && $request->type != '') {
-            $query->where('type_document', $request->type);
-        }
-
-        $documents = $query->latest()->paginate(10)->withQueryString();
-
-        $periods = PeriodeKepengurusan::lazy();
-
+        $periods = PeriodeKepengurusan::orderByDesc('is_current')->orderByDesc('start_date')->get();
         $events = Event::orderBy('title')->get();
 
-        return view('admin.doc-event.index', compact('documents', 'periods', 'events'));
+        return view('admin.doc-event.index', compact(
+            'documents',
+            'periods',
+            'events',
+            'metrics',
+            'filters'
+        ));
     }
 
-    public function store(Request $request)
+    /**
+     * Store a newly created document in archive.
+     */
+    public function store(StoreDocEventRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'event_id'      => 'required|exists:events,id',
-            'file'          => 'required|mimes:pdf|max:20480',
-            'type_document' => 'required|in:proposal,lpj',
-        ]);
+        $this->docEventService->storeDocument(
+            $request->validated(),
+            $request->file('file'),
+            auth()->id()
+        );
 
-        return DB::transaction(function () use ($request, $validated) {
-
-            $event = Event::findOrFail($validated['event_id']);
-
-            $document = DocumentEvents::create([
-                'event_id'      => $event->id,
-                'period_id'     => $event->period_id,
-                'type_document' => $validated['type_document'],
-                'name'          => "Arsip_" . ucfirst($validated['type_document']) . "_" . $event->title,
-            ]);
-
-            $fileName = Str::slug($document->name) . '-' . now()->format('YmdHis');
-
-            $document->addMediaFromRequest('file')
-                ->usingFileName($fileName . '.pdf')
-                ->toMediaCollection('pdf_archive');
-
-            return back()->with('success', 'Dokumen berhasil diarsipkan secara aman.');
-        });
+        return redirect()->route('admin.doc-event.index')
+            ->with('success', 'Dokumen berhasil diarsipkan secara aman.');
     }
 
-    public function download($id)
+    /**
+     * Download document file.
+     */
+    public function download(int $id): BinaryFileResponse
     {
         if (!auth()->user()->hasAnyRole(['super-admin', 'pengurus'])) {
-            abort(403, 'Anda tidak memiliki akses ke dokumen internal.');
+            abort(403, 'Anda tidak memiliki hak akses untuk mengunduh dokumen internal ini.');
         }
 
         $document = DocumentEvents::findOrFail($id);
-        $media = $document->getFirstMedia('pdf_archive');
-
-        if (!$media) {
-            return back()->with('error', 'File fisik tidak ditemukan.');
-        }
-
-        return response()->download($media->getPath(), $media->file_name);
+        return $this->docEventService->getDownloadResponse($document);
     }
 
-    public function view(DocumentEvents $document)
+    /**
+     * View PDF document inline.
+     */
+    public function view(int $id)
     {
-        $media = $document->getFirstMedia('pdf_archive');
-
-        if (!$media) {
-            abort(404, 'File tidak ditemukan.');
+        if (!auth()->user()->hasAnyRole(['super-admin', 'pengurus'])) {
+            abort(403, 'Akses ditolak.');
         }
 
-        return response()->file($media->getPath(), [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline'
-        ]);
+        $document = DocumentEvents::findOrFail($id);
+        return $this->docEventService->getInlinePdfResponse($document);
     }
 
-    public function destroy($id)
+    /**
+     * Export all documents of an event into a single ZIP file.
+     */
+    public function exportZip(int $eventId): BinaryFileResponse
+    {
+        if (!auth()->user()->hasAnyRole(['super-admin', 'pengurus'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $event = Event::findOrFail($eventId);
+        return $this->docEventService->exportEventDocumentsAsZip($event);
+    }
+
+    /**
+     * Remove the specified document from storage.
+     */
+    public function destroy(int $id): RedirectResponse
     {
         $document = DocumentEvents::findOrFail($id);
-        $document->delete();
+        $this->docEventService->deleteDocument($document);
 
         return redirect()->back()->with('success', 'Arsip dokumen berhasil dihapus secara permanen.');
     }

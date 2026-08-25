@@ -42,6 +42,11 @@ class Event extends Model implements HasMedia
         return $this->belongsTo(Member::class, 'member_id');
     }
 
+    public function pic(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+
     public function period(): BelongsTo
     {
         return $this->belongsTo(PeriodeKepengurusan::class, 'period_id');

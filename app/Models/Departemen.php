@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Departemen extends Model
 {
@@ -13,6 +14,11 @@ class Departemen extends Model
         'name',
         'description',
     ];
+
+    public function events(): HasManyThrough
+    {
+        return $this->hasManyThrough(Event::class, Member::class, 'department_id', 'member_id');
+    }
 
     public function members(): HasMany
     {

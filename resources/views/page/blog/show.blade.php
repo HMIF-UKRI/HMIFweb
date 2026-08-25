@@ -54,7 +54,15 @@
                                 Baca</span>
                             <span class="text-xs font-bold text-red-500 tracking-wide uppercase italic">
                                 <i class="fa-regular fa-clock mr-1.5"></i>
-                                {{ ceil(str_word_count(strip_tags($blog->content)) / 200) }} Mins Read
+                                {{ $readingTime ?? 1 }} Mins Read
+                            </span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-gray-600 text-[9px] font-black uppercase tracking-widest">Dibaca</span>
+                            <span class="text-xs font-bold text-gray-300 tracking-wide">
+                                <i class="fa-regular fa-eye mr-1 text-gray-500"></i>
+                                {{ number_format($blog->views_count ?? 0) }} Kali
                             </span>
                         </div>
                     </div>
