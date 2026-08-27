@@ -438,7 +438,97 @@
                             @endif
                         </div>
 
-                        <div class="overflow-hidden rounded-xl border border-white/10">
+                        <div class="overflow-hidden rounded-xl border border-white/10 xl:hidden">
+                            <div class="divide-y divide-white/10 bg-black/20">
+                                @forelse ($registrations as $registration)
+                                    <article class="p-4 sm:p-5">
+                                        <div class="flex items-start justify-between gap-3">
+                                            <div class="min-w-0">
+                                                <p class="break-words text-sm font-bold leading-snug text-white">
+                                                    {{ $registration->full_name }}
+                                                </p>
+                                                <p class="mt-1 break-all text-xs text-gray-400">
+                                                    {{ $registration->email }}
+                                                </p>
+                                                <p class="mt-1 text-xs text-gray-500">
+                                                    {{ $registration->phone }}
+                                                </p>
+                                            </div>
+                                            <span class="shrink-0 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300">
+                                                {{ $registration->participant_category ?: 'Tidak Diisi' }}
+                                            </span>
+                                        </div>
+
+                                        <div class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-y border-white/10 py-3">
+                                            <div class="min-w-0">
+                                                <p class="text-[9px] font-bold uppercase tracking-widest text-gray-600">Instansi</p>
+                                                <p class="mt-1 break-words text-xs text-gray-300">
+                                                    {{ $registration->institution ?: '-' }}
+                                                </p>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="text-[9px] font-bold uppercase tracking-widest text-gray-600">Akademik</p>
+                                                <p class="mt-1 break-words text-xs text-gray-300">
+                                                    {{ $registration->major ?: '-' }}
+                                                </p>
+                                                <p class="mt-1 text-[10px] text-gray-500">
+                                                    Angkatan {{ $registration->batch ?: '-' }}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                            <div>
+                                                @if ($registration->certificate_sent_at)
+                                                    <p class="text-[10px] font-bold text-emerald-400">
+                                                        Sertifikat dikirim {{ $registration->certificate_sent_at->format('d M Y H:i') }}
+                                                    </p>
+                                                @else
+                                                    <p class="text-[10px] font-bold text-yellow-300">Sertifikat belum dikirim</p>
+                                                @endif
+                                                <p class="mt-1 text-[9px] font-bold uppercase tracking-widest text-gray-600">
+                                                    Daftar {{ $registration->created_at?->format('d M Y H:i') }}
+                                                </p>
+                                            </div>
+
+                                            <div class="grid grid-cols-[1fr_1fr_40px] gap-2 sm:flex sm:items-center">
+                                                <button type="button"
+                                                    x-on:click="$dispatch('open-modal', 'edit-registration-{{ $registration->id }}')"
+                                                    class="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-blue-500/20 bg-blue-500/10 px-3 text-xs font-bold text-blue-300 transition hover:bg-blue-600 hover:text-white"
+                                                    title="Edit pendaftar">
+                                                    <i class="fa-solid fa-pen text-[11px]"></i>
+                                                    Edit
+                                                </button>
+                                                <button type="button"
+                                                    x-on:click="$dispatch('open-modal', 'certificate-registration-{{ $registration->id }}')"
+                                                    class="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 text-xs font-bold text-emerald-300 transition hover:bg-emerald-600 hover:text-white"
+                                                    title="Kirim sertifikat">
+                                                    <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                                                    Kirim
+                                                </button>
+                                                <form action="{{ route('admin.events.registrations.destroy', [$event->slug, $registration]) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Hapus data pendaftar ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="inline-flex size-10 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-red-300 transition hover:bg-red-600 hover:text-white"
+                                                        title="Hapus pendaftar">
+                                                        <i class="fa-solid fa-trash text-[11px]"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </article>
+                                @empty
+                                    <p class="px-4 py-12 text-center text-sm text-gray-500">
+                                        Belum ada peserta yang mendaftar.
+                                    </p>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <div class="hidden overflow-hidden rounded-xl border border-white/10 xl:block">
                             <div class="overflow-x-auto">
                                 <table class="w-full min-w-[920px] table-fixed divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
