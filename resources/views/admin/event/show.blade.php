@@ -313,7 +313,8 @@
                 </div>
 
                 @if ($event->registrations_count > 0 || in_array($event->status, ['upcoming', 'ongoing'], true))
-                    <div class="mt-8 rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
+                    <div id="pendaftaran"
+                        class="mt-8 scroll-mt-24 rounded-2xl border border-white/10 bg-gray-900/90 p-4 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl sm:p-6">
                         <div class="mb-6 space-y-4 border-b border-white/10 pb-5">
                             <div>
                                 <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">
@@ -324,7 +325,7 @@
                                 </h2>
                             </div>
 
-                            <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+                            <div class="space-y-3">
                                 @if ($registrationSearch !== '')
                                     <p class="text-sm text-gray-400">
                                         Menampilkan {{ $registrations->total() }} hasil untuk "{{ $registrationSearch }}".
@@ -335,34 +336,34 @@
                                     </p>
                                 @endif
 
-                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                                    <form method="GET" action="{{ route('admin.events.show', $event->slug) }}"
-                                        class="flex w-full gap-2 sm:w-72">
+                                <div class="grid w-full gap-3 xl:grid-cols-[minmax(220px,1fr)_auto] xl:items-center">
+                                    <form method="GET" action="{{ route('admin.events.show', $event->slug) }}#pendaftaran"
+                                        class="flex min-w-0 gap-2">
                                         <input type="text" name="registration_search" value="{{ $registrationSearch }}"
                                             placeholder="Cari pendaftar..."
-                                            class="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3 text-xs text-white outline-none transition placeholder:text-gray-600 focus:border-emerald-600">
+                                            class="h-11 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3.5 text-xs text-white outline-none transition placeholder:text-gray-600 focus:border-emerald-600">
                                         <button type="submit"
-                                            class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
+                                            class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition hover:bg-emerald-700"
                                             title="Cari pendaftar">
                                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
                                         </button>
                                         @if ($registrationSearch !== '')
-                                            <a href="{{ route('admin.events.show', $event->slug) }}"
-                                                class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-400 transition hover:bg-red-600 hover:text-white"
+                                            <a href="{{ route('admin.events.show', $event->slug) }}#pendaftaran"
+                                                class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-400 transition hover:bg-red-600 hover:text-white"
                                                 title="Reset pencarian">
                                                 <i class="fa-solid fa-xmark text-xs"></i>
                                             </a>
                                         @endif
                                     </form>
 
-                                    <div class="flex shrink-0 flex-wrap items-center gap-2">
+                                    <div class="grid grid-cols-2 gap-2 sm:flex sm:items-center">
                                         <button type="button" x-on:click="$dispatch('open-modal', 'certificate-all')"
-                                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-blue-700">
+                                            class="inline-flex h-11 min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-blue-600 px-4 text-xs font-bold text-white transition hover:bg-blue-700">
                                             <i class="fa-solid fa-paper-plane text-[11px]"></i>
                                             Kirim Sertifikat
                                         </button>
                                         <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
-                                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-emerald-700">
+                                            class="inline-flex h-11 min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white transition hover:bg-emerald-700">
                                             <i class="fa-solid fa-file-excel text-[11px]"></i>
                                             Download Excel
                                         </a>
@@ -439,7 +440,7 @@
 
                         <div class="overflow-hidden rounded-xl border border-white/10">
                             <div class="overflow-x-auto">
-                                <table class="w-full table-fixed divide-y divide-white/10 text-left">
+                                <table class="w-full min-w-[920px] table-fixed divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
                                         <tr>
                                             <th class="w-[27%] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500">Peserta</th>
@@ -581,6 +582,12 @@
                             <form action="{{ route('admin.events.registrations.certificates', $event->slug) }}"
                                 method="POST" enctype="multipart/form-data" class="p-5 md:p-6">
                                 @csrf
+                                <input type="hidden" name="_registration_modal" value="certificate-all">
+                                @if (old('_registration_modal') === 'certificate-all' && $errors->any())
+                                    <div class="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
+                                        {{ $errors->first() }}
+                                    </div>
+                                @endif
                                 <div class="mb-4">
                                     <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">
                                         Kirim Global
@@ -597,29 +604,25 @@
                                     <div>
                                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Subject Email</label>
                                         <input type="text" name="certificate_subject"
-                                            value="Sertifikat Kegiatan - {{ $event->title }}"
+                                            value="{{ old('_registration_modal') === 'certificate-all' ? old('certificate_subject') : 'Sertifikat Kegiatan - ' . $event->title }}"
                                             class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                     </div>
                                     <div>
                                         <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Ucapan / Pesan</label>
                                         <textarea name="certificate_message" rows="4" required
-                                            class="w-full resize-none rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">Terima kasih sudah mengikuti {{ $event->title }}. Semoga ilmu dan pengalaman dari kegiatan ini bermanfaat. Sertifikat peserta kami lampirkan pada email ini.</textarea>
+                                            class="w-full resize-none rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">{{ old('_registration_modal') === 'certificate-all' ? old('certificate_message') : 'Terima kasih sudah mengikuti ' . $event->title . '. Semoga ilmu dan pengalaman dari kegiatan ini bermanfaat. Sertifikat peserta kami lampirkan pada email ini.' }}</textarea>
                                     </div>
-                                    <div>
-                                        <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">File Sertifikat</label>
-                                        <input type="file" name="certificate_file" required accept=".pdf,.jpg,.jpeg,.png"
-                                            class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-gray-300 outline-none transition file:mr-4 file:rounded-md file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white focus:border-blue-600">
-                                        <p class="mt-2 text-[10px] text-gray-500">PDF/JPG/PNG, maksimal 10MB.</p>
-                                    </div>
+                                    <x-certificate-file-drop />
                                 </div>
 
-                                <div class="mt-5 flex justify-end gap-2">
+                                <div class="mt-5 flex flex-col-reverse gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-end">
                                     <button type="button" x-on:click="$dispatch('close-modal', 'certificate-all')"
-                                        class="rounded-lg border border-white/10 px-4 py-2.5 text-xs font-bold text-gray-400 transition hover:bg-white/5">
+                                        class="inline-flex h-10 items-center justify-center rounded-lg border border-white/10 px-4 text-xs font-bold text-gray-400 transition hover:bg-white/5 hover:text-white">
                                         Batal
                                     </button>
                                     <button type="submit"
-                                        class="rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:bg-blue-700">
+                                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white transition hover:bg-blue-700">
+                                        <i class="fa-solid fa-paper-plane text-[11px]"></i>
                                         Kirim Semua
                                     </button>
                                 </div>
@@ -632,6 +635,17 @@
                                     method="POST" class="p-5 md:p-6">
                                     @csrf
                                     @method('PUT')
+                                    <input type="hidden" name="_registration_modal"
+                                        value="edit-registration-{{ $registration->id }}">
+                                    @php
+                                        $editModalName = 'edit-registration-' . $registration->id;
+                                        $isFailedEdit = old('_registration_modal') === $editModalName;
+                                    @endphp
+                                    @if ($isFailedEdit && $errors->any())
+                                        <div class="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
+                                            {{ $errors->first() }}
+                                        </div>
+                                    @endif
                                     <div class="mb-4">
                                         <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">
                                             Edit Pendaftar
@@ -644,17 +658,17 @@
                                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Nama Lengkap</label>
-                                            <input type="text" name="full_name" value="{{ $registration->full_name }}" required
+                                            <input type="text" name="full_name" value="{{ $isFailedEdit ? old('full_name') : $registration->full_name }}" required
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                         </div>
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Email</label>
-                                            <input type="email" name="email" value="{{ $registration->email }}" required
+                                            <input type="email" name="email" value="{{ $isFailedEdit ? old('email') : $registration->email }}" required
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                         </div>
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">No. WhatsApp</label>
-                                            <input type="text" name="phone" value="{{ $registration->phone }}" required
+                                            <input type="text" name="phone" value="{{ $isFailedEdit ? old('phone') : $registration->phone }}" required
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                         </div>
                                         <div>
@@ -663,7 +677,7 @@
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                                 @foreach (['Mahasiswa', 'Pelajar', 'Pekerja', 'Umum', 'Lainnya'] as $category)
                                                     <option value="{{ $category }}" class="bg-gray-950"
-                                                        {{ $registration->participant_category === $category ? 'selected' : '' }}>
+                                                        {{ ($isFailedEdit ? old('participant_category') : $registration->participant_category) === $category ? 'selected' : '' }}>
                                                         {{ $category }}
                                                     </option>
                                                 @endforeach
@@ -671,33 +685,34 @@
                                         </div>
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Instansi</label>
-                                            <input type="text" name="institution" value="{{ $registration->institution }}" required
+                                            <input type="text" name="institution" value="{{ $isFailedEdit ? old('institution') : $registration->institution }}" required
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                         </div>
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Prodi/Jurusan</label>
-                                            <input type="text" name="major" value="{{ $registration->major }}"
+                                            <input type="text" name="major" value="{{ $isFailedEdit ? old('major') : $registration->major }}"
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                         </div>
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Angkatan</label>
-                                            <input type="text" name="batch" value="{{ $registration->batch }}"
+                                            <input type="text" name="batch" value="{{ $isFailedEdit ? old('batch') : $registration->batch }}"
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">
                                         </div>
                                         <div class="md:col-span-2">
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Catatan</label>
                                             <textarea name="notes" rows="2"
-                                                class="w-full resize-none rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">{{ $registration->notes }}</textarea>
+                                                class="w-full resize-none rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-blue-600">{{ $isFailedEdit ? old('notes') : $registration->notes }}</textarea>
                                         </div>
                                     </div>
 
-                                    <div class="mt-5 flex justify-end gap-2">
+                                    <div class="mt-5 flex flex-col-reverse gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-end">
                                         <button type="button" x-on:click="$dispatch('close-modal', 'edit-registration-{{ $registration->id }}')"
-                                            class="rounded-lg border border-white/10 px-4 py-2.5 text-xs font-bold text-gray-400 transition hover:bg-white/5">
+                                            class="inline-flex h-10 items-center justify-center rounded-lg border border-white/10 px-4 text-xs font-bold text-gray-400 transition hover:bg-white/5 hover:text-white">
                                             Batal
                                         </button>
                                         <button type="submit"
-                                            class="rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:bg-blue-700">
+                                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white transition hover:bg-blue-700">
+                                            <i class="fa-solid fa-floppy-disk text-[11px]"></i>
                                             Simpan
                                         </button>
                                     </div>
@@ -708,6 +723,17 @@
                                 <form action="{{ route('admin.events.registrations.certificate', [$event->slug, $registration]) }}"
                                     method="POST" enctype="multipart/form-data" class="p-5 md:p-6">
                                     @csrf
+                                    <input type="hidden" name="_registration_modal"
+                                        value="certificate-registration-{{ $registration->id }}">
+                                    @php
+                                        $certificateModalName = 'certificate-registration-' . $registration->id;
+                                        $isFailedCertificate = old('_registration_modal') === $certificateModalName;
+                                    @endphp
+                                    @if ($isFailedCertificate && $errors->any())
+                                        <div class="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
+                                            {{ $errors->first() }}
+                                        </div>
+                                    @endif
                                     <div class="mb-4">
                                         <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">
                                             Kirim Sertifikat
@@ -724,29 +750,25 @@
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Subject Email</label>
                                             <input type="text" name="certificate_subject"
-                                                value="Sertifikat Kegiatan - {{ $event->title }}"
+                                                value="{{ $isFailedCertificate ? old('certificate_subject') : 'Sertifikat Kegiatan - ' . $event->title }}"
                                                 class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-emerald-600">
                                         </div>
                                         <div>
                                             <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">Ucapan / Pesan</label>
                                             <textarea name="certificate_message" rows="4" required
-                                                class="w-full resize-none rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-emerald-600">Terima kasih sudah mengikuti {{ $event->title }}. Semoga ilmu dan pengalaman dari kegiatan ini bermanfaat. Sertifikat peserta kami lampirkan pada email ini.</textarea>
+                                                class="w-full resize-none rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-emerald-600">{{ $isFailedCertificate ? old('certificate_message') : 'Terima kasih sudah mengikuti ' . $event->title . '. Semoga ilmu dan pengalaman dari kegiatan ini bermanfaat. Sertifikat peserta kami lampirkan pada email ini.' }}</textarea>
                                         </div>
-                                        <div>
-                                            <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-gray-500">File Sertifikat</label>
-                                            <input type="file" name="certificate_file" required accept=".pdf,.jpg,.jpeg,.png"
-                                                class="w-full rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm text-gray-300 outline-none transition file:mr-4 file:rounded-md file:border-0 file:bg-emerald-600 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white focus:border-emerald-600">
-                                            <p class="mt-2 text-[10px] text-gray-500">PDF/JPG/PNG, maksimal 10MB.</p>
-                                        </div>
+                                        <x-certificate-file-drop />
                                     </div>
 
-                                    <div class="mt-5 flex justify-end gap-2">
+                                    <div class="mt-5 flex flex-col-reverse gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-end">
                                         <button type="button" x-on:click="$dispatch('close-modal', 'certificate-registration-{{ $registration->id }}')"
-                                            class="rounded-lg border border-white/10 px-4 py-2.5 text-xs font-bold text-gray-400 transition hover:bg-white/5">
+                                            class="inline-flex h-10 items-center justify-center rounded-lg border border-white/10 px-4 text-xs font-bold text-gray-400 transition hover:bg-white/5 hover:text-white">
                                             Batal
                                         </button>
                                         <button type="submit"
-                                            class="rounded-lg bg-emerald-600 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white transition hover:bg-emerald-700">
+                                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white transition hover:bg-emerald-700">
+                                            <i class="fa-solid fa-paper-plane text-[11px]"></i>
                                             Kirim
                                         </button>
                                     </div>
@@ -762,6 +784,19 @@
     <x-slot name="scripts">
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                const registrationModal = @js(old('_registration_modal'));
+
+                if (registrationModal) {
+                    const registrationSection = document.getElementById('pendaftaran');
+                    const sectionUrl = `${window.location.pathname}${window.location.search}#pendaftaran`;
+
+                    window.history.replaceState(null, '', sectionUrl);
+                    registrationSection?.scrollIntoView({ block: 'start' });
+                    window.dispatchEvent(new CustomEvent('open-modal', {
+                        detail: registrationModal,
+                    }));
+                }
+
                 const rawData = {!! $event->description !!};
                 const container = document.getElementById('editorjs-content');
 

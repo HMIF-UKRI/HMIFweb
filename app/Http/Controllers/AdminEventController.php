@@ -93,7 +93,8 @@ class AdminEventController extends Controller
             })
             ->latest()
             ->paginate(20, ['*'], 'registrations_page')
-            ->withQueryString();
+            ->withQueryString()
+            ->fragment('pendaftaran');
 
         $demographics = $this->registrationService->summarizeDemographics($event);
         $registrationCategories = $demographics['categories'];
@@ -133,7 +134,8 @@ class AdminEventController extends Controller
         $this->registrationService->updateRegistration($registration, $request->validated());
 
         return redirect()
-            ->route('admin.events.show', $event->slug)
+            ->back()
+            ->withFragment('pendaftaran')
             ->with('success', 'Data pendaftar berhasil diperbarui.');
     }
 
@@ -144,7 +146,8 @@ class AdminEventController extends Controller
         $this->registrationService->deleteRegistration($registration);
 
         return redirect()
-            ->route('admin.events.show', $event->slug)
+            ->back()
+            ->withFragment('pendaftaran')
             ->with('success', 'Data pendaftar berhasil dihapus.');
     }
 
@@ -163,12 +166,14 @@ class AdminEventController extends Controller
             report($exception);
 
             return redirect()
-                ->route('admin.events.show', $event->slug)
+                ->back()
+                ->withFragment('pendaftaran')
                 ->with('error', 'Sertifikat gagal dikirim. Cek konfigurasi email atau file sertifikat.');
         }
 
         return redirect()
-            ->route('admin.events.show', $event->slug)
+            ->back()
+            ->withFragment('pendaftaran')
             ->with('success', 'Sertifikat berhasil dikirim ke ' . $registration->full_name . '.');
     }
 
@@ -187,12 +192,14 @@ class AdminEventController extends Controller
 
         if ($failed > 0) {
             return redirect()
-                ->route('admin.events.show', $event->slug)
+                ->back()
+                ->withFragment('pendaftaran')
                 ->with('warning', "Sertifikat terkirim ke {$sent} peserta, gagal {$failed} peserta.");
         }
 
         return redirect()
-            ->route('admin.events.show', $event->slug)
+            ->back()
+            ->withFragment('pendaftaran')
             ->with('success', "Sertifikat berhasil dikirim ke {$sent} peserta.");
     }
 
