@@ -6,6 +6,7 @@ use App\Mail\EventRegistrationMail;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -126,9 +127,14 @@ class EventRegistrationService
 
     public function summarizeDemographics(Event $event): array
     {
-        $categories = $event->registrations()
-            ->selectRaw("COALESCE(NULLIF(participant_category, ''), 'Tidak Diisi') as label, COUNT(*) as total")
-            ->groupByRaw("COALESCE(NULLIF(participant_category, ''), 'Tidak Diisi')")
+        $categoryLabels = $event->registrations()
+            ->selectRaw("COALESCE(NULLIF(participant_category, ''), 'Tidak Diisi') as label")
+            ->toBase();
+
+        $categories = DB::query()
+            ->fromSub($categoryLabels, 'category_labels')
+            ->selectRaw('label, COUNT(*) as total')
+            ->groupBy('label')
             ->orderByDesc('total')
             ->get();
 
