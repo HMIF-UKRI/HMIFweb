@@ -136,12 +136,12 @@
             </div>
         </nav>
 
-        <main class="relative transition-all duration-500 bg-gray-950 min-h-screen flex-1 flex flex-col ml-0"
+        <main class="relative ml-0 flex min-h-screen min-w-0 flex-1 flex-col bg-gray-950 transition-all duration-500"
             :class="sidebarOpen ? 'md:ml-64' : 'md:ml-20'">
 
             <header
                 class="w-full h-17.5 flex justify-between items-center px-4 sm:px-6 lg:px-8 sticky top-0 bg-gray-950/50 backdrop-blur-xl border-b border-white/5 z-40">
-                <div class="flex items-center gap-4">
+                <div class="flex min-w-0 items-center gap-4">
                     <button @click="toggleSidebar()"
                         class="text-2xl text-gray-400 hover:text-red-500 transition-colors">
                         <ion-icon
@@ -149,12 +149,12 @@
                                 'chevron-back-outline' : 'menu-outline')">
                         </ion-icon>
                     </button>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">
+                    <h2 class="hidden truncate text-sm font-bold uppercase tracking-widest text-white md:block">
                         {{ $header_title ?? 'System Overview' }}
                     </h2>
                 </div>
 
-                <div class="flex items-center gap-3 pl-6 border-l border-white/10">
+                <div class="flex shrink-0 items-center gap-3 border-l border-white/10 pl-6">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button
@@ -199,7 +199,7 @@
                 <div class="pointer-events-none fixed inset-0 z-0 opacity-[0.02]"
                     style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
 
-                <div class="relative z-10 max-w-7xl mx-auto">
+                <div class="relative z-10 mx-auto w-full min-w-0 max-w-7xl">
                     {{ $slot }}
                 </div>
             </div>

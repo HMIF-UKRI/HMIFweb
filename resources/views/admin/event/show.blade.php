@@ -14,7 +14,7 @@
         Content / Events / Event Overview
     </x-slot>
 
-    <div class="mx-auto max-w-7xl space-y-3 px-4 sm:px-6 lg:px-8">
+    <div class="w-full min-w-0 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <a href="{{ route('admin.events.index') }}"
                 class="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] hover:text-red-600 transition-colors">
@@ -114,8 +114,8 @@
             </div>
 
             <div class="relative z-10 mx-auto -mt-8 max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 gap-8 xl:grid-cols-12">
-                    <div class="space-y-8 xl:col-span-8">
+                <div class="grid min-w-0 grid-cols-1 gap-8 2xl:grid-cols-12">
+                    <div class="min-w-0 space-y-8 2xl:col-span-8">
                         <div
                             class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:p-10">
                             <div class="mb-8 rounded-xl border-l-4 border-red-600 bg-red-900/10 p-5">
@@ -159,8 +159,8 @@
                         </div>
                     </div>
 
-                    <div class="xl:col-span-4">
-                        <div class="space-y-6 xl:sticky xl:top-24">
+                    <div class="min-w-0 2xl:col-span-4">
+                        <div class="space-y-6 2xl:sticky 2xl:top-24">
                             <div
                                 class="rounded-2xl border border-white/10 bg-gray-900/90 p-6 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl">
                                 <h3
@@ -336,7 +336,7 @@
                                     </p>
                                 @endif
 
-                                <div class="grid w-full gap-3 xl:grid-cols-[minmax(220px,1fr)_auto] xl:items-center">
+                                <div class="grid w-full min-w-0 gap-3 2xl:grid-cols-[minmax(220px,1fr)_auto] 2xl:items-center">
                                     <form method="GET" action="{{ route('admin.events.show', $event->slug) }}#pendaftaran"
                                         class="flex min-w-0 gap-2">
                                         <input type="text" name="registration_search" value="{{ $registrationSearch }}"
@@ -438,7 +438,7 @@
                             @endif
                         </div>
 
-                        <div class="overflow-hidden rounded-xl border border-white/10 xl:hidden">
+                        <div class="overflow-hidden rounded-xl border border-white/10 2xl:hidden">
                             <div class="divide-y divide-white/10 bg-black/20">
                                 @forelse ($registrations as $registration)
                                     <article class="p-4 sm:p-5">
@@ -528,7 +528,7 @@
                             </div>
                         </div>
 
-                        <div class="hidden overflow-hidden rounded-xl border border-white/10 xl:block">
+                        <div class="hidden overflow-hidden rounded-xl border border-white/10 2xl:block">
                             <div class="overflow-x-auto">
                                 <table class="w-full min-w-[920px] table-fixed divide-y divide-white/10 text-left">
                                     <thead class="bg-white/5">
