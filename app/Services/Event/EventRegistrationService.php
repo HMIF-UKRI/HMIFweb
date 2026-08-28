@@ -13,6 +13,20 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EventRegistrationService
 {
+    public const EXPORT_COLUMNS = [
+        'registered_at' => 'Waktu Daftar',
+        'full_name' => 'Nama Lengkap',
+        'email' => 'Email',
+        'phone' => 'No. WhatsApp',
+        'participant_category' => 'Kategori Peserta',
+        'institution' => 'Instansi',
+        'major' => 'Prodi/Jurusan',
+        'batch' => 'Angkatan',
+        'normalized_batch' => 'Angkatan Terdeteksi',
+        'certificate_sent_at' => 'Sertifikat Dikirim',
+        'notes' => 'Catatan',
+    ];
+
     public function register(Event $event, array $data, ?User $user = null): array
     {
         if (in_array($event->status, ['completed', 'cancelled'], true)) {
@@ -77,45 +91,48 @@ class EventRegistrationService
         $registration->delete();
     }
 
-    public function exportCsv(Event $event): StreamedResponse
+    public function exportRegistrations(Event $event, array $columns, string $format): StreamedResponse
     {
-        $filename = Str::slug($event->title) . '-data-pendaftaran-' . now()->format('Ymd-His') . '.csv';
+        $columns = array_values(array_filter(
+            $columns,
+            fn (string $column) => array_key_exists($column, self::EXPORT_COLUMNS)
+        ));
 
-        return response()->streamDownload(function () use ($event) {
+        return $format === 'word'
+            ? $this->exportWord($event, $columns)
+            : $this->exportCsv($event, $columns);
+    }
+
+    private function exportCsv(Event $event, array $columns): StreamedResponse
+    {
+        $filename = $this->exportFilename($event, 'csv');
+
+        return response()->streamDownload(function () use ($event, $columns) {
             $handle = fopen('php://output', 'w');
             fwrite($handle, "\xEF\xBB\xBF");
+            fwrite($handle, "sep=,\r\n");
 
-            fputcsv($handle, [
-                'Waktu Daftar',
-                'Nama Lengkap',
-                'Email',
-                'No. WhatsApp',
-                'Kategori Peserta',
-                'Instansi',
-                'Prodi/Jurusan',
-                'Angkatan',
-                'Angkatan Terdeteksi',
-                'Sertifikat Dikirim',
-                'Catatan',
-            ]);
+            fputcsv(
+                $handle,
+                array_map(fn (string $column) => self::EXPORT_COLUMNS[$column], $columns),
+                ',',
+                '"',
+                ''
+            );
 
             $event->registrations()
                 ->oldest()
-                ->chunk(200, function ($registrations) use ($handle) {
+                ->chunk(200, function ($registrations) use ($handle, $columns) {
                     foreach ($registrations as $registration) {
-                        fputcsv($handle, [
-                            optional($registration->created_at)->format('Y-m-d H:i:s'),
-                            $registration->full_name,
-                            $registration->email,
-                            $this->formatCsvTextCell($registration->phone),
-                            $registration->participant_category ?: 'Tidak Diisi',
-                            $registration->institution,
-                            $registration->major,
-                            $this->formatCsvTextCell($registration->batch),
-                            $this->normalizeBatchYear($registration->batch) ?: '',
-                            optional($registration->certificate_sent_at)->format('Y-m-d H:i:s'),
-                            $registration->notes,
-                        ]);
+                        $row = array_map(
+                            fn (string $column) => $this->formatCsvCell(
+                                $this->exportValue($registration, $column),
+                                $column
+                            ),
+                            $columns
+                        );
+
+                        fputcsv($handle, $row, ',', '"', '');
                     }
                 });
 
@@ -123,6 +140,103 @@ class EventRegistrationService
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    private function exportWord(Event $event, array $columns): StreamedResponse
+    {
+        $filename = $this->exportFilename($event, 'doc');
+
+        return response()->streamDownload(function () use ($event, $columns) {
+            $tableFontSize = count($columns) > 7 ? '8pt' : '10pt';
+
+            echo "\xEF\xBB\xBF";
+            echo '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+            echo '<style>';
+            echo '@page WordSection1{size:841.95pt 595.35pt;mso-page-orientation:landscape;margin:36pt}';
+            echo 'div.WordSection1{page:WordSection1}';
+            echo 'body{font-family:Arial,sans-serif;font-size:11pt;color:#111827}';
+            echo 'h1{font-size:18pt;margin:0 0 6px}p{margin:0 0 16px;color:#4b5563}';
+            echo 'table{width:100%;border-collapse:collapse;font-size:' . $tableFontSize . '}';
+            echo 'th,td{border:1px solid #9ca3af;padding:7px;text-align:left;vertical-align:top;word-break:break-word}';
+            echo 'th{background:#e5e7eb;font-weight:bold}tr:nth-child(even){background:#f9fafb}';
+            echo '</style></head><body><div class="WordSection1">';
+            echo '<h1>Data Pendaftaran</h1>';
+            echo '<p>' . $this->escapeWordValue($event->title) . '</p>';
+            echo '<table><thead><tr>';
+
+            foreach ($columns as $column) {
+                echo '<th>' . $this->escapeWordValue(self::EXPORT_COLUMNS[$column]) . '</th>';
+            }
+
+            echo '</tr></thead><tbody>';
+
+            $event->registrations()
+                ->oldest()
+                ->chunk(200, function ($registrations) use ($columns) {
+                    foreach ($registrations as $registration) {
+                        echo '<tr>';
+
+                        foreach ($columns as $column) {
+                            echo '<td>' . $this->escapeWordValue($this->exportValue($registration, $column)) . '</td>';
+                        }
+
+                        echo '</tr>';
+                    }
+                });
+
+            echo '</tbody></table></div></body></html>';
+        }, $filename, [
+            'Content-Type' => 'application/msword; charset=UTF-8',
+        ]);
+    }
+
+    private function exportValue(EventRegistration $registration, string $column): string
+    {
+        return match ($column) {
+            'registered_at' => optional($registration->created_at)->format('Y-m-d H:i:s') ?? '',
+            'full_name' => (string) $registration->full_name,
+            'email' => (string) $registration->email,
+            'phone' => (string) $registration->phone,
+            'participant_category' => $registration->participant_category ?: 'Tidak Diisi',
+            'institution' => (string) ($registration->institution ?? ''),
+            'major' => (string) ($registration->major ?? ''),
+            'batch' => (string) ($registration->batch ?? ''),
+            'normalized_batch' => (string) ($this->normalizeBatchYear($registration->batch) ?? ''),
+            'certificate_sent_at' => $registration->certificate_sent_at
+                ? $registration->certificate_sent_at->format('Y-m-d H:i:s')
+                : 'Belum Dikirim',
+            'notes' => (string) ($registration->notes ?? ''),
+            default => '',
+        };
+    }
+
+    private function exportFilename(Event $event, string $extension): string
+    {
+        return Str::slug($event->title)
+            . '-data-pendaftaran-'
+            . now()->format('Ymd-His')
+            . '.'
+            . $extension;
+    }
+
+    private function formatCsvCell(string $value, string $column): string
+    {
+        $value = trim($value);
+
+        if ($value === '') {
+            return '';
+        }
+
+        if (in_array($column, ['phone', 'batch'], true)) {
+            return "\t" . $value;
+        }
+
+        return preg_match('/^[=+\-@]/', $value) ? "\t" . $value : $value;
+    }
+
+    private function escapeWordValue(string $value): string
+    {
+        return nl2br(htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
     }
 
     public function summarizeDemographics(Event $event): array
@@ -205,10 +319,4 @@ class EventRegistrationService
         return null;
     }
 
-    public function formatCsvTextCell(?string $value): string
-    {
-        $value = trim((string) $value);
-
-        return $value === '' ? '' : "\t" . $value;
-    }
 }

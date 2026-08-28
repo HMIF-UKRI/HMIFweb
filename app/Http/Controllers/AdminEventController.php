@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Event\ExportEventRegistrationsRequest;
 use App\Http\Requests\Event\SendCertificateRequest;
 use App\Http\Requests\Event\StoreEventRequest;
 use App\Http\Requests\Event\UpdateEventRegistrationRequest;
@@ -99,13 +100,15 @@ class AdminEventController extends Controller
         $demographics = $this->registrationService->summarizeDemographics($event);
         $registrationCategories = $demographics['categories'];
         $batchSummary = $demographics['batches'];
+        $exportColumns = EventRegistrationService::EXPORT_COLUMNS;
 
         return view('admin.event.show', compact(
             'event',
             'registrations',
             'registrationCategories',
             'batchSummary',
-            'registrationSearch'
+            'registrationSearch',
+            'exportColumns'
         ));
     }
 
@@ -120,11 +123,16 @@ class AdminEventController extends Controller
         return view('admin.event.qrcode', compact('event', 'scanUrl'));
     }
 
-    public function exportRegistrations($slug)
+    public function exportRegistrations(ExportEventRegistrationsRequest $request, $slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
+        $validated = $request->validated();
 
-        return $this->registrationService->exportCsv($event);
+        return $this->registrationService->exportRegistrations(
+            event: $event,
+            columns: $validated['columns'],
+            format: $validated['format']
+        );
     }
 
     public function updateRegistration(UpdateEventRegistrationRequest $request, $slug, EventRegistration $registration)

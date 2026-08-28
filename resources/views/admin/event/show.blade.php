@@ -275,10 +275,17 @@
                                             <p class="text-xs font-bold text-blue-400">Pendaftaran Event Aktif</p>
                                         </div>
                                     @elseif ($event->status === 'completed')
-                                        <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
-                                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition w-full shadow-lg shadow-emerald-600/20">
-                                            <i class="fa-solid fa-file-excel text-sm"></i> Unduh Rekap Pendaftar
-                                        </a>
+                                        @if ($event->registrations_count > 0)
+                                            <button type="button" x-on:click="$dispatch('open-modal', 'export-registrations')"
+                                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700">
+                                                <i class="fa-solid fa-file-export text-sm"></i> Export Data Pendaftar
+                                            </button>
+                                        @else
+                                            <button type="button" disabled
+                                                class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-gray-500">
+                                                Belum Ada Pendaftar
+                                            </button>
+                                        @endif
                                         <div class="rounded-xl border border-gray-500/20 bg-gray-500/10 p-3 text-center">
                                             <p class="text-xs font-bold text-gray-400">Kegiatan Telah Selesai</p>
                                         </div>
@@ -362,11 +369,11 @@
                                             <i class="fa-solid fa-paper-plane text-[11px]"></i>
                                             Kirim Sertifikat
                                         </button>
-                                        <a href="{{ route('admin.events.registrations.export', $event->slug) }}"
+                                        <button type="button" x-on:click="$dispatch('open-modal', 'export-registrations')"
                                             class="inline-flex h-11 min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white transition hover:bg-emerald-700">
-                                            <i class="fa-solid fa-file-excel text-[11px]"></i>
-                                            Download Excel
-                                        </a>
+                                            <i class="fa-solid fa-file-export text-[11px]"></i>
+                                            Export Data
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -667,6 +674,108 @@
                                 </div>
                             </nav>
                         @endif
+
+                        <x-modal name="export-registrations" maxWidth="2xl">
+                            <form action="{{ route('admin.events.registrations.export', $event->slug) }}" method="GET"
+                                class="p-5 md:p-6"
+                                x-data="{
+                                    format: @js(old('_registration_modal') === 'export-registrations' ? old('format', 'excel') : 'excel'),
+                                    allColumns: @js(array_keys($exportColumns)),
+                                    selectedColumns: @js(old('_registration_modal') === 'export-registrations' ? old('columns', []) : array_keys($exportColumns)),
+                                }"
+                                x-on:submit="setTimeout(() => $dispatch('close-modal', 'export-registrations'), 150)">
+                                <input type="hidden" name="_export_configured" value="1">
+                                <input type="hidden" name="_registration_modal" value="export-registrations">
+
+                                @if (old('_registration_modal') === 'export-registrations' && $errors->any())
+                                    <div class="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
+                                        {{ $errors->first() }}
+                                    </div>
+                                @endif
+
+                                <div class="mb-5">
+                                    <p class="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">
+                                        Export Pendaftar
+                                    </p>
+                                    <h2 class="text-xl font-black text-white">Pilih Format dan Data</h2>
+                                    <p class="mt-2 text-sm text-gray-400">
+                                        {{ $event->registrations_count }} peserta dari {{ $event->title }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-500">Format File</p>
+                                    <div class="grid grid-cols-2 gap-2 rounded-lg bg-black/30 p-1.5">
+                                        <label class="cursor-pointer rounded-lg border px-4 py-3 transition"
+                                            :class="format === 'excel'
+                                                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
+                                                : 'border-transparent text-gray-400 hover:bg-white/5'">
+                                            <input type="radio" name="format" value="excel" x-model="format" class="sr-only">
+                                            <span class="flex items-center justify-center gap-2 text-xs font-bold">
+                                                <i class="fa-solid fa-file-excel"></i>
+                                                Excel (.csv)
+                                            </span>
+                                        </label>
+                                        <label class="cursor-pointer rounded-lg border px-4 py-3 transition"
+                                            :class="format === 'word'
+                                                ? 'border-blue-500/40 bg-blue-500/10 text-blue-300'
+                                                : 'border-transparent text-gray-400 hover:bg-white/5'">
+                                            <input type="radio" name="format" value="word" x-model="format" class="sr-only">
+                                            <span class="flex items-center justify-center gap-2 text-xs font-bold">
+                                                <i class="fa-solid fa-file-word"></i>
+                                                Word (.doc)
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5">
+                                    <div class="mb-3 flex items-center justify-between gap-3">
+                                        <div>
+                                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Data yang Disertakan</p>
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                <span x-text="selectedColumns.length"></span> dari
+                                                <span x-text="allColumns.length"></span> kolom dipilih
+                                            </p>
+                                        </div>
+                                        <label class="flex cursor-pointer items-center gap-2 text-xs font-bold text-gray-300">
+                                            <input type="checkbox"
+                                                class="rounded border-white/20 bg-black/40 text-emerald-600 focus:ring-emerald-600"
+                                                :checked="selectedColumns.length === allColumns.length"
+                                                x-on:change="selectedColumns = $event.target.checked ? [...allColumns] : []">
+                                            Pilih Semua
+                                        </label>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                        @foreach ($exportColumns as $column => $label)
+                                            <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-white/10 bg-black/30 px-3.5 py-3 transition hover:border-white/20 hover:bg-white/5">
+                                                <input type="checkbox" name="columns[]" value="{{ $column }}"
+                                                    x-model="selectedColumns"
+                                                    class="rounded border-white/20 bg-black/40 text-emerald-600 focus:ring-emerald-600">
+                                                <span class="text-xs font-semibold text-gray-300">{{ $label }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+
+                                    <p x-show="selectedColumns.length === 0" class="mt-2 text-xs font-semibold text-red-400">
+                                        Pilih minimal satu data untuk diekspor.
+                                    </p>
+                                </div>
+
+                                <div class="mt-6 flex flex-col-reverse gap-2 border-t border-white/10 pt-4 sm:flex-row sm:justify-end">
+                                    <button type="button" x-on:click="$dispatch('close-modal', 'export-registrations')"
+                                        class="inline-flex h-10 items-center justify-center rounded-lg border border-white/10 px-4 text-xs font-bold text-gray-400 transition hover:bg-white/5 hover:text-white">
+                                        Batal
+                                    </button>
+                                    <button type="submit" :disabled="selectedColumns.length === 0"
+                                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-40">
+                                        <i class="fa-solid fa-download text-[11px]"></i>
+                                        Unduh Data
+                                    </button>
+                                </div>
+                            </form>
+                        </x-modal>
 
                         <x-modal name="certificate-all" maxWidth="2xl">
                             <form action="{{ route('admin.events.registrations.certificates', $event->slug) }}"
