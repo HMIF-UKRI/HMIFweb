@@ -14,19 +14,25 @@
         Master Data / Categories
     </x-slot>
 
+    @php
+        $failedEdit = $errors->any() && old('_method') === 'PATCH' && old('original_slug');
+    @endphp
+
     <div x-data="{
-        openModal: false,
-        editMode: false,
-        activeTab: 'blog',
-        formAction: '',
+        openModal: {{ $errors->any() ? 'true' : 'false' }},
+        editMode: @js((bool) $failedEdit),
+        activeTab: @js(old('type', 'blog')),
+        formAction: @js($failedEdit ? route('admin.categories.update', old('original_slug')) : route('admin.categories.store')),
+        originalSlug: @js($failedEdit ? old('original_slug') : ''),
     
-        name: '',
+        name: @js(old('name', '')),
         description: '',
     
         initEdit(item, type) {
             this.editMode = true;
             this.activeTab = type;
             this.formAction = `/admin/categories/${item.slug}`;
+            this.originalSlug = item.slug;
             this.name = item.name;
             this.openModal = true;
         },
@@ -35,6 +41,7 @@
             this.editMode = false;
             this.activeTab = type;
             this.formAction = '{{ route('admin.categories.store') }}';
+            this.originalSlug = '';
             this.name = '';
             this.openModal = true;
         },
@@ -181,6 +188,18 @@
         <x-modal-form>
             <template x-if="editMode"><input type="hidden" name="_method" value="PATCH"></template>
             <input type="hidden" name="type" :value="activeTab">
+            <input type="hidden" name="original_slug" :value="originalSlug">
+
+            @if ($errors->any())
+                <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-[10px] text-red-300">
+                    <div class="mb-2 font-black uppercase tracking-widest">Gagal menyimpan</div>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <div class="space-y-6">
                 <div class="space-y-2">
