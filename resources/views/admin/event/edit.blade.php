@@ -55,7 +55,7 @@
                                     class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Judul
                                     Kegiatan</label>
                                 <textarea name="title" rows="1" required
-                                    class="w-full bg-transparent border-none p-0 text-xl md:text-2xl font-black text-white placeholder:text-white/10 outline-none resize-none overflow-hidden"
+                                    class="w-full bg-transparent border-none p-0 text-xl md:text-2xl font-black text-white placeholder:text-white/25 outline-none resize-none overflow-hidden"
                                     placeholder="Event Title..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'">{{ old('title', $event->title ?? '') }}</textarea>
                                 <div
                                     class="h-1 w-20 bg-red-600 rounded-full shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all group-focus-within:w-full">
@@ -67,7 +67,7 @@
                                     class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Deskripsi
                                     Singkat (Max 255 Karakter)</label>
                                 <textarea name="short_description" rows="2" required maxlength="255"
-                                    class="w-full bg-transparent border-none p-0 text-base md:text-lg font-medium text-gray-400 placeholder:text-white/5 outline-none resize-none overflow-hidden"
+                                    class="w-full bg-transparent border-none p-0 text-base md:text-lg font-medium text-gray-400 placeholder:text-white/30 outline-none resize-none overflow-hidden"
                                     placeholder="Briefly explain what this event is about...">{{ old('short_description', $event->short_description ?? '') }}</textarea>
                             </div>
                         </div>
