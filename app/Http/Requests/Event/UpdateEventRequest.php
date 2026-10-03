@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEventRequest extends FormRequest
 {
+    use EventValidationMessages;
+
     public function authorize(): bool
     {
         return true;

@@ -21,6 +21,22 @@
             <ion-icon name="arrow-back-outline"></ion-icon>
             Back to Events
         </a>
+
+        @if (session('error') || $errors->any())
+            <div class="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4">
+                <p class="mb-2 text-[10px] font-black uppercase tracking-widest text-red-300">Event gagal disimpan</p>
+                @if (session('error'))
+                    <p class="text-sm font-bold text-red-400">{{ session('error') }}</p>
+                @endif
+                @if ($errors->any())
+                    <ul class="list-disc space-y-1 pl-5 text-sm text-red-400">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @endif
         <form action="{{ route('admin.events.update', $event->slug) }}" method="POST" enctype="multipart/form-data"
             id="eventForm">
             @csrf
